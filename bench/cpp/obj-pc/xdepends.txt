@@ -1,0 +1,2 @@
+uartsim.o: uartsim.cpp uartsim.h
+uartsim.o: uartsim.h
