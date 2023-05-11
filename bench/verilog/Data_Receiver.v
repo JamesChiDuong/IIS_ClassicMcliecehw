@@ -1,11 +1,10 @@
 /* verilator lint_off UNUSED */
 module Data_Receiver (
-    input clk,
+    input clk,  
     input i_uart_rx,
     output o_uart_tx
 );
-localparam  DBITS = 8,
-            FIFO_EXP = 2,
+localparam  DBITS = 8,  
             BR_BITS = 6,
             BR_LIMIT = 53,
             SB_TICK = 16;

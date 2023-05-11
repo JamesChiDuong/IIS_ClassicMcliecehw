@@ -1,10 +1,27 @@
+/***Set up for 9600 baudrate
+
+For 9600 baud with 100MHz FPGA clock: 
+9600 * 16 = 153,600
+100 * 10^6 / 153,600 = ~651      (counter limit M)
+log2(651) = 10                   (counter bits N) 
+
+ For 19,200 baud rate with a 100MHz FPGA clock signal
+ 19,200 * 16 = 307,200
+ 100 * 10^6 / 307,200 = ~326      (counter limit M)
+ log2(326) = 9                    (counter bits N)
+
+ For 115,200 baud with 100MHz FPGA clock
+ 115,200 * 16 = 1,843,200
+ 100 * 10^6 / 1,843,200 = ~52     (counter limit M)
+ log2(52) = 6                     (counter bits N)
+*/
 module baud_rate_generator
-    #(              // 9600 baud
+    #(       
         parameter   N = 6,     // number of counter bits
                     M = 53     // counter limit value
     )
     (
-        input clk,       // basys 3 clock
+        input clk,       
         input reset,            // reset
         output tick             // sample tick
     );

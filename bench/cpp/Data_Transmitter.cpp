@@ -19,16 +19,16 @@
 
 int	main(int argc, char **argv) {
 	Verilated::commandArgs(argc, argv);
-	SIMCLASS	tb;
-	UARTSIM		*uart;
+	SIMCLASS	tb;											// decleare the ib variable
+	UARTSIM		*uart;										// Initial pointer
 	int		port = 0;
-	unsigned	setup = 868, clocks = 0, baudclocks;
+	unsigned	setup = 868, clocks = 0, baudclocks;		// setup baudrate
 
 	// Set our baud rate
 	// {{{
-	uart = new UARTSIM(port);
+	uart = new UARTSIM(port);								// Initial the port
 	uart->setup(setup);
-	baudclocks = setup & 0xfffffff;
+	baudclocks = setup & 0xfffffff;							// baudclock is the same the setup
 	// }}}
 
 	// Setup a VCD trace
@@ -53,16 +53,17 @@ int	main(int argc, char **argv) {
 	// {{{
 	clocks = 0;
 	while(clocks < 16*32*baudclocks) {
-
 		tb.clk = 1;
-
+		//char buf[1];
 		tb.eval();
 		TRACE_POSEDGE;
 		tb.clk = 0;
 		tb.eval();
 		TRACE_NEGEDGE;
 
-		(*uart)(tb.o_uart_tx);
+	//	(*uart)(tb.o_uart_tx);
+		uart->operator()(tb.o_uart_tx);							// the verilog file will transfer data to the cpp file
+		// writeData((tb.o_uart_tx));
 		clocks++;
 	}
 	// }}}

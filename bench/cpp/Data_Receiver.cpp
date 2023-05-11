@@ -21,12 +21,13 @@
 int	main(int argc, char **argv) 
 {
 	Verilated::commandArgs(argc, argv);
-	UARTSIM		*uart;
+	UARTSIM		*uart;									// Init Uart Simulate
+	uart_PseudoTerminal *Pseudo;						// Init the Pseudo Terminal pointer
 	bool		run_interactively = false;
 	int		port = 0;
-	unsigned	setup = 868;
-	char string[] = "12\r\n";
-
+	unsigned	setup = 868;							// Init the baudrate
+	int fd;
+	Pseudo->PseudoTerminal_Init(&fd);					// Setting the parameter of Pseudo
 	// Argument processing
 	// {{{
 	for(int argn=1; argn<argc; argn++) 
@@ -51,18 +52,18 @@ int	main(int argc, char **argv)
 	}
 	// }}}
 
-	if (run_interactively) 
+	if (run_interactively) 								// if using the option -i or -p
     {
 		// Setup the model and baud rate
 		// {{{
-		SIMCLASS tb;
+		SIMCLASS tb;									// declerate the tb variable
 		tb.i_uart_rx = 1;
-		// }}}
+		// }}}	
 
 
 		// {{{
-		uart = new UARTSIM(port);
-		uart->setup(setup);
+		uart = new UARTSIM(port);						// Init the UART sim ith the port is the standard input
+		uart->setup(setup);								// Set up the parameter
 
 		while(1) 
         {
@@ -71,15 +72,17 @@ int	main(int argc, char **argv)
 			tb.eval();
 			tb.clk = 0;
 			tb.eval();
-
-			tb.i_uart_rx = (*uart)(tb.o_uart_tx);
+			tb.i_uart_rx = (*uart)(tb.o_uart_tx);		// transfer and receiver via tx and rx
 		}
 		// }}}
 	} else 
     {
 		// Set up a child process
 		// {{{
+		char Buffer[30];
 		int	childs_stdin[2], childs_stdout[2];
+		Pseudo->PseudoTerminal_readData(fd,Buffer);		// Read data and store into the Buffer
+		
 
 		if ((pipe(childs_stdin)!=0)||(pipe(childs_stdout) != 0)) 
         {
@@ -89,7 +92,7 @@ int	main(int argc, char **argv)
 			exit(EXIT_FAILURE);
 		}
 
-		pid_t childs_pid = fork();
+		pid_t childs_pid = fork();						// inithe the child
 
 		if (childs_pid < 0) 
         {
@@ -111,27 +114,29 @@ int	main(int argc, char **argv)
 
 			char test[256];
 
-			nw = write(childs_stdin[1], string, strlen(string));
-			if (nw == (int)strlen(string)) 
+			nw = write(childs_stdin[1], Buffer, strlen(Buffer));		// write into the childs_stdin with the buffer
+			if (nw == (int)strlen(Buffer)) 								// check if read is the same the received data
             {
 				int	rpos = 0;
 				test[0] = '\0';
-				while((rpos<nw)
+				while((rpos<nw)											// check untill get the enough the buffer
 					&&(0<(nr=read(childs_stdout[0],
-						&test[rpos], strlen(string)-rpos))))
+						&test[rpos], (strlen(Buffer))-rpos))))
 					rpos += nr;
 				
 				nr = rpos;
 				if (rpos > 0)
 					test[rpos] = '\0';
 				printf("Successfully read %d characters: %s\n", nr, test);
+				Pseudo->PseudoTerminal_writeData(fd,test);				// Send back the String
+				Pseudo->PseudoTerminal_Deinit(fd);						// close
 			}
 
 			int	status = 0, rv = -1;
 
 			// Give the child the oppoortunity to take another
 			// 60 seconds to finish closing itself
-			for(int waitcount=0; waitcount < 60; waitcount++) 
+			for(int waitcount=0; waitcount < 60; waitcount++) 			// Waitting to check
             {
 				rv = waitpid(-1, &status, WNOHANG);
 				if (rv == childs_pid)
@@ -153,8 +158,8 @@ int	main(int argc, char **argv)
 				printf("WARNING: Child/simulator exit status does not indicate success\n");
 			}
 
-			if ((nr == nw)&&(nw == (int)strlen(string))
-					&&(strcmp(test, string) == 0)) 
+			if ((nr == nw)&&(nw == (int)strlen(Buffer))						// if the input string == the output string it will pass
+					&&(strcmp(test, Buffer) == 0)) 
             {
 				printf("PASS!\n");
 				exit(EXIT_SUCCESS);
@@ -170,8 +175,9 @@ int	main(int argc, char **argv)
 
 			// Fix up the FILE I/O
 			// {{{
-			close(childs_stdin[ 1]);
-			close(childs_stdout[0]);
+
+			close(childs_stdin[ 1]);										// Close stdin
+			close(childs_stdout[0]);										// Close stdout
 			close(STDIN_FILENO);
 			if (dup(childs_stdin[0]) < 0) 
             {
@@ -237,7 +243,7 @@ int	main(int argc, char **argv)
 
 			// Simulation loop: process the hello world string
 			// {{{
-			while(clocks < 2*(baudclocks*16)*strlen(string)) {
+			while(clocks < 2*(baudclocks*16)*strlen(Buffer)) {
 				tb.clk = 1;
 				tb.eval();
 				TRACE_POSEDGE;
@@ -246,40 +252,9 @@ int	main(int argc, char **argv)
 				TRACE_NEGEDGE;
 				clocks++;
 
-				tb.i_uart_rx = (*uart)(tb.o_uart_tx);
-
-				if (false) { // Used only for debugging
-					// {{{
-					/*
-					static long counts = 0;
-					static int lasti = 1, lasto = 1;
-					bool	writeout = false;
-
-					counts++;
-					if (lasti != tb.i_uart) {
-						writeout = true;
-						lasti = tb.i_uart;
-					} if (lasto != tb.o_uart) {
-						writeout = true;
-						lasto = tb.o_uart;
-					}
-
-					if (writeout) {
-					fprintf(stderr, "%08lx : [%d -> %d] %02x:%02x (%02x/%d) %d,%d->%02x [%2d/%d/%08x]\n",
-						counts, tb.i_uart, tb.o_uart,
-						tb.v__DOT__head,
-						tb.v__DOT__tail,
-						tb.v__DOT__lineend,
-						tb.v__DOT__run_tx,
-						tb.v__DOT__tx_stb,
-						tb.v__DOT__transmitter__DOT__r_busy,
-						tb.v__DOT__tx_data & 0x0ff,
-						tb.v__DOT__transmitter__DOT__state,
-						tb.v__DOT__transmitter__DOT__zero_baud_counter,
-						tb.v__DOT__transmitter__DOT__baud_counter);
-					} */
-					// }}}
-				}
+				tb.i_uart_rx = (*uart)(tb.o_uart_tx);				// the cpp will receive data from python and then transfer data to verilog file. 
+																	// The verilog file will transfer back the simulation file after recive data
+																	// The cpp will transfer data to the python back again.
 
 				if (iterations_before_check-- <= 0) {
 					iterations_before_check = 2048;

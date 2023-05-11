@@ -156,12 +156,12 @@ Toplite: $(TOPLTOBJS) $(VOBJDR)/VToplite__ALL.a
 ## test
 ## {{{
 test: 
-	./Data_Transmitter
-	./Data_Transmitterlite
-	./Data_Receiver
-	./Data_Receiverlite
+#	./Data_Transmitter
+#	./Data_Transmitterlite
+#	./Data_Receiver
+#	./Data_Receiverlite
 	./Top
-	./Toplite
+#	./Toplite
 #
 define	build-depends
 	$(mk-objdir)

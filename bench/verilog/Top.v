@@ -5,33 +5,33 @@ module Top (
     /* verilator lint_off UNDRIVEN */
     output o_uart_tx
 );
-localparam  DBITS = 8,
-            DATA_LENGTH = 5,
-            FIFO_EXP = 2,
-            BR_BITS = 6,
-            BR_LIMIT = 53,
-            SB_TICK = 16; 
-reg [2:0] rx_index;
-reg [10:0] tx_index;
-reg [1:0] str_index;
+localparam  DBITS = 8,                          // 8 bit Data
+            DATA_LENGTH = 5,                    // String length of the Data buffer    
+            BR_BITS = 6,                        // Counter limit
+            BR_LIMIT = 53,                      // Baudrate limit
+            SB_TICK = 16;                       // Sb tick
+reg [2:0] rx_index;                             // Rx module index
+reg [10:0] tx_index;                            // Tx module index
+reg [1:0] str_index;                            // Stirng index
 /* verilator lint_off WIDTH */
-reg [7:0] rx_Data_Buffer[0:DATA_LENGTH];
-reg [7:0] tx_Data_Buffer[0:DATA_LENGTH+35];
-wire [7:0] rx_data_out;
-reg [7:0] tx_data_in;
-reg [7:0] number1;
-reg [7:0] number2;
-wire [7:0] sum;
+reg [7:0] rx_Data_Buffer[0:DATA_LENGTH];        // Initial rx Data Buffer
+reg [7:0] tx_Data_Buffer[0:DATA_LENGTH+35];     // Initial tx Data Buffer
+wire [7:0] rx_data_out;                         // Rx Data which receive from Rx module
+reg [7:0] tx_data_in;                           // Tx Data input to transfer
+reg [7:0] number1;                              // Number1 to calculate in Full Adder
+reg [7:0] number2;                              // Number2 to calculate in Full Adder
+wire [7:0] sum;                                 // Sum of calculate in Full Adder
 reg cin;
 /* verilator lint_off UNUSED */
-wire cout;
+wire cout;                                      // Cout to calculate in Full Adder
 reg reset;
-reg tx_Send;
+reg tx_Send;                                    
 wire tx_done;
 wire rx_done;
 wire tick;
 reg	[27:0]	counter;
 reg CHECKOK;
+reg [2:0] current_state, next_state;
 /******Main Program********/
 initial begin
      cin = 1'b0;
@@ -83,62 +83,64 @@ end
 /*------Transfer Process--------*/
 initial counter = 28'hfffff00;
 initial begin
-        tx_Data_Buffer[0] = "N";
-        tx_Data_Buffer[1] = "U";
-        tx_Data_Buffer[2] = "M";
-        tx_Data_Buffer[3] = "B";
-        tx_Data_Buffer[4] = "E";
-        tx_Data_Buffer[5] = "R";
-        tx_Data_Buffer[6] = "1";
-        tx_Data_Buffer[7] = ":";
+        tx_Data_Buffer[0] = " ";
+        tx_Data_Buffer[1] = "N";
+        tx_Data_Buffer[2] = "U";
+        tx_Data_Buffer[3] = "M";
+        tx_Data_Buffer[4] = "B";
+        tx_Data_Buffer[5] = "E";
+        tx_Data_Buffer[6] = "R";
+        tx_Data_Buffer[7] = "1";
+        tx_Data_Buffer[8] = ":";
 
-        tx_Data_Buffer[12] = "N";
-        tx_Data_Buffer[13] = "U";
-        tx_Data_Buffer[14] = "M";
-        tx_Data_Buffer[15] = "B";
-        tx_Data_Buffer[16] = "E";
-        tx_Data_Buffer[17] = "R";
-        tx_Data_Buffer[18] = "2";
-        tx_Data_Buffer[19] = ":";
+        tx_Data_Buffer[13] = "N";
+        tx_Data_Buffer[14] = "U";
+        tx_Data_Buffer[15] = "M";
+        tx_Data_Buffer[16] = "B";
+        tx_Data_Buffer[17] = "E";
+        tx_Data_Buffer[18] = "R";
+        tx_Data_Buffer[19] = "2";
+        tx_Data_Buffer[20] = ":";
 
-        tx_Data_Buffer[24] = "S";
-        tx_Data_Buffer[25] = "U";
-        tx_Data_Buffer[26] = "M";
-        tx_Data_Buffer[27] = ":";
+        tx_Data_Buffer[25] = "S";
+        tx_Data_Buffer[26] = "U";
+        tx_Data_Buffer[27] = "M";
+        tx_Data_Buffer[28] = ":";
         
 
-        tx_Data_Buffer[32] = "C";
-        tx_Data_Buffer[33] = "O";
-        tx_Data_Buffer[34] = "U";
-        tx_Data_Buffer[35] = "T";
-        tx_Data_Buffer[36] = ":";
+        tx_Data_Buffer[33] = "C";
+        tx_Data_Buffer[34] = "O";
+        tx_Data_Buffer[35] = "U";
+        tx_Data_Buffer[36] = "T";
+        tx_Data_Buffer[37] = ":";
+        tx_Data_Buffer[39] = "\n";
 end
 always @(posedge clk) begin
     if((CHECKOK == 1'b1))
     begin
         counter <= counter + 1'b1;
 
-        tx_Data_Buffer[8] <= (number1/100 + 48);
-        tx_Data_Buffer[9] <= ((number1%100)/10) + 48;
-        tx_Data_Buffer[10] <= ((number1%100)%10) + 48;
-        tx_Data_Buffer[11] <= 8'd32;
+        tx_Data_Buffer[9] <= (number1/100 + 48);
+        tx_Data_Buffer[10] <= ((number1%100)/10) + 48;
+        tx_Data_Buffer[11] <= ((number1%100)%10) + 48;
+        tx_Data_Buffer[12] <= 8'd32;
 
-        tx_Data_Buffer[20] <= (number2/100 + 48);
-        tx_Data_Buffer[21] <= ((number2%100)/10) + 48;
-        tx_Data_Buffer[22] <= ((number2%100)%10) + 48;
-        tx_Data_Buffer[23] <= 8'd32;
+        tx_Data_Buffer[21] <= (number2/100 + 48);
+        tx_Data_Buffer[22] <= ((number2%100)/10) + 48;
+        tx_Data_Buffer[23] <= ((number2%100)%10) + 48;
+        tx_Data_Buffer[24] <= 8'd32;
 
-        tx_Data_Buffer[28] <= (sum/100 + 48);
-        tx_Data_Buffer[29] <= ((sum%100)/10) + 48;
-        tx_Data_Buffer[30] <= ((sum%100)%10) + 48;
-        tx_Data_Buffer[31] <= 8'd32;
+        tx_Data_Buffer[29] <= (sum/100 + 48);
+        tx_Data_Buffer[30] <= ((sum%100)/10) + 48;
+        tx_Data_Buffer[31] <= ((sum%100)%10) + 48;
+        tx_Data_Buffer[32] <= 8'd32;
         /* verilator lint_off WIDTH */
         if(cout == 1'b1)
         begin
-            tx_Data_Buffer[37] <= "1"; 
+            tx_Data_Buffer[38] <= "1"; 
         end
         else
-            tx_Data_Buffer[37] <= "0"; 
+            tx_Data_Buffer[38] <= "0"; 
     end
 end	
 always @(posedge clk) begin
@@ -149,9 +151,9 @@ always @(posedge clk) begin
     tx_data_in <= tx_Data_Buffer[tx_index];
 end
 always @(posedge clk) begin
-	if (counter == 28'hfffffff)
+	if ((counter == 28'hfffffff) && (tx_index <= 11'd40) && (CHECKOK == 1'b1))
 		tx_Send <= 1'b1;
-    if((tx_Send)&&(tx_done)&&(tx_index) == 11'd38)
+    if((tx_Send)&&(tx_done)&&(tx_index) >= 11'd40)
         tx_Send <= 1'b0;
 end
 /*------Connect Signal Module---*/

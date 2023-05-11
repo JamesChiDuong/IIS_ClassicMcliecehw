@@ -18,15 +18,16 @@
 #include "verilated_vcd_c.h"
 #include "uartsim.h"
 
-#define LENG 55
+#define LENG 23
 int	main(int argc, char **argv) 
 {
 	Verilated::commandArgs(argc, argv);
-	UARTSIM		*uart;
+	UARTSIM		*uart;										// init uart pointer
+	uart_PseudoTerminal *Pseudo;							// Init Pseudo terminal
 	bool		run_interactively = false;
-	int		port = 0;
-	unsigned	setup = 868;
-	char string[] = "110\n005\n\n";
+	int		port = 0;										// Port is zero mean transfer through standard input and output
+	unsigned	setup = 868;								// init baudrate
+	int fd;
 
 	// Argument processing
 	// {{{
@@ -52,7 +53,7 @@ int	main(int argc, char **argv)
 	}
 	// }}}
 
-	if (run_interactively) 
+	if (run_interactively) 										// if option is -i or -p
     {
 		// Setup the model and baud rate
 		// {{{
@@ -62,8 +63,8 @@ int	main(int argc, char **argv)
 
 
 		// {{{
-		uart = new UARTSIM(port);
-		uart->setup(setup);
+		uart = new UARTSIM(port);								// Init uart port
+		uart->setup(setup);										// Setting uart
 
 		while(1) 
         {
@@ -80,8 +81,9 @@ int	main(int argc, char **argv)
     {
 		// Set up a child process
 		// {{{
+		Pseudo->PseudoTerminal_Init(&fd);						// Init Pesudo Terminal
+		char Buffer[100];
 		int	childs_stdin[2], childs_stdout[2];
-
 		if ((pipe(childs_stdin)!=0)||(pipe(childs_stdout) != 0)) 
         {
 			fprintf(stderr, "ERR setting up child pipes\n");
@@ -89,7 +91,7 @@ int	main(int argc, char **argv)
 			printf("TEST FAILURE\n");
 			exit(EXIT_FAILURE);
 		}
-
+		Pseudo->PseudoTerminal_readData(fd,Buffer);				// Read data and get Data Buffer
 		pid_t childs_pid = fork();
 
 		if (childs_pid < 0) 
@@ -110,59 +112,61 @@ int	main(int argc, char **argv)
 			close(childs_stdin[ 0]); // Close the read end
 			close(childs_stdout[1]); // Close the write end
 
-			char test[256];
-
-			nw = write(childs_stdin[1], string, (strlen(string)+LENG));
-			if (nw == ((int)strlen(string) + LENG)) 
+			char test[50];
+			char testData[50];
+			nw = write(childs_stdin[1], Buffer, (strlen(Buffer)+LENG)); // Write data mor than string length because we transfer 2 number and want to get more than 2 number. example- input: 110 120, output: NUMBER1:112 NUMBER2:190 SUM:046 COUT:1
+			if (nw == ((int)strlen(Buffer) + LENG)) 
             {
 				int	rpos = 0;
 				test[0] = '\0';
 				while((rpos<nw)
 					&&(0<(nr=read(childs_stdout[0],
-						&test[rpos], (strlen(string)+LENG)-rpos))))
+						&test[rpos], (strlen(Buffer)+LENG)-rpos))))		// read more than string length
 					rpos += nr;
 				
 				nr = rpos;
 				if (rpos > 0)
 					test[rpos] = '\0';
 				printf("Successfully read %d characters: %s\n", nr, test);
+				//strcpy(testData,test);
+				Pseudo->PseudoTerminal_writeData(fd,test);				// wrtie back to the python
+				Pseudo->PseudoTerminal_Deinit(fd);						// close
+			}
+			int	status = 0, rv = -1;
+
+			// Give the child the oppoortunity to take another
+			// 60 seconds to finish closing itself
+			for(int waitcount=0; waitcount < 600; waitcount++) 
+            {
+				rv = waitpid(-1, &status, WNOHANG);
+				if (rv == childs_pid)
+					break;
+				else if (rv < 0)
+					break;
+				else // rv == 0
+					sleep(1);
 			}
 
-			// int	status = 0, rv = -1;
+			if (rv != childs_pid) 
+            {
+				kill(childs_pid, SIGTERM);
+				printf("WARNING: Child/simulator did not terminate normally\n");
+			}
 
-			// // Give the child the oppoortunity to take another
-			// // 60 seconds to finish closing itself
-			// for(int waitcount=0; waitcount < 60; waitcount++) 
-            // {
-			// 	rv = waitpid(-1, &status, WNOHANG);
-			// 	if (rv == childs_pid)
-			// 		break;
-			// 	else if (rv < 0)
-			// 		break;
-			// 	else // rv == 0
-			// 		sleep(1);
-			// }
+			if (WEXITSTATUS(status) != EXIT_SUCCESS) 
+            {
+				printf("WARNING: Child/simulator exit status does not indicate success\n");
+			}
 
-			// if (rv != childs_pid) 
-            // {
-			// 	kill(childs_pid, SIGTERM);
-			// 	printf("WARNING: Child/simulator did not terminate normally\n");
-			// }
-
-			// if (WEXITSTATUS(status) != EXIT_SUCCESS) 
-            // {
-			// 	printf("WARNING: Child/simulator exit status does not indicate success\n");
-			// }
-
-			// if ((nr == nw)&&(nw == ((int)strlen(string) + LENG))) 
-            // {
-			// 	printf("PASS!\n");
-			// 	exit(EXIT_SUCCESS);
-			// } else 
-            // {
-			// 	printf("TEST FAILED\n");
-			// 	exit(EXIT_FAILURE);
-			// }
+			if ((nw == ((int)strlen(Buffer) + LENG))) 
+            {
+				printf("PASS!\n");
+				exit(EXIT_SUCCESS);
+			} else 
+            {
+				printf("TEST FAILED\n");
+				exit(EXIT_FAILURE);
+			}
 			// }}}
 		} else 
         { // The child (Verilator simulation)
@@ -237,7 +241,7 @@ int	main(int argc, char **argv)
 
 			// Simulation loop: process the hello world string
 			// {{{
-			while(clocks < 2*(baudclocks*16)*(strlen(string)+LENG)) { // chinh lai o day
+			while(clocks < 3*(baudclocks*16)*(strlen(Buffer)+LENG)) { // we need to using the clock with the total data
 				tb.clk = 1;
 				tb.eval();
 				TRACE_POSEDGE;
@@ -245,7 +249,6 @@ int	main(int argc, char **argv)
 				tb.eval();
 				TRACE_NEGEDGE;
 				clocks++;
-
 				tb.i_uart_rx = (*uart)(tb.o_uart_tx);
 
 				if (iterations_before_check-- <= 0) {
@@ -256,9 +259,7 @@ int	main(int argc, char **argv)
 				}
 			}
 			// }}}
-
 			TRACE_CLOSE;
-
 			exit(EXIT_SUCCESS);
 			// }}}
 		}

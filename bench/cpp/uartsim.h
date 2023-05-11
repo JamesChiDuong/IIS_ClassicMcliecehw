@@ -51,7 +51,10 @@
 #include <unistd.h>
 #include <arpa/inet.h>
 #include <signal.h>
-
+#include <unistd.h>
+#include <fcntl.h>
+#include <termios.h>
+#include <errno.h> // Error integer and strerror() function
 #define	TXIDLE	0
 #define	TXDATA	1
 #define	RXIDLE	0
@@ -152,6 +155,31 @@ public:
 		setup(isetup); return tick(i_tx); }
 	// }}}
 	// }}}
-};
 
+};
+/**Class for PseudoTerminal - To communication with python srcipt through Peseudo-Terminal*/
+class uart_PseudoTerminal
+{
+	private:
+	//	int fd;
+	public:
+	/**********Public member function*************/
+		uart_PseudoTerminal(/* args */);
+		/*PseudoTerminal_Init(int*fd)
+		To initialize the parameter of the starting to transfer
+		*/
+		void  PseudoTerminal_Init(int*fd);
+		/*PseudoTerminal_readData(int fd,char* Buffer)
+		To read Data and store data into the Buffer
+		*/
+		void PseudoTerminal_readData(int fd,char* Buffer);
+		/*PseudoTerminal_writeData(int fd,char* Buffer)
+		To write the Buffer data
+		*/
+		void PseudoTerminal_writeData(int fd,char* Buffer);
+		/*PseudoTerminal_Deinit(int fd);
+		To close the port
+		*/
+		void PseudoTerminal_Deinit(int fd);
+};
 #endif

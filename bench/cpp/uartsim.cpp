@@ -192,8 +192,9 @@ int	UARTSIM::rawtick(const int i_tx, const bool network) {
 	} else if (m_rx_baudcounter <= 0) {
 		if (m_rx_busy >= (1<<(m_nbits+m_nparity+m_nstop-1))) {
 			m_rx_state = RXIDLE;
-			if (m_conwr >= 0) {
-				char	buf[1];
+			if (m_conwr >= 0) 
+			{
+				char buf[1];
 				buf[0] = (m_rx_data >> (32-m_nbits-m_nstop-m_nparity))&0x0ff;
 				if ((network)&&(1 != send(m_conwr, buf, 1, 0))) {
 					close(m_conwr);
@@ -307,4 +308,93 @@ int	UARTSIM::nettick(const int i_tx) {
 int	UARTSIM::fdtick(const int i_tx) {
 	return rawtick(i_tx, false);
 }
-// }}}
+//Pseudo_Terminal::Init
+void uart_PseudoTerminal::PseudoTerminal_Init(int *fd)
+{
+    	//int fd;
+    struct termios tty;
+
+    *fd = open("/dev/ptmx", O_RDWR ); 		//Open the port with ptmx
+    if (*fd < 0) {
+        perror("open");
+    }
+
+    grantpt(*fd); 							//To access to the slave pseudoterminal
+    unlockpt(*fd);							//After the file desciptor is passed to unlockpt() to unlock the slave side
+
+    char* slave_name = ptsname(*fd);		//In order to be able to open the slave side
+    printf("Slave device: %s\n", slave_name);
+	
+	tcgetattr(*fd, &tty);					//Save the tty setting
+    cfmakeraw(&tty);						//Set raw mode on the slave side of the PTY
+	
+	tty.c_cflag &= ~PARENB; 				// Clear parity bit
+	tty.c_cflag &= ~CSTOPB; 				// Clear stop field, only one stop bit used in communication (most common)
+	tty.c_cflag &= ~CSIZE; 					// Clear all the size bits, then use one of the statements below
+	tty.c_cflag |= CS8; 					// 8 bits per byte (most common)
+	tty.c_cflag &= ~CRTSCTS; 				// Disable RTS/CTS hardware flow control (most common)
+    tty.c_cflag |= CLOCAL | CREAD;			// Turn on READ & ignore ctrl lines (CLOCAL = 1)
+	/****UNIX systems provide two basic modes of input, 
+	 * canonical and non-canonical mode. In canonical mode, 
+	 * input is processed when a new line character is received. 
+	 * The receiving application receives that data line-by-line. 
+	 * This is usually undesirable when dealing with a serial port, 
+	 * and so we normally want to disable canonical mode.***/
+	tty.c_lflag &= ~ICANON;					//Disable Cannol mode
+	tty.c_lflag &= ~ECHO; 					// Disable echo
+	tty.c_lflag &= ~ECHOE; 					// Disable erasure
+	tty.c_lflag &= ~ECHONL; 				// Disable new-line echo
+	tty.c_lflag &= ~ISIG; 					// Disable interpretation of INTR, QUIT and SUSP
+	tty.c_iflag &= ~(IXON | IXOFF | IXANY); // Turn off s/w flow ctrl
+	tty.c_iflag &= ~(IGNBRK|BRKINT|PARMRK|ISTRIP|INLCR|IGNCR|ICRNL); // Disable any special handling of received bytes
+	tty.c_oflag &= ~OPOST; 					// Prevent special interpretation of output bytes (e.g. newline chars)
+  	tty.c_oflag &= ~ONLCR; 					// Prevent conversion of newline to carriage return/line feed
+    
+	/***************************************This will make read() always wait for bytes (exactly how many is determined by VMIN), so read() could block indefinitely.*/
+	tty.c_cc[VMIN] = 1;						
+    tty.c_cc[VTIME] = 0;
+    
+	cfsetispeed(&tty, B115200);				//Set baudrate
+  	cfsetospeed(&tty, B115200);				//Set baudrate
+
+	if (tcsetattr(*fd, TCSANOW, &tty) != 0) {
+	printf("Error %i from tcsetattr: %s\n", errno, strerror(errno));
+  }
+}
+//Pseudo_Terminal::ReadData
+void uart_PseudoTerminal::PseudoTerminal_readData(int fd,char* Buffer)
+{
+    char buf[120]; 							// the Buffer to store the Data
+	int num = sizeof(buf);					// Assign the number of Data
+    while (1) {
+        ssize_t n = read(fd, &buf, num);	//Read Data via Peseudo
+        if (n < 0) {						//If no read any data
+            //perror("read");
+            break;
+        } else if (n == 0) {				//If read the 1 byte data
+            printf("EOF\n");		
+            break;
+        } else {
+            printf("Received %ld bytes: %.*s", n, (int) n, buf);
+			num = 0;						//To read the last of the data
+			strcpy(Buffer,buf);				//Coppy in to the Buffer
+			//break;
+        }
+    } 
+}
+//Pseudo_Terminal::WriteData
+void uart_PseudoTerminal::PseudoTerminal_writeData(int fd,char* Buffer)
+{
+	ssize_t n = write(fd, Buffer, strlen(Buffer)); //Write the data with the size is the length of the buffer data
+	write(fd, "\n",1);						//Write the data end of line
+    if (n < 0) {
+        perror("write");
+    } else {
+        printf("Sent %ld bytes: %s\n", n, Buffer);
+    }
+}
+//Pseudo_Terminal::Deinit
+void uart_PseudoTerminal::PseudoTerminal_Deinit(int fd)
+{
+	close(fd);
+}
