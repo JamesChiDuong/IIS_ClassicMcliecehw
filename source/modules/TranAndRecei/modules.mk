@@ -288,6 +288,6 @@ results: $(addprefix results-, $(PAR_SETS))
 $(RESULTS_DIR):
 	mkdir -p $@
 
-clean-TranAndRecei:
+clean:
 	rm -rf $(BUILD_DIR)
 endif
