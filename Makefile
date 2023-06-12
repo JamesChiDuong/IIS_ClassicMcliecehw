@@ -1,27 +1,32 @@
-all: rtl bench test
+SHELL = sh -xv
+ifdef SRCDIR
+VPATH = $(SRCDIR)
+all: $(TARGETS)
 
-.PHONY: rtl
-## {{{
-rtl:
-	cd rtl ; $(MAKE) --no-print-directory
+include config.mk
+# # Include generated dependencies
+-include $(filter %.d,$(OBJ:.o=.d))
 
-.PHONY: bench
-## {{{
-bench: rtl
-	cd bench/verilog ; $(MAKE) --no-print-directory
-	cd bench/cpp     ; $(MAKE) --no-print-directory
+else
+#######################################
+# Out-of-tree build mechanism.        #
+# You shouldn't touch anything below. #
+#######################################
+.SUFFIXES:
 
-.PHONY: test
-## {{{
-test: bench
-	bench/cpp/Data_Receiver
-	# bench/cpp/Data_Transmitter 
-## }}}
+OBJDIR := build
+
+.PHONY: $(OBJDIR)
+$(OBJDIR): %:
+	+@[ -d $@ ] || mkdir -p $@
+	+@$(MAKE) --no-print-directory -r -I$(CURDIR) -C $@ -f $(CURDIR)/Makefile SRCDIR=$(CURDIR) $(MAKECMDGOALS)
+
+Makefile : ;
+%.mk :: ;
+% :: $(OBJDIR) ;
 
 .PHONY: clean
-## {{{
 clean:
-	cd rtl ; $(MAKE) --no-print-directory clean
-	cd bench/verilog ; $(MAKE) --no-print-directory clean
-	cd bench/cpp     ; $(MAKE) --no-print-directory clean
-## }}}
+	rm -rf $(OBJDIR)
+	cd source; $(MAKE) -f FPGA.mk clean
+endif
