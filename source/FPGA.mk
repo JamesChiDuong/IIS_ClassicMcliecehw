@@ -61,6 +61,7 @@ $(TARGETS):
 
 clean:
 	rm -rf $(BUILD_DIR)
+	cd modules/TranAndRecei; $(MAKE) -f modules.mk clean
 .PHONY: help
 help:
 	@printf "Target list:\n\n"
