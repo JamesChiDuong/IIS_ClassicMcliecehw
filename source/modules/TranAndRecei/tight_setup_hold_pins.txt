@@ -1,0 +1,45 @@
++--------------------------+--------------------------+----------------------------------------------------------------------------------------------------------+
+|       Launch Clock       |      Capture Clock       |                                                 Pin                                                      |
++--------------------------+--------------------------+----------------------------------------------------------------------------------------------------------+
+|                      clk |                      clk |                                                                                          number2_reg[7]/D|
+|                      clk |                      clk |                                                                                         rx_index_reg[2]/D|
+|                      clk |                      clk |                                                                                tx_Data_Buffer_reg[9][1]/D|
+|                      clk |                      clk |                                                                                             tx_Send_reg/D|
+|                      clk |                      clk |                                                                UART_RX_UNIT/FSM_sequential_state_reg[0]/D|
+|                      clk |                      clk |                                                                UART_RX_UNIT/FSM_sequential_state_reg[1]/D|
+|                      clk |                      clk |                                                                                tx_Data_Buffer_reg[9][0]/D|
+|                      clk |                      clk |                                                                                        str_index_reg[1]/D|
+|                      clk |                      clk |                                                                                        str_index_reg[0]/D|
+|                      clk |                      clk |                                                                                         rx_index_reg[0]/D|
+|                      clk |                      clk |                                                                                         rx_index_reg[1]/D|
+|                      clk |                      clk |                                                                                       tx_data_in_reg[2]/D|
+|                      clk |                      clk |                                                                                       tx_data_in_reg[0]/D|
+|                      clk |                      clk |                                                                               tx_Data_Buffer_reg[38][0]/D|
+|                      clk |                      clk |                                                                                       tx_data_in_reg[1]/D|
+|                      clk |                      clk |                                                                               tx_Data_Buffer_reg[21][0]/D|
+|                      clk |                      clk |                                                                               tx_Data_Buffer_reg[21][1]/D|
+|                      clk |                      clk |                                                                            UART_RX_UNIT/tick_reg_reg[1]/D|
+|                      clk |                      clk |                                                                                       tx_data_in_reg[3]/D|
+|                      clk |                      clk |                                                                                         tx_index_reg[7]/D|
+|                      clk |                      clk |                                                                                         tx_index_reg[9]/D|
+|                      clk |                      clk |                                                                                         tx_index_reg[8]/D|
+|                      clk |                      clk |                                                                                        tx_index_reg[10]/D|
+|                      clk |                      clk |                                                                            UART_TX_UNIT/tick_reg_reg[1]/D|
+|                      clk |                      clk |                                                                            UART_TX_UNIT/tick_reg_reg[0]/D|
+|                      clk |                      clk |                                                                UART_TX_UNIT/FSM_sequential_state_reg[1]/D|
+|                      clk |                      clk |                                                                                         counter_reg[25]/D|
+|                      clk |                      clk |                                                                                          number2_reg[2]/D|
+|                      clk |                      clk |                                                                            UART_TX_UNIT/tick_reg_reg[4]/D|
+|                      clk |                      clk |                                                                                         counter_reg[17]/D|
+|                      clk |                      clk |                                                                                         counter_reg[26]/D|
+|                      clk |                      clk |                                                                                         counter_reg[27]/D|
+|                      clk |                      clk |                                                                                         counter_reg[21]/D|
+|                      clk |                      clk |                                                                            UART_RX_UNIT/tick_reg_reg[0]/D|
+|                      clk |                      clk |                                                                UART_TX_UNIT/FSM_sequential_state_reg[0]/D|
+|                      clk |                      clk |                                                                                         counter_reg[18]/D|
+|                      clk |                      clk |                                                                                       tx_data_in_reg[6]/D|
+|                      clk |                      clk |                                                                                         counter_reg[19]/D|
+|                      clk |                      clk |                                                                                         counter_reg[13]/D|
+|                      clk |                      clk |                                                                                         counter_reg[22]/D|
+|                      clk |                      clk |                                                                                         counter_reg[23]/D|
++--------------------------+--------------------------+----------------------------------------------------------------------------------------------------------+

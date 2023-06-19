@@ -1,3 +1,9 @@
+# 
+# Copyright (C) 2022
+#
+# Authors: James <chiduong1312@gmail.com>
+# 
+
 MAKE ?= make
 MAKE_VERSION_MIN := 4.3
 MAKE_VERSION := $(shell $(MAKE) --version | grep Make | cut -d" " -f3)

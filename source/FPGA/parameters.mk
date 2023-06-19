@@ -1,3 +1,9 @@
+
+# 
+# Copyright (C) 2022
+#
+# Authors: James <chiduong1312@gmail.com>
+# 
 ifndef PARAMETERS
 PARAMETERS = 
 

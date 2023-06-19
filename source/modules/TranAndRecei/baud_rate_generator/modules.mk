@@ -1,3 +1,8 @@
+# 
+# Copyright (C) 2022
+#
+# Authors: James <chiduong1312@gmail.com>
+# 
 ifndef BAUD_RATE_GENERATOR
 BAUD_RATE_GENERATOR_SRC_PATH := $(abspath $(dir $(lastword $(MAKEFILE_LIST))))
 #FULL_ADDER_SUBMODULES :=

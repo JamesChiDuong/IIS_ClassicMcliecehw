@@ -1,3 +1,10 @@
+# 
+# Copyright (C) 2022
+#
+# Authors: James <chiduong1312@gmail.com>
+# 
+
+
 # Avoid multiple includes
 ifndef SYNTHESIS
 

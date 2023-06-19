@@ -1,3 +1,9 @@
+# 
+# Copyright (C) 2022
+#
+# Authors: James <chiduong1312@gmail.com>
+# 
+
 TRANANDRECEI_SRC_PATH := $(abspath $(dir $(lastword $(MAKEFILE_LIST))))
 
 # Include the parameter set definitions
@@ -9,7 +15,7 @@ include $(TRANANDRECEI_SRC_PATH)/../../FPGA/tools.mk
 TOPMODULE ?= TranAndRecei
 
 # List of the required submodules
-TRANANDRECEI_SUBMODULES := BAUD_RATE_GENERATOR FULL_ADDER RECIVER TRANSMITTER
+TRANANDRECEI_SUBMODULES := BAUD_RATE_GENERATOR FULL_ADDER RECEIVER TRANSMITTER
 
 # Build directory
 BUILD_DIR ?= $(TRANANDRECEI_SRC_PATH)/build
@@ -92,124 +98,11 @@ $(foreach par, $(PAR_SETS), $(eval $(call TRANANDRECEI_SRC_TEMPLATE,$(par))))
 
 ifeq (TranAndRecei,${TOPMODULE})
 
-#
-# Testbench sources definitions
-#
-
-# Set the testbench sources
-TranAndRecei_TB_SRC = TranAndRecei_tb.v
-
-# Define the comulated target for testbench sources generation
-.PHONY: testbench
-testbench: $(addprefix testbench-, $(PAR_SETS))
-
-# Set of all testbench sources
-TRANANDRECEI_TB =
-
-# Define the parameter-specific testbench targets
-define TRANANDRECEI_TB_TEMPLATE =
-
-# Define all required targets to be included in the modules above.
-TRANANDRECEI_TB_$(1) = $(addprefix $$(BUILD_DIR_TB_$(1))/,$(TRANANDRECEI_TB_SRC))
-
-# Collect all testbench targets
-TRANANDRECEI_TB += $$(TRANANDRECEI_TB_$(1))
-
-# Define parameter-specific testbench targets
-.PHONY: testbench-$(1)
-testbench-$(1): $$(TRANANDRECEI_$(1)) $$(TRANANDRECEI_TB_$(1))
-
-# Make build directory for the testbench sources
-$$(BUILD_DIR_TB_$(1)):
-	mkdir -p $$@
+#Add the build directory as order-only-prerequisites to every source file target
+$(TRANANDRECEI): | $$(@D)
 
 #
-# Sources generation
-#
-$$(BUILD_DIR_TB_$(1))/%.v: $$(TRANANDRECEI_SRC_PATH)/testbench/%.v
-	cp $$< $$@
-
-endef
-
-$(foreach par, $(PAR_SETS), $(eval $(call TRANANDRECEI_TB_TEMPLATE,$(par))))
-
-
-# Add the build directory as order-only-prerequisites to every source file target
-$(TRANANDRECEI) $(TRANANDRECEI_TB): | $$(@D)
-
-# Define Verilator-specific testbench source
-TRANANDRECEI_VERILATOR_TB_SRC = $(TRANANDRECEI_SRC_PATH)/testbench/tb.cpp
-
-
-# Define comulated target for the simulation runs und results generation
-.PHONY: sim
-sim: $(addprefix sim-, $(PAR_SETS))
-
-# Parameter-specific simulator definitions for multiple public key slice widths
-define TRANANDRECEI_SIM_SLICES_TEMPLATE =
-
-# Set of all files to perform the simulation
-TRANANDRECEI_SIM_$(1)_$(2) = \
-	$$(TRANANDRECEI_VERILATOR_TB_SRC) \
-	$$(TRANANDRECEI_TB_$(1)) \
-	$$(TRANANDRECEI_$(1))
-
-# Simulation binaries
-TRANANDRECEI_VERILATOR_BIN_$(1)_$(2) = $$(BUILD_DIR_TB_$(1))/TRANANDRECEI_tb_$(2).bin
-
-# Simulation performance files
-#TRANANDRECEI_RESULT_TB_$(1)_$(2) = $$(RESULTS_DIR)/cycles_profile_$(1)_$(TOPMODULE)_$(2).data
-
-# Define parameter-specific simulation results
-SIM_$(1) ?=
-SIM_$(1) += $$(TRANANDRECEI_RESULT_TB_$(1)_$(2))
-
-# Simulation binary target
-$$(TRANANDRECEI_VERILATOR_BIN_$(1)_$(2)): $$(TRANANDRECEI_SIM_$(1)_$(2)) | $$(RESULTS_DIR)
-	$(VERILATOR) \
-	--unroll-count 1024 \
-	-Wno-fatal \
-	--timescale-override 1ps/1ps \
-	--trace \
-	--Mdir $$(BUILD_DIR_TB_$(1))/obj_dir_$(2) \
-	--top-module TranAndRecei_tb \
-	-Gparameter_set=$$(id_$(1)) \
-	-Gcol_width=$(2) \
-	-Ge_width=$(2) \
-	-GKEY_START_ADDR=0 \
-	-DFILE_CIPHER0_OUT=\"$$(BUILD_DIR_TB_$(1))/cipher_0_$(2).out\" \
-	-DFILE_CIPHER1_OUT=\"$$(BUILD_DIR_TB_$(1))/cipher_1_$(2).out\" \
-	-DFILE_K_OUT=\"$$(BUILD_DIR_TB_$(1))/K_$(2).out\" \
-	-DFILE_ERROR_OUT=\"$$(BUILD_DIR_TB_$(1))/error_$(2).out\" \
-	-DFILE_VCD=\"$$(BUILD_DIR_TB_$(1))/wave_$(2).vcd\" \
-	-DFILE_CYCLES_PROFILE=\"$$(TRANANDRECEI_RESULT_TB_$(1)_$(2))\" \
-	-I$$(BUILD_DIR_SRC_$(1)) \
-	-I$$(BUILD_DIR_TB_$(1)) \
-	--cc \
-	$$(TRANANDRECEI_TB_$(1)) \
-	--exe $$< \
-	--build \
-	-j 8 \
-	--threads 1 \
-	--x-initial 0 \
-	-o $$@
-endef
-$(foreach par, $(PAR_SETS), \
-	$(foreach width, $(SLICED_PUBKEY_COLUMN_WIDTHS), \
-		$(eval $(call TRANANDRECEI_SIM_SLICES_TEMPLATE,$(par),$(width)))))
-
-# Define parameter-specific simualtion targets
-define TRANANDRECEI_SIM_TARGETS_TEMPLATE =
-
-.PHONY: sim-$(1)
-sim-$(1): $$(SIM_$(1))
-
-endef
-
-$(foreach par, $(PAR_SETS), $(eval $(call TRANANDRECEI_SIM_TARGETS_TEMPLATE,$(par))))
-
-#
-# Synthesis targets and files
+# Synthesis, Implement, Generate and Program targets and files
 #
 # Include vendor- and devices-specific definitions and recipes
 include $(TRANANDRECEI_SRC_PATH)/../../FPGA/synthesis.mk
@@ -235,7 +128,8 @@ $$(TRANANDRECEI_RESULT_SYNTH_CLOCKS_$(1)_$(2)_$(3)): $$(TRANANDRECEI_$(2)) $$(XI
 	-tclargs \
 		"$$(TRANANDRECEI_$(2))" \
 		$$(XILINX_CONSTRAINTS_TIMING_$(1)) \
-		TranAndRecei \
+		$$(XILINX_CONSTRAINTS_PIN_$(1))	\
+		$(TOPMODULE) \
 		$$(XILINX_FPGA_MODEL_ID_$(1)) \
 		$$(TRANANDRECEI_RESULT_SYNTH_UTILIZATION_$(1)_$(2)_$(3)) \
 		$$(TRANANDRECEI_RESULT_SYNTH_UTILIZATION_HIERARCHICAL_$(1)_$(2)_$(3)) \
@@ -261,33 +155,69 @@ $(foreach model, $(XILINX_MODELS), \
 		) \
 	) \
 )
+define TRANANDRECEI_PROGRAM_TEMPLATE  =
+# Define required report files
+TRANANDRECEI_RESULT_PROGRAM_UTILIZATION_$(1)_$(2)_$(3) = $$(RESULTS_DIR)/$(TOPMODULE)_utilization_$(1)_$(2)_$(3).txt
+TRANANDRECEI_RESULT_PROGRAM_UTILIZATION_HIERARCHICAL_$(1)_$(2)_$(3) = $$(RESULTS_DIR)/$(TOPMODULE)_utilization_hierarchical_$(1)_$(2)_$(3).txt
+TRANANDRECEI_RESULT_PROGRAM_TIMING_$(1)_$(2)_$(3) = $$(RESULTS_DIR)/$(TOPMODULE)_timing_$(1)_$(2)_$(3).txt
+TRANANDRECEI_RESULT_PROGRAM_TIMING_SUMMARY_$(1)_$(2)_$(3) = $$(RESULTS_DIR)/$(TOPMODULE)_timing_summary_$(1)_$(2)_$(3).txt
+TRANANDRECEI_RESULT_PROGRAM_CLOCKS_$(1)_$(2)_$(3) = $$(RESULTS_DIR)/$(TOPMODULE)_clocks_$(1)_$(2)_$(3).txt
 
+# Perform the Program
+# #TODO (MAKE versions < 3.8 do not support mutli-target rules)
+$$(TRANANDRECEI_RESULT_PROGRAM_CLOCKS_$(1)_$(2)_$(3)): $$(TRANANDRECEI_$(2)) $$(XILINX_RESOURCE_PROGRAM_TCL) $$(XILINX_CONSTRAINTS_TIMING_$(1)) | $$(RESULTS_DIR)
+	$$(VIVADO) \
+	-nojournal \
+	-log $$(RESULTS_DIR)/program_$(1)_$(2)_$(3).log \
+	-mode batch \
+	-source $$(XILINX_RESOURCE_PROGRAM_TCL) \
+	-tclargs \
+		"$$(TRANANDRECEI_$(2))" \
+		$$(XILINX_CONSTRAINTS_TIMING_$(1)) \
+		$$(XILINX_CONSTRAINTS_PIN_$(1))	\
+		$(TOPMODULE) \
+		$$(XILINX_FPGA_MODEL_ID_$(1)) \
+		$$(TRANANDRECEI_RESULT_SYNTH_UTILIZATION_$(1)_$(2)_$(3)) \
+		$$(TRANANDRECEI_RESULT_SYNTH_UTILIZATION_HIERARCHICAL_$(1)_$(2)_$(3)) \
+		$$(TRANANDRECEI_RESULT_SYNTH_TIMING_$(1)_$(2)_$(3)) \
+		$$(TRANANDRECEI_RESULT_SYNTH_TIMING_SUMMARY_$(1)_$(2)_$(3)) \
+		$$(TRANANDRECEI_RESULT_SYNTH_CLOCKS_$(1)_$(2)_$(3)) \
+		"parameter_set=$$(id_$(2)) col_width=$(3) e_width=$(3) KEY_START_ADDR=0"
+
+.PHONY: program-$(1)
+
+program-$(1): $$(TRANANDRECEI_RESULT_PROGRAM_CLOCKS_$(1)_$(2)_$(3))
+
+# Define parameter-specific synthesis results
+PROGRAM_$(2) ?=
+PROGRAM_$(2) += $$(TRANANDRECEI_RESULT_PROGRAM_CLOCKS_$(1)_$(2)_$(3))
+endef
+
+$(foreach par, $(PAR_SETS), $(eval $(call TRANANDRECEI_PROGRAM_TEMPLATE,$(par))))
 # Define synthesis and results targets
 define TRANANDRECEI_RESULTS_TEMPLATE =
 
 .PHONY: synthesis-$(1)
 synthesis-$(1): $$(SYNTH_$(1))
-
-.PHONY: results-$(1)
-results-$(1): $$(SIM_$(1)) $$(SYNTH_$(1))
-
 endef
 
 $(foreach par, $(PAR_SETS), $(eval $(call TRANANDRECEI_RESULTS_TEMPLATE,$(par))))
-
-
 # Define comulated target for the synthesis
 .PHONY: synthesis
 synthesis: $(addprefix synthesis-, $(PAR_SETS))
 
+.PHONY: program
+program: $(addprefix program-, $(PAR_SETS))
+
 # Define comulated target for all performance results
 .PHONY: results
 results: $(addprefix results-, $(PAR_SETS))
-
 # Result directory
 $(RESULTS_DIR):
 	mkdir -p $@
 
 clean:
 	rm -rf $(BUILD_DIR)
+	rm -rf $(TOPMODULE).bit
+	rm -rf .txt
 endif

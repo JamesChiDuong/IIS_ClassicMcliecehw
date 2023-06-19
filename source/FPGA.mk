@@ -25,12 +25,10 @@ TOPMODULES = TranAndRecei
 
 # Define individual targets for the single steps.
 SOURCES := $(addsuffix -sources,$(TOPMODULES))
-TESTBENCH := $(addsuffix -testbench,$(TOPMODULES))
-SIM := $(addsuffix -sim,$(TOPMODULES))
 SYNTHESIS := $(addsuffix -synthesis,$(TOPMODULES))
-RESULTS := $(addsuffix -results,$(TOPMODULES))
+PROGRAM := $(addsuffix -program,$(TOPMODULES))
 # Comulate the targets.
-TARGETS := $(SOURCES) $(TESTBENCH) $(SIM) $(SYNTHESIS) $(RESULTS)
+TARGETS := $(SOURCES) $(SYNTHESIS) $(PROGRAM)
 
 # Build directory
 BUILD_DIR = $(ROOT_PATH)/build
@@ -42,23 +40,14 @@ all: synthesis
 
 .SECONDEXPANSION:
 
-.PHONY: $(TOPMODULES)
-$(TOPMODULES): $$@-results
-
 .PHONY: sources
 sources: $(SOURCES)
 
-.PHONY: testbench
-testbench: $(TESTBENCH)
-
-.PHONY: sim
-sim: $(SIM)
+.PHONY: program
+program: $(PROGRAM)
 
 .PHONY: synthesis
 synthesis: $(SYNTHESIS)
-
-.PHONY: results
-results: $(RESULTS)
 
 .PHONY: $(TARGETS)
 $(TARGETS):
