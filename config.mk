@@ -18,11 +18,11 @@ objs = $(addsuffix .o,$(1))
 ##############################
 
 -include targets.mk
-ifeq (,$(wildcard $(SRCDIR)/source/$(PLATFORM).mk))
+ifeq (,$(wildcard $(SRCDIR)/$(PLATFORM).mk))
 $(error Unknown platform!)
 endif
 
-include source/$(PLATFORM).mk
+include $(PLATFORM).mk
 
 RETAINED_VARS += PLATFORM
 
