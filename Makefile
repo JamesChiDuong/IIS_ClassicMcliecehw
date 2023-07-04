@@ -24,11 +24,6 @@ $(OBJDIR): %:
 	+@[ -d $@ ] || mkdir -p $@
 	+@$(MAKE) --no-print-directory -r -I$(CURDIR) -C $@ -f $(CURDIR)/Makefile SRCDIR=$(CURDIR) $(MAKECMDGOALS)
 
-
-Makefile : ;
-%.mk :: ;
-% :: $(OBJDIR) ;
-
 .PHONY: clean
 
 clean:

@@ -13,7 +13,7 @@ The purpose of the individual folders are as follow:
 | Folder          | Description                                                                |
 | --------------- | -------------------------------------------------------------------------- |
 | `build/`        | Build folder including generated sources, results and simulation file.     |
-| `host/`         | Python test code                                                           |
+| `host/`         | Python test code. It includes 2 files. The Test_Data_Receiver.py uses to     test Data_Receiver modles and the Test_TranAndRecei is used to test TranAndRecei modules      |
 | `modules/`      | User HDL code.                                                             |
 | `platform/`     | simulation CPP code and UART HDL code.                                     | 
 | `Makefile`      | Top Makefile.                                                              |
