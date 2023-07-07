@@ -5,16 +5,20 @@ RTLD	:= ../verilog
 VERILATOR_ROOT ?= $(shell bash -c 'verilator -V|grep VERILATOR_ROOT | head -1 | sed -e " s/^.*=\s*//"')
 VROOT   := $(VERILATOR_ROOT)
 INCS	:= -I$(RTLD)/obj_dir/ -I$(VROOT)/include
-SOURCES := Data_Receiver.cpp TranAndRecei.cpp uartsim.cpp uartsim.h
+
 VOBJDR	:= $(RTLD)/obj_dir
 SYSVDR	:= $(VROOT)/include
+
 MODULES := TranAndRecei
+MODULES2:= Data_Receiver
+
+SOURCES := $(MODULES2).cpp $(MODULES).cpp uartsim.cpp uartsim.h
 ## }}}
-all:	$(OBJDIR)/Data_Receiver Data_Receiverlite TranAndRecei TranAndReceilite test
+all:	$(OBJDIR)/ $(MODULES2) $(MODULES) test
 
 
 # Verilator's generated Makefile sets VM_*
--include $(VOBJDR)/VData_Receiver_classes.mk
+-include $(VOBJDR)/V$(MODULES)_classes.mk
 VSRC	:= $(addsuffix .cpp, $(VM_GLOBAL_FAST) $(VM_GLOBAL_SLOW))
 VLIB	:= $(addprefix $(OBJDIR)/,$(subst .cpp,.o,$(VSRC)))
 
@@ -31,45 +35,23 @@ $(OBJDIR)/%.o: $(SYSVDR)/%.cpp
 
 ## }}}
 ##Data_Receiver
-DATARESRCS := Data_Receiver.cpp uartsim.cpp
+DATARESRCS := $(MODULES2).cpp uartsim.cpp
 DATAREOBJ := $(subst .cpp,.o,$(DATARESRCS))
 DATAREOBJS:= $(addprefix $(OBJDIR)/,$(DATAREOBJ)) $(VLIB)
-Data_Receiver: $(DATAREOBJS) $(VOBJDR)/VData_Receiver__ALL.a
-	$(CXX) $(FLAGS) $(INCS) $^ -lpthread -o $@
-
-##Data_Receiverlite
-$(OBJDIR)/Data_Receiverlite.o: Data_Receiver.cpp
-	$(mk-objdir)
-	$(CXX) $(FLAGS) $(INCS) -DUSE_UART_LITE -c $< -lpthread -o $@
-DATARELTOBJ := Data_Receiverlite.o uartsim.o
-DATARELTOBJS:= $(addprefix $(OBJDIR)/,$(DATARELTOBJ)) $(VLIB)
-Data_Receiverlite: $(DATARELTOBJS) $(VOBJDR)/VData_Receiverlite__ALL.a
+$(MODULES2): $(DATAREOBJS) $(VOBJDR)/V$(MODULES2)__ALL.a
 	$(CXX) $(FLAGS) $(INCS) $^ -lpthread -o $@
 
 ##Top
-TOPSRCS := TranAndRecei.cpp uartsim.cpp
+TOPSRCS := $(MODULES).cpp uartsim.cpp
 TOPOBJ := $(subst .cpp,.o,$(TOPSRCS))
 TOPOBJS:= $(addprefix $(OBJDIR)/,$(TOPOBJ)) $(VLIB)
-TranAndRecei: $(TOPOBJS) $(VOBJDR)/VTranAndRecei__ALL.a
-	$(CXX) $(FLAGS) $(INCS) $^ -lpthread -o $@
-
-##Toplite
-$(OBJDIR)/TranAndReceilite.o: TranAndRecei.cpp
-	$(mk-objdir)
-	$(CXX) $(FLAGS) $(INCS) -DUSE_UART_LITE -c $< -lpthread -o $@
-TOPLTOBJ := TranAndReceilite.o uartsim.o
-TOPLTOBJS:= $(addprefix $(OBJDIR)/,$(TOPLTOBJ)) $(VLIB)
-TranAndReceilite: $(TOPLTOBJS) $(VOBJDR)/VTranAndReceilite__ALL.a
+$(MODULES): $(TOPOBJS) $(VOBJDR)/V$(MODULES)__ALL.a
 	$(CXX) $(FLAGS) $(INCS) $^ -lpthread -o $@
 ## test
 ## {{{
 test:
-#	./Data_Transmitter
-#	./Data_Transmitterlite
-#	./Data_Receiver
-#	./Data_Receiverlite
-	./TranAndRecei
-#	./Toplite
+	./$(MODULES2)
+	./$(MODULES)
 #
 define	build-depends
 	$(mk-objdir)
@@ -99,10 +81,9 @@ tags:	$(SOURCES) $(HEADERS)
 
 .PHONY: clean
 clean:
-	rm -f ./Data_Receiver ./Data_Receiverlite
-	rm -f ./TranAndRecei ./TranAndReceilite
-	rm -f Data_Receiver.vcd TranAndRecei.vcd
-
+	rm -f ./$(MODULES2)
+	rm -f ./$(MODULES)
+	rm -f $(MODULES2).vcd $(MODULES).vcd
 	rm -rf $(OBJDIR)/
 
 ifneq ($(MAKECMDGOALS),clean)

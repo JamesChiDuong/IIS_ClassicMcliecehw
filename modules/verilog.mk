@@ -3,29 +3,31 @@
 ## }}}
 all:	test
 
-YYMMDD=`date +%Y%m%d`
-CXX   := g++
-FBDIR := .
-VDIRFB:= $(FBDIR)/obj_dir
-RTLDR := ../rtl
-VERILATOR := verilator
-VFLAGS := -Wall --MMD --trace -y $(RTLDR) -cc
-MODULES := 
-.PHONY: test testDataReceiver testTranAndRecei
+YYMMDD		=`date +%Y%m%d`
+CXX   		:= g++
+FBDIR 		:= .
+VDIRFB		:= $(FBDIR)/obj_dir
+RTLDR 		:= ../rtl
+VERILATOR 	:= verilator
+VFLAGS 		:= -Wall --MMD --trace -y $(RTLDR) -cc
+
+MODULES 	:= TranAndRecei
+MODULES2 	:= Data_Receiver
+.PHONY: test  test$(MODULES) test$(MODULES2)
 ## }}}
 #test: testline testlinelite testhello testhellolite speechfifo speechfifolite
-test:testTranAndRecei testTranAndReceilite testDataReceiver testDataReceiverlite
+test:$(MODULES)  $(MODULES2) 
 
-testDataReceiver: 		$(VDIRFB)/VData_Receiver__ALL.a
-testDataReceiverlite: 	$(VDIRFB)/VData_Receiverlite__ALL.a
+$(MODULES2): 		$(VDIRFB)/V$(MODULES2)__ALL.a
 
-testTranAndRecei: 			$(VDIRFB)/VTranAndRecei__ALL.a
-testTranAndReceilite: 		$(VDIRFB)/VTranAndReceilite__ALL.a
 
-$(VDIRFB)/VData_Receiver__ALL.a: 		$(VDIRFB)/VData_Receiver.cpp
-$(VDIRFB)/VData_Receiverlite__ALL.a: 	$(VDIRFB)/VData_Receiverlite.cpp
-$(VDIRFB)/VTranAndRecei__ALL.a: 		$(VDIRFB)/VTranAndRecei.cpp
-$(VDIRFB)/VTranAndReceilite__ALL.a: 	$(VDIRFB)/VTranAndReceilite.cpp
+$(MODULES): 		$(VDIRFB)/V$(MODULES)__ALL.a
+
+
+$(VDIRFB)/V$(MODULES2)__ALL.a: 		$(VDIRFB)/V$(MODULES2).cpp
+
+$(VDIRFB)/V$(MODULES)__ALL.a: 		$(VDIRFB)/V$(MODULES).cpp
+
 
 $(VDIRFB)/V%.mk:  $(VDIRFB)/V%.h
 $(VDIRFB)/V%.h:   $(VDIRFB)/V%.cpp
@@ -33,11 +35,11 @@ $(VDIRFB)/V%.cpp: $(FBDIR)/%.v
 	$(VERILATOR) $(VFLAGS) $*.v
 
 
-$(VDIRFB)/VData_Receiverlite.cpp: 			$(FBDIR)/Data_Receiver.v
-	$(VERILATOR) $(VFLAGS) -DUSE_UART_LITE --prefix VData_Receiverlite Data_Receiver.v
+$(FBDIR)/$(MODULES2).v:
+	$(VERILATOR) $(VFLAGS) -DUSE_UART_LITE --prefix $(MODULES2).v
 
-$(VDIRFB)/VTranAndReceilite.cpp: 			$(FBDIR)/TranAndRecei.v
-	$(VERILATOR) $(VFLAGS) -DUSE_UART_LITE --prefix VTranAndReceilite TranAndRecei.v
+$(FBDIR)/$(MODULES).v:
+	$(VERILATOR) $(VFLAGS) -DUSE_UART_LITE --prefix $(MODULES).v
 
 $(VDIRFB)/V%__ALL.a: $(VDIRFB)/V%.cpp
 	cd $(VDIRFB); make -f V$*.mk
