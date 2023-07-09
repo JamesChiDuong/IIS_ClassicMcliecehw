@@ -11,8 +11,10 @@ RTLDR 		:= ../rtl
 VERILATOR 	:= verilator
 VFLAGS 		:= -Wall --MMD --trace -y $(RTLDR) -cc
 
+#We need to change the name modules or delete the name. In the example, we have 2 moudles 
 MODULES 	:= TranAndRecei
 MODULES2 	:= Data_Receiver
+
 .PHONY: test  test$(MODULES) test$(MODULES2)
 ## }}}
 #test: testline testlinelite testhello testhellolite speechfifo speechfifolite

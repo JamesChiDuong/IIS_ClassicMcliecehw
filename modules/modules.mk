@@ -55,7 +55,7 @@ include $(ROOT_PATH)/platform/rtl/rtl.mk
 
 
 # Add sources of the topmodule
-MODULESTOP_SRC = TranAndRecei.v
+MODULESTOP_SRC = $(TOPMODULE).v
 MODULESTOP_SRC += fullAdder.v
 # Add the sources of the submodules
 MODULESTOP_SRC += $(foreach module,$(MODULESTOP_SUBMODULES),$($(module)_SRC))
@@ -157,40 +157,40 @@ $(foreach model, $(XILINX_MODELS), \
 )
 define MODULESTOP_PROGRAM_TEMPLATE  =
 # Define required report files
-TRANANDRECEI_RESULT_PROGRAM_UTILIZATION_$(1)_$(2)_$(3) = $$(RESULTS_DIR)/$(TOPMODULE)_utilization_$(1)_$(2)_$(3).txt
-TRANANDRECEI_RESULT_PROGRAM_UTILIZATION_HIERARCHICAL_$(1)_$(2)_$(3) = $$(RESULTS_DIR)/$(TOPMODULE)_utilization_hierarchical_$(1)_$(2)_$(3).txt
-TRANANDRECEI_RESULT_PROGRAM_TIMING_$(1)_$(2)_$(3) = $$(RESULTS_DIR)/$(TOPMODULE)_timing_$(1)_$(2)_$(3).txt
-TRANANDRECEI_RESULT_PROGRAM_TIMING_SUMMARY_$(1)_$(2)_$(3) = $$(RESULTS_DIR)/$(TOPMODULE)_timing_summary_$(1)_$(2)_$(3).txt
-TRANANDRECEI_RESULT_PROGRAM_CLOCKS_$(1)_$(2)_$(3) = $$(RESULTS_DIR)/$(TOPMODULE)_clocks_$(1)_$(2)_$(3).txt
+MODULESTOP_RESULT_PROGRAM_UTILIZATION_$(1)_$(2)_$(3) = $$(RESULTS_DIR)/$(TOPMODULE)_utilization_$(1)_$(2)_$(3).txt
+MODULESTOP_RESULT_PROGRAM_UTILIZATION_HIERARCHICAL_$(1)_$(2)_$(3) = $$(RESULTS_DIR)/$(TOPMODULE)_utilization_hierarchical_$(1)_$(2)_$(3).txt
+MODULESTOP_RESULT_PROGRAM_TIMING_$(1)_$(2)_$(3) = $$(RESULTS_DIR)/$(TOPMODULE)_timing_$(1)_$(2)_$(3).txt
+MODULESTOP_RESULT_PROGRAM_TIMING_SUMMARY_$(1)_$(2)_$(3) = $$(RESULTS_DIR)/$(TOPMODULE)_timing_summary_$(1)_$(2)_$(3).txt
+MODULESTOP_RESULT_PROGRAM_CLOCKS_$(1)_$(2)_$(3) = $$(RESULTS_DIR)/$(TOPMODULE)_clocks_$(1)_$(2)_$(3).txt
 
 # Perform the Program
 # #TODO (MAKE versions < 3.8 do not support mutli-target rules)
-$$(TRANANDRECEI_RESULT_PROGRAM_CLOCKS_$(1)_$(2)_$(3)): $$(TRANANDRECEI_$(2)) $$(XILINX_RESOURCE_PROGRAM_TCL) $$(XILINX_CONSTRAINTS_TIMING_$(1)) | $$(RESULTS_DIR)
+$$(MODULESTOP_RESULT_PROGRAM_CLOCKS_$(1)_$(2)_$(3)): $$(MODULESTOP_$(2)) $$(XILINX_RESOURCE_PROGRAM_TCL) $$(XILINX_CONSTRAINTS_TIMING_$(1)) | $$(RESULTS_DIR)
 	$$(VIVADO) \
 	-nojournal \
 	-log $$(RESULTS_DIR)/program_$(1)_$(2)_$(3).log \
 	-mode batch \
 	-source $$(XILINX_RESOURCE_PROGRAM_TCL) \
 	-tclargs \
-		"$$(TRANANDRECEI_$(2))" \
+		"$$(MODULESTOP_$(2))" \
 		$$(XILINX_CONSTRAINTS_TIMING_$(1)) \
 		$$(XILINX_CONSTRAINTS_PIN_$(1))	\
 		$(TOPMODULE) \
 		$$(XILINX_FPGA_MODEL_ID_$(1)) \
-		$$(TRANANDRECEI_RESULT_SYNTH_UTILIZATION_$(1)_$(2)_$(3)) \
-		$$(TRANANDRECEI_RESULT_SYNTH_UTILIZATION_HIERARCHICAL_$(1)_$(2)_$(3)) \
-		$$(TRANANDRECEI_RESULT_SYNTH_TIMING_$(1)_$(2)_$(3)) \
-		$$(TRANANDRECEI_RESULT_SYNTH_TIMING_SUMMARY_$(1)_$(2)_$(3)) \
-		$$(TRANANDRECEI_RESULT_SYNTH_CLOCKS_$(1)_$(2)_$(3)) \
+		$$(MODULESTOP_RESULT_SYNTH_UTILIZATION_$(1)_$(2)_$(3)) \
+		$$(MODULESTOP_RESULT_SYNTH_UTILIZATION_HIERARCHICAL_$(1)_$(2)_$(3)) \
+		$$(MODULESTOP_RESULT_SYNTH_TIMING_$(1)_$(2)_$(3)) \
+		$$(MODULESTOP_RESULT_SYNTH_TIMING_SUMMARY_$(1)_$(2)_$(3)) \
+		$$(MODULESTOP_RESULT_SYNTH_CLOCKS_$(1)_$(2)_$(3)) \
 		"parameter_set=$$(id_$(2)) col_width=$(3) e_width=$(3) KEY_START_ADDR=0"
 
 .PHONY: program-$(1)
 
-program-$(1): $$(TRANANDRECEI_RESULT_PROGRAM_CLOCKS_$(1)_$(2)_$(3))
+program-$(1): $$(MODULESTOP_RESULT_PROGRAM_CLOCKS_$(1)_$(2)_$(3))
 
 # Define parameter-specific synthesis results
 PROGRAM_$(2) ?=
-PROGRAM_$(2) += $$(TRANANDRECEI_RESULT_PROGRAM_CLOCKS_$(1)_$(2)_$(3))
+PROGRAM_$(2) += $$(MODULESTOP_RESULT_PROGRAM_CLOCKS_$(1)_$(2)_$(3))
 endef
 
 $(foreach par, $(PAR_SETS), $(eval $(call MODULESTOP_PROGRAM_TEMPLATE,$(par))))

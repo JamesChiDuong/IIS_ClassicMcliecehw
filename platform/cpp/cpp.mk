@@ -8,7 +8,7 @@ INCS	:= -I$(RTLD)/obj_dir/ -I$(VROOT)/include
 
 VOBJDR	:= $(RTLD)/obj_dir
 SYSVDR	:= $(VROOT)/include
-
+#We need to change the name modules or delete the name. In the example, we have 2 moudles
 MODULES := TranAndRecei
 MODULES2:= Data_Receiver
 
