@@ -13,16 +13,10 @@ if len(sys.argv) < 2:
 
 dev = serial.Serial(sys.argv[1], 115200)      #Open serial port
 
-
-while CHECK == True:
-  message = input("Input data Test: \n")      #Format message
-  print("Send Data: ",message)
-  message = message + '\n'
-  dev.write(message.encode())                 #Send message throuhg Serial Port
-  dataRaw = dev.readline()                    #Waiting to read data
-  data = dataRaw.decode('utf8')               #Decode to string
-  print("Received Data: ",data)               #print
-  if(message == "out\n"):
-    CHECK = False
-
-
+message = str(sys.argv[2])      #Format message
+print("Send Data: ",message)
+message = message + '\n'
+dev.write(message.encode())                 #Send message throuhg Serial Port
+dataRaw = dev.readline()                    #Waiting to read data
+data = dataRaw.decode('utf8')               #Decode to string
+print("Received Data: ",data)               #print

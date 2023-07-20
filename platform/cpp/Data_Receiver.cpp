@@ -28,7 +28,7 @@ int	main(int argc, char **argv)
 	int		port = 0;
 	unsigned	setup = 868;							// Init the baudrate
 	int fd;
-	Pseudo->PseudoTerminal_Init(&fd);					// Setting the parameter of Pseudo
+	
 	// Argument processing
 	// {{{
 	for(int argn=1; argn<argc; argn++)
@@ -80,13 +80,11 @@ int	main(int argc, char **argv)
     {
 		// Set up a child process
 		// {{{
-
-		char Buffer[30];
-		int	childs_stdin[2], childs_stdout[2];
 		while (1)
 		{
-			Pseudo->PseudoTerminal_readData(fd,Buffer);		// Read data and store into the Buffer
-
+			Pseudo->PseudoTerminal_Init(&fd);					// Setting the parameter of Pseudo
+			char Buffer[30];
+			int	childs_stdin[2], childs_stdout[2];
 			if ((pipe(childs_stdin)!=0)||(pipe(childs_stdout) != 0))
 			{
 				fprintf(stderr, "ERR setting up child pipes\n");
@@ -94,7 +92,7 @@ int	main(int argc, char **argv)
 				printf("TEST FAILURE\n");
 				exit(EXIT_FAILURE);
 			}
-
+			Pseudo->PseudoTerminal_readData(fd,Buffer);		// Read data and store into the Buffer
 			pid_t childs_pid = fork();						// inithe the child
 
 			if (childs_pid < 0)
@@ -132,6 +130,7 @@ int	main(int argc, char **argv)
 						test[rpos] = '\0';
 					printf("Successfully read %d characters: %s\n", nr, test);
 					Pseudo->PseudoTerminal_writeData(fd,test);				// Send back the String
+					Pseudo->PseudoTerminal_Deinit(fd);
 				}
 
 				int	status = 0, rv = -1;
@@ -164,11 +163,12 @@ int	main(int argc, char **argv)
 						&&(strcmp(test, Buffer) == 0))
 				{
 					printf("PASS!\n");
-					if(strcmp(testData, Buffer) == 0)
-					{
-						Pseudo->PseudoTerminal_Deinit(fd);						// close
-						exit(EXIT_SUCCESS);
-					}
+					// if(strcmp(testData, Buffer) == 0)
+					// {
+					// 	Pseudo->PseudoTerminal_Deinit(fd);
+					// 	exit(EXIT_SUCCESS);
+					// 	break;
+					// }
 				} else
 				{
 					printf("TEST FAILED\n");

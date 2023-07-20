@@ -50,7 +50,7 @@ $(MODULES): $(TOPOBJS) $(VOBJDR)/V$(MODULES)__ALL.a
 ## test
 ## {{{
 test:
-	./$(MODULES2)
+#	./$(MODULES2)
 	./$(MODULES)
 #
 define	build-depends
