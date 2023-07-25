@@ -108,6 +108,8 @@ If you want to run the simulation of Data_Receiver modules. Go into the folder `
 
    - Plug your FPGA board
 
+   - The `FPGA.mk` to change the top modules at TOPMODULES variable
+
    - The `modules/FPGA/parameter.mk` to change the package following your FPGA. 
    Example: my FPGA board is Artix-7 with package csg324
    

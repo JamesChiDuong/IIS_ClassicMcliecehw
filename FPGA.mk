@@ -26,7 +26,7 @@ MODULES_DIR 	:= $(ROOT_PATH)/modules
 PLAT_DIR_SRC	:= $(ROOT_PATH)/platform
 RTL_DIR_SRC		:= $(PLAT_DIR_SRC)/rtl/*.v
 
-TOPMODULES = TranAndRecei
+TOPMODULES = Data_Receiver
 
 # Define individual targets for the single steps.
 SOURCES := $(addsuffix -sources,$(TOPMODULES))
