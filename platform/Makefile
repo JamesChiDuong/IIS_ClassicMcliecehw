@@ -12,6 +12,6 @@ bench: rtl
 	cd cpp     ; make -f cpp.mk
 
 clean:
-	cd rtl 			 ; $(MAKE) --no-print-directory clean
-	cd bench/verilog ; $(MAKE) --no-print-directory clean
-	cd bench/cpp     ; $(MAKE) --no-print-directory clean
+	cd rtl 	   ; make -f rtl.mk clean
+	cd verilog ; make -f verilog.mk clean
+	cd cpp     ; make -f cpp.mk clean

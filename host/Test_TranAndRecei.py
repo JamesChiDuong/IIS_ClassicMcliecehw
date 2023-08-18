@@ -10,12 +10,10 @@ if len(sys.argv) < 2:
 
 
 dev = serial.Serial(sys.argv[1], 115200)  #Open serial port
-message = str(sys.argv[2]) + "\n" +  str(sys.argv[3]) + "\n" + "\n"
-#message = "110\n101\n\n"                  #Format message
+message = str(sys.argv[2]) + "-" +  str(sys.argv[3]) +str(sys.argv[4])+"\n"
+#message = "110\n\n101\n"                  #Format message
 print("Send Data: ",message)
 dev.write(message.encode())                #Waiting to read data
 dataRaw = dev.readline()
 data = dataRaw.decode('utf8')             #Decode to string
 print("Received Data: ",data)             #print
-
-

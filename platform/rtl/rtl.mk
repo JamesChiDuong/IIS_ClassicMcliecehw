@@ -1,10 +1,8 @@
 ifndef BAUD_RATE_GENERATOR
 BAUD_RATE_GENERATOR_SRC_PATH := $(abspath $(dir $(lastword $(MAKEFILE_LIST))))
-#FULL_ADDER_SUBMODULES :=
 
 BAUD_RATE_GENERATOR_SRC = baud_rate_generator.v
 
-#FULL_ADDER_SRC += $(foreach module,$(FULL_ADDER_SUBMODULES),$($(module)_SRC))
 
 BAUD_RATE_GENERATOR =
 error_locator: $(BAUD_RATE_GENERATOR)
@@ -27,11 +25,11 @@ $(foreach par, $(PAR_SETS), $(eval $(call BAUD_RATE_GENERATOR_SRC_TEMPLATE,$(par
 endif
 ifndef RECEIVER
 RECEIVER_SRC_PATH := $(abspath $(dir $(lastword $(MAKEFILE_LIST))))
-#FULL_ADDER_SUBMODULES :=
+
 
 RECEIVER_SRC = Receiver.v
 
-#FULL_ADDER_SRC += $(foreach module,$(FULL_ADDER_SUBMODULES),$($(module)_SRC))
+
 
 RECEIVER =
 error_locator: $(RECEIVER)
@@ -55,11 +53,11 @@ endif
 
 ifndef TRANSMITTER
 TRANSMITTER_SRC_PATH := $(abspath $(dir $(lastword $(MAKEFILE_LIST))))
-#FULL_ADDER_SUBMODULES :=
+
 
 TRANSMITTER_SRC = Transmitter.v
 
-#FULL_ADDER_SRC += $(foreach module,$(FULL_ADDER_SUBMODULES),$($(module)_SRC))
+
 
 TRANSMITTER =
 error_locator: $(TRANSMITTER)
@@ -80,6 +78,8 @@ endef
 
 $(foreach par, $(PAR_SETS), $(eval $(call TRANSMITTER_SRC_TEMPLATE,$(par))))
 endif
+
+
 .PHONY: all
 all : test
 
@@ -108,7 +108,7 @@ tags: $(wildcard *.v)
 	ctags *.v
 
 
-.PHONY: clean_rtl
+.PHONY: clean
 clean_rtl:
 	rm -rf tags $(VDIRFB)/
 

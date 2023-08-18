@@ -9,9 +9,10 @@ include $(MODULESTOP_SRC_PATH)/FPGA/parameters.mk
 # Include toolset
 include $(MODULESTOP_SRC_PATH)/FPGA/tools.mk
 
-TOPMODULE ?= Data_Receiver
-TOPMODULE_CHECK ?= Data_Receiver
-
+TOPMODULE ?= TranAndRecei
+TOPMODULE_CHECK ?= TranAndRecei
+# TOPMODULE ?= Data_Receiver
+# TOPMODULE_CHECK ?= Data_Receiver
 # List of the required submodules
 MODULESTOP_SUBMODULES := BAUD_RATE_GENERATOR RECEIVER TRANSMITTER
 
