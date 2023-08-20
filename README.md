@@ -59,7 +59,6 @@ In this source code, I will use 2 top modules to test these cases.
   |`./TranAndRecei`                 | `python3 Test_TranAndRecei.py /dev/pts/4 110 101 add`      |
   | Slave device: /dev/pts/4        | Send Data:  112-002-add                                    |
   | Received 12 bytes: 112-002-add  |
-  |110 101 EOF                      |
   |Successfully read 50 characters:   NUMBER1:112 NUMBER2:002 OPERAND:add RESULT:00114
   |Sent 50 bytes:   NUMBER1:112 NUMBER2:002 OPERAND:add RESULT:00114
 PASS!                               |  Received Data:  NUMBER1:112 NUMBER2:002 OPERAND:add RESULT:00114    |
