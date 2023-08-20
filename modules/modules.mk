@@ -11,6 +11,8 @@ include $(MODULESTOP_SRC_PATH)/FPGA/tools.mk
 
 TOPMODULE ?= TranAndRecei
 TOPMODULE_CHECK ?= TranAndRecei
+
+ADDITIONAL_MODULE ?= alu
 # TOPMODULE ?= Data_Receiver
 # TOPMODULE_CHECK ?= Data_Receiver
 # List of the required submodules
@@ -57,7 +59,7 @@ include $(ROOT_PATH)/platform/rtl/rtl.mk
 
 # Add sources of the topmodule
 MODULESTOP_SRC = $(TOPMODULE).v
-MODULESTOP_SRC += fullAdder.v
+MODULESTOP_SRC += $(ADDITIONAL_MODULE).v
 # Add the sources of the submodules
 MODULESTOP_SRC += $(foreach module,$(MODULESTOP_SUBMODULES),$($(module)_SRC))
 # Define comulated target for source generation

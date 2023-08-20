@@ -73,7 +73,7 @@ int	main(int argc, char **argv)
     Verilated::traceEverOn(true);
     VerilatedVcdC* tfp = new VerilatedVcdC;
     tb.trace(tfp, 99);
-    tfp->open("Data_Receiver.vcd");
+    tfp->open(WAVENAME);
 #define	TRACE_POSEDGE	tfp->dump(10*clocks)
 #define	TRACE_NEGEDGE	tfp->dump(10*clocks+5)
 #define	TRACE_CLOSE	tfp->close()

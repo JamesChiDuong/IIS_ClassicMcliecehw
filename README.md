@@ -29,7 +29,7 @@ The purpose of the individual folders is as follows:
 In this source code, I will use 2 top modules to test these cases.
 - The Data_Receiver.v is the top module with testing to transfer data from the keyboard and receive back the data via UART protocol. We can test the simulation with many rounds
 
-- The TranAndRecei.v and fullAdder.v is the two modules for the purpose that we send two data from the Python test file via UART protocol. The TranAnRecei.v is a top module. The fullAdder is the additional submodule. The two data which is sent by Python Test files are the input for the full adder modules, after calculating by full adder modules, these data include two data, the sum of two data will be sent back to the Python test file via UART protocol. In the simulation with Verilator, we can test the simulation in many rounds but In the FPGA, we can only test one round. Because in the Verilog file, I only implement the one-round code.
+- The TranAndRecei.v and alu.v is the two modules for the purpose that we send two data from the Python test file via UART protocol. The TranAnRecei.v is a top module. The alu module is the additional submodule. The two data which is sent by Python Test files are the input for the alu modules, after calculating by full adder modules, these data include two data, the sum of two data will be sent back to the Python test file via UART protocol. In the simulation with Verilator, we can test the simulation in many rounds but In the FPGA, we can only test one round. Because in the Verilog file, I only implement the one-round code.
 
 ### Target 'sim':
 
@@ -41,6 +41,7 @@ In this source code, I will use 2 top modules to test these cases.
    The program will generate the `build/simulation/cpp`, `build/simulation/rtl`, `/build/simulation/verilog` and will run `.mk file` of each folder. After running, the terminal will compile and run the code. It will open the pseudo-terminal and wait for the test file from `host/` folder.
 
    `Example 1:`
+  
   | TOP MODULE FILE          |      TEST PYTHON FILE                                      |
   | ---------------          |     --------------------------------------------------------------------------              |
   |`./Data_Receiver`         | `python3 Test_Data_Receiver.py /dev/pts/4 hello`           |
@@ -51,15 +52,17 @@ In this source code, I will use 2 top modules to test these cases.
   |We can't stop the program expect we interrupt the program |                            |
 
   `Example 2:`
-  | TOP MODULE FILE          |      TEST PYTHON FILE                                      |
-  | ---------------          |     --------------------------------------------------------------------------              |
-  |`./TranAndRecei`          | `python3 Test_TranAndRecei.py /dev/pts/4 110 101`          |
-  | Slave device: /dev/pts/4 | Send Data:  110 101 EOF                                    |
-  | Received 9 bytes:        |
-  |110 101 EOF               |
-  |Successfully read 40 characters:   NUMBER1:110 NUMBER2:101 SUM:211 COUT:0
-  |Sent 40 bytes:   NUMBER1:110 NUMBER2:101 SUM:211 COUT:0
-PASS!                        |  Received Data:  NUMBER1:110 NUMBER2:101 SUM:211 COUT:0    |
+  We will use Python scripts decides which operands will be choose. We will implement with `addition, subtraction, and multiplicaton` to test with design. 
+
+  | TOP MODULE FILE                 |      TEST PYTHON FILE                                      |
+  | ---------------                 |     --------------------------------------------------------------------------              |
+  |`./TranAndRecei`                 | `python3 Test_TranAndRecei.py /dev/pts/4 110 101 add`      |
+  | Slave device: /dev/pts/4        | Send Data:  112-002-add                                    |
+  | Received 12 bytes: 112-002-add  |
+  |110 101 EOF                      |
+  |Successfully read 50 characters:   NUMBER1:112 NUMBER2:002 OPERAND:add RESULT:00114
+  |Sent 50 bytes:   NUMBER1:112 NUMBER2:002 OPERAND:add RESULT:00114
+PASS!                               |  Received Data:  NUMBER1:112 NUMBER2:002 OPERAND:add RESULT:00114    |
   | We can't stop the program expect we interrupt the program                             |
 
 #### NOTE:
@@ -83,9 +86,9 @@ If you want to run the simulation of Data_Receiver modules. Go into the folder `
    `Example 2:`
   | TOP MODULE FILE          |      TEST PYTHON FILE                                      |
   | ---------------          |     --------------------------------------------------------------------------              |
-  |`./TranAndRecei`          | `python3 Test_TranAndRecei.py /dev/ttyUSB1 110 101`        |
-  |                          | Send Data:  110 101                                        |
-  |                          | Received Data:  NUMBER1:110 NUMBER2:101 SUM:211 COUT:0     |
+  |`./TranAndRecei`          | `python3 Test_TranAndRecei.py /dev/ttyUSB1 110 101 add`        |
+  |                          | Send Data:  110-101-add                                        |
+  |                          | Received Data:  NUMBER1:110 NUMBER2:101 OPERAND:add RESULT:00211     |
   
   ## NOTE:
    - We need to use `make clean` before running the new target
@@ -121,7 +124,7 @@ If you want to run the simulation of Data_Receiver modules. Go into the folder `
    - Another file in `modules/FPGA/Xilinx/timing__` to create the clock for FPGA, we don't need to change
 
    - The `modules/modules.mk/` to change the top modules. 
-   Example: If I want to program FPGA with Data_Receiver is a top module. I only change the name of the top module at TOPMODULE and TOPMODULE_CHECK variable and also delete the fullAdder.v at MODULESTOP_SRC variable because, in the Data_Receiver, I don't use the fullAdder module.
+   Example: If I want to program FPGA with Data_Receiver is a top module. I only change the name of the top module at TOPMODULE and TOPMODULE_CHECK variable and also delete the fullAdder.v at MODULESTOP_SRC variable because, in the Data_Receiver, I don't use the alu module.
 
 
 
