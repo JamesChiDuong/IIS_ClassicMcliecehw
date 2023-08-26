@@ -148,7 +148,7 @@ int	main(int argc, char **argv)
                     nr = rpos;
                     if (rpos > 0)
                         test[rpos] = '\0';
-                    printf("Successfully read %d characters: %s\n", nr, test);
+                    printf("Successfully read %d characters: %d\n", nr, test);
                     //strcpy(testData,test);
                     Pseudo->PseudoTerminal_writeData(fd,test);				// wrtie back to the python
                     Pseudo->PseudoTerminal_Deinit(fd);						// close

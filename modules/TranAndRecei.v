@@ -117,7 +117,7 @@ always @(posedge clk) begin
             number2 <= number2;
         end  
         NUMBER1 : begin
-            number1 <= (rx_Data_Buffer[0] - 48) *100 + (rx_Data_Buffer[1] - 48)*10 + (rx_Data_Buffer[2] -48);
+            number1 <= (rx_Data_Buffer[2] - 48)*10 + (rx_Data_Buffer[3] -48);
             number2 <= 0;
         end
         NUMBER2 : begin
