@@ -56,12 +56,17 @@ In this source code, I will use 2 top modules to test these cases.
 
   | TOP MODULE FILE                 |      TEST PYTHON FILE                                      |
   | ---------------                 |     --------------------------------------------------------------------------              |
-  |`./TranAndRecei`                 | `python3 Test_TranAndRecei.py /dev/pts/4 110 101 add`      |
-  | Slave device: /dev/pts/4        | Send Data:  112-002-add                                    |
-  | Received 12 bytes: 112-002-add  |
-  |Successfully read 50 characters:   NUMBER1:112 NUMBER2:002 OPERAND:add RESULT:00114
-  |Sent 50 bytes:   NUMBER1:112 NUMBER2:002 OPERAND:add RESULT:00114
-PASS!                               |  Received Data:  NUMBER1:112 NUMBER2:002 OPERAND:add RESULT:00114    |
+  |`./TranAndRecei`                 | `python3 Test_TranAndRecei.py /dev/pts/4 110 100 add`      |
+  | Slave device: /dev/pts/4        | Send Data:  110-100-add                                    |
+  | Received 12 bytes: 110-100-add |
+  |Successfully read 7 characters:   nd�
+  |Sent 7 bytes:   nd�
+PASS!                               |  Number of Bytes: 7.0
+                                       Received Data:  0x20206e6401d20a
+                                       Number1:  0x6e 110
+                                       Number2:  0x64 100
+                                       Operand:  0x1 add
+                                       Result:  0xd2 210    |
   | We can't stop the program expect we interrupt the program                             |
 
 #### NOTE:
