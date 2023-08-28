@@ -61,13 +61,13 @@ In this source code, I will use 2 top modules to test these cases.
   | Received 12 bytes: 110-100-add |
   |Successfully read 7 characters:   nd�
   |Sent 7 bytes:   nd�
-PASS!                               |  Number of Bytes: 7.0
-                                       Received Data:  0x20206e6401d20a
-                                       Number1:  0x6e 110
-                                       Number2:  0x64 100
-                                       Operand:  0x1 add
-                                       Result:  0xd2 210    |
-  | We can't stop the program expect we interrupt the program                             |
+  |PASS!                            |  Number of Bytes: 7.0                                       |
+  |                                 |  Received Data:  0x20206e6401d20a                           |
+  |                                 |  Number1:  0x6e 110                                         |
+  |                                 |  Number2:  0x64 100                                         |
+  |                                 |  Operand:  0x1 add                                          |
+  |                                 |  Result:  0xd2 210                                          |           
+  | We can't stop the program expect we interrupt the program                                     |
 
 #### NOTE:
 If you want to run the simulation of Data_Receiver modules. Go into the folder `platform/cpp/cpp` and remove the `#` character at test target.
