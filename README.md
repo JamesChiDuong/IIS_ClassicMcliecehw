@@ -52,7 +52,11 @@ In this source code, I will use 2 top modules to test these cases.
   |We can't stop the program expect we interrupt the program |                            |
 
   `Example 2:`
-  We will use Python scripts decides which operands will be choose. We will implement with `addition, subtraction, and multiplicaton` to test with design. 
+  We will use Python scripts decides which operands will be choose. We will implement with `addition, subtraction, and multiplicaton` to test with design.
+  * The syntax additional: python3 Test_TranAndRecei.py /dev/pts/4 110 101 add
+  * The syntax subtraction: python3 Test_TranAndRecei.py /dev/pts/4 110 101 sub
+  * The syntax multiplicaton: python3 Test_TranAndRecei.py /dev/pts/4 110 101 mul
+  * The syntax division: python3 Test_TranAndRecei.py /dev/pts/4 110 101 div
 
   | TOP MODULE FILE                 |      TEST PYTHON FILE                                      |
   | ---------------                 |     --------------------------------------------------------------------------              |
@@ -88,11 +92,21 @@ If you want to run the simulation of Data_Receiver modules. Go into the folder `
   |                          | Received Data:  Hello from Python file                     |
 
    `Example 2:`
+  * The syntax additional: python3 Test_TranAndRecei.py /dev/ttyUSB1 110 101 add
+  * The syntax subtraction: python3 Test_TranAndRecei.py /dev/ttyUSB1 110 101 sub
+  * The syntax multiplicaton: python3 Test_TranAndRecei.py /dev/ttyUSB1 110 101 mul
+  * The syntax division: python3 Test_TranAndRecei.py /dev/ttyUSB1 110 101 div
+
   | TOP MODULE FILE          |      TEST PYTHON FILE                                      |
   | ---------------          |     --------------------------------------------------------------------------              |
-  |`./TranAndRecei`          | `python3 Test_TranAndRecei.py /dev/ttyUSB1 110 101 add`        |
-  |                          | Send Data:  110-101-add                                        |
-  |                          | Received Data:  NUMBER1:110 NUMBER2:101 OPERAND:add RESULT:00211     |
+  |`./TranAndRecei`          | `python3 Test_TranAndRecei.py /dev/ttyUSB1 110 100 add`        |
+  |                          | Send Data:  110-100-add                                        |
+  |                          |  Number of Bytes: 7.0                                       |
+  |                          |  Received Data:  0x20206e6401d20a                           |
+  |                          |  Number1:  0x6e 110                                         |
+  |                          |  Number2:  0x64 100                                         |
+  |                          |  Operand:  0x1 add                                          |
+  |                          |  Result:  0xd2 210                                          |           
   
   ## NOTE:
    - We need to use `make clean` before running the new target
