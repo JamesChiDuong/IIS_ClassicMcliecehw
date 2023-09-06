@@ -61,12 +61,12 @@ In this source code, I will use 2 top modules to test these cases.
   | TOP MODULE FILE                 |      TEST PYTHON FILE                                      |
   | ---------------                 |     --------------------------------------------------------------------------              |
   |`./TranAndRecei`                 | `python3 Test_TranAndRecei.py /dev/pts/4 110 100 add`      |
-  | Slave device: /dev/pts/4        | Send Data:  110-100-add                                    |
+  | Slave device: /dev/pts/4        | Send Data:  0x6e64010c0a                                    |
   | Received 12 bytes: 110-100-add |
   |Successfully read 7 characters:   nd�
   |Sent 7 bytes:   nd�
   |PASS!                            |  Number of Bytes: 7.0                                       |
-  |                                 |  Received Data:  0x20206e6401d20a                           |
+  |                                 |  Received Data:  0x20206e640100d20a                           |
   |                                 |  Number1:  0x6e 110                                         |
   |                                 |  Number2:  0x64 100                                         |
   |                                 |  Operand:  0x1 add                                          |
@@ -100,9 +100,9 @@ If you want to run the simulation of Data_Receiver modules. Go into the folder `
   | TOP MODULE FILE          |      TEST PYTHON FILE                                      |
   | ---------------          |     --------------------------------------------------------------------------              |
   |`./TranAndRecei`          | `python3 Test_TranAndRecei.py /dev/ttyUSB1 110 100 add`        |
-  |                          | Send Data:  110-100-add                                        |
+  |                          | Send Data:  0x6e64010c0a                                        |
   |                          |  Number of Bytes: 7.0                                       |
-  |                          |  Received Data:  0x20206e6401d20a                           |
+  |                          |  Received Data:  0x20206e640100d20a                           |
   |                          |  Number1:  0x6e 110                                         |
   |                          |  Number2:  0x64 100                                         |
   |                          |  Operand:  0x1 add                                          |
