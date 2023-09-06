@@ -89,17 +89,6 @@ elif(numberOfbyte == 7):
 
   operand = (data_filter >> 16) & 0xFF
 
-  output_result = (data_filter >> 8)  & 0xFF
-
-elif(numberOfbyte == 6):
-  output_number1 = (data_filter >> 24) & 0xFF########& (BITWISE_8BIT)
-
-
-  output_number2 = (data_filter >>16) & 0xFF
-
-
-  operand = (data_filter >> 8) & 0xFF
-
   output_result = (data_filter)  & 0xFF
 
 if(operand == 0x1):
