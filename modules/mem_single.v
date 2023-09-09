@@ -2,19 +2,20 @@ module mem_single
   #(
     parameter WIDTH = 8,
     parameter DEPTH = 64,
+    /* verilator lint_off UNUSEDSIGNAL */
     parameter FILE = "",
     parameter INIT = 0
   )
   (
     input wire                     clock,
     input wire [WIDTH-1:0]         data,
-    input wire [`CLOG2(DEPTH)-1:0] address,
+    input wire [(DEPTH)-1:0] address,
     input wire                     wr_en,
     output reg [WIDTH-1:0]         q
   );
   
   reg [WIDTH-1:0] mem [DEPTH-1:0]/* synthesis ramstyle = "M20K" */;
-   
+  /* verilator lint_off UNUSEDSIGNAL */ 
   integer file;
   integer scan;
   integer i;
@@ -35,6 +36,7 @@ module mem_single
     begin
       if (wr_en)
         begin
+          /* verilator lint_off WIDTH */
           mem[address] <= data;
           q <= data;
         end

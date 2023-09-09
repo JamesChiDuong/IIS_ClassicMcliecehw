@@ -9,8 +9,8 @@ include $(MODULESTOP_SRC_PATH)/FPGA/parameters.mk
 # Include toolset
 include $(MODULESTOP_SRC_PATH)/FPGA/tools.mk
 
-TOPMODULE ?= TranAndRecei
-TOPMODULE_CHECK ?= TranAndRecei
+TOPMODULE ?= mem_single_tb
+TOPMODULE_CHECK ?= mem_single_tb
 
 ADDITIONAL_MODULE ?= alu
 # TOPMODULE ?= Data_Receiver
