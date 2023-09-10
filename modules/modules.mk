@@ -12,7 +12,7 @@ include $(MODULESTOP_SRC_PATH)/FPGA/tools.mk
 TOPMODULE ?= mem_single_tb
 TOPMODULE_CHECK ?= mem_single_tb
 
-ADDITIONAL_MODULE ?= alu
+ADDITIONAL_MODULE ?= mem_single
 # TOPMODULE ?= Data_Receiver
 # TOPMODULE_CHECK ?= Data_Receiver
 # List of the required submodules
