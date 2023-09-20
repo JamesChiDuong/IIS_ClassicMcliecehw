@@ -37,7 +37,7 @@ PROGRAM := $(addsuffix -program,$(TOPMODULES))
 TARGETS := $(SOURCES) $(SYNTHESIS) $(PROGRAM)
 
 # Build directory
-BUILD_DIR = $(ROOT_PATH)/build
+BULID_DIR = $(ROOT_PATH)/build
 
 NPROC ?= 1
 

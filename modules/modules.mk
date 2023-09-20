@@ -13,30 +13,14 @@ include $(MODULESTOP_SRC_PATH)/FPGA/tools.mk
 TOPMODULE ?= encap
 TOPMODULE_CHECK ?= encap
 
-TOPMODULES_SRC_PATH := $(MODULESTOP_SRC_PATH)/$(TOPMODULE)
-
-ADDITIONAL_MODULE ?= rearrange_vector
-# TOPMODULE ?= Data_Receiver
-# TOPMODULE_CHECK ?= Data_Receiver
-# List of the required submodules
-
-#-----Define SUBMODULES------------#
-#*****Define UART SUB_MODULES******#
-MODULESTOP_SUBMODULES := BAUD_RATE_GENERATOR RECEIVER TRANSMITTER
-MODULESTOP_SUBMODULES += ENCRYPTION FIXED_WEIGHT SHAKE256 MEMORY_SINGLE MEMORY_DUAL LOG2
-# Build directory
-
-#*****Define Another sub modules****#
-
-
-
+#build directory
 BUILD_DIR ?= $(MODULESTOP_SRC_PATH)/build
 KAT_DIR ?= $(BUILD_DIR)/kat
 # Directory for the performance results
 RESULTS_DIR ?= $(BUILD_DIR)/results
-
 # Source path for the common used modules
 COMMON_SRC_PATH ?= $(MODULESTOP_SRC_PATH)/common
+
 .SECONDEXPANSION:
 #
 # Parameter-specific build subdirectories
@@ -48,16 +32,16 @@ define BUILD_DIR_TEMPLATE =
 
 BUILD_DIR_$(1) = $$(BUILD_DIR)/$(1)/$$(TOPMODULE)
 
-BUILD_DIR_SIMU_$(1) = $$(BUILD_DIR)
 # Parameter-specific source, testbench, and KAT directory
 
 BUILD_DIR_SRC_$(1) = $$(BUILD_DIR_$(1))/src
 
-BUILD_DIR_SRC_SIMU_$(1) =$$(BUILD_DIR_SIMU_$(1))
+BUILD_DIR_SRC_SIMU_$(1) =$$(BUILD_DIR_$(1))/simulation
 
 endef
 $(foreach par, $(PAR_SETS), $(eval $(call BUILD_DIR_TEMPLATE,$(par))))
 endif
+
 
 #
 # Configurations and options of the module
@@ -76,9 +60,24 @@ export ROOT_PATH
 include /home/james/Documents/IIS/FPGA/UART/platform/rtl/rtl.mk
 include /home/james/Documents/IIS/FPGA/UART/modules/encap/modules.mk
 include /home/james/Documents/IIS/FPGA/UART/modules/common/modules.mk
+
+
+
+TOPMODULES_SRC_PATH := $(MODULESTOP_SRC_PATH)/$(TOPMODULE)
+
+ADDITIONAL_MODULE ?= rearrange_vector
+#-----Define SUBMODULES------------#
+#*****Define UART SUB_MODULES******#
+UART_SUBMODULES := BAUD_RATE_GENERATOR RECEIVER TRANSMITTER
+SUBMODULES = ENCRYPTION FIXED_WEIGHT SHAKE256 MEMORY_SINGLE MEMORY_DUAL LOG2
+
+MODULESTOP_SUBMODULES = $(UART_SUBMODULES) + $(SUBMODULES)
+# List of the required submodules
+
 # Add sources of the topmodule
 MODULESTOP_SRC = $(TOPMODULE).v
 MODULESTOP_SRC += $(ADDITIONAL_MODULE).v
+
 # Add the sources of the submodules
 MODULESTOP_SRC += $(foreach module,$(MODULESTOP_SUBMODULES),$($(module)_SRC))
 MODULESTOP_SIM_SRC = $(MODULESTOP_SRC)
@@ -86,8 +85,6 @@ MODULESTOP_SIM_SRC = $(MODULESTOP_SRC)
 
 .PHONY: sources
 sources: $(addprefix sources-, $(PAR_SETS))
-.PHONY: sim
-sim: $(addprefix sim-, $(PAR_SETS))
 # .PHONY: sim
 # sim: $(addprefix sim-, $(PAR_SETS))
 # Set of all sources
@@ -105,7 +102,6 @@ MODULESTOP += $$(MODULESTOP_$(1))
 # Define parameter-specific sources targets
 .PHONY: sources-$(1)
 sources-$(1): $$(MODULESTOP_$(1))
-sim-$(1): $$(MODULESTOP_$(1))
 # Make build directory for the sources
 
 
@@ -132,47 +128,39 @@ ifeq ($(TOPMODULE_CHECK),${TOPMODULE})
 $(MODULESTOP): | $$(@D)
 
 
+MODULESTOP_TB_SRC = encap_tb.v
+
+.PHONY: sim
+sim: $(addprefix sim-, $(PAR_SETS))
 # # Set of all sources
-# SIMMODULESTOP =
+SIM_MODULESTOP = 
 
-# # Define the parameter-specific sources and targets
-# define SIMMODULESTOP_SIM_TEMPLATE =
+define SIM_MODULESTOP_TEMPLATE = 
+# Define all required targets to be included in the modules above.
+SIM_MODULESTOP_$(1) = $(addprefix $$(BUILD_DIR_SRC_SIMU_$(1))/,$(MODULESTOP_TB_SRC))
 
-# # Define all required targets to be included in the modules above.
-# # The sort function filters double entries.
-# SIMMODULESTOP_$(1) = $(sort $(addprefix $$(BUILD_DIR_SIMU_SRC_$(1))/,$(MODULESTOP_SRC)))
+# Collect all testbench targets
+SIM_MODULESTOP += $$(SIM_MODULESTOP_$(1))
 
-# # Collect all sources
-# SIMMODULESTOP += $$(SIMMODULESTOP_$(1))
+# Define parameter-specific testbench targets
+.PHONY: sim-$(1)
+sim-$(1): $$(MODULESTOP_$(1)) $$(SIM_MODULESTOP_$(1))
 
-# # Define parameter-specific sources targets
-# .PHONY: sim-$(1)
-# sim-$(1): $$(SIMMODULESTOP_$(1))
+# Make build directory for the testbench sources
+$$(BUILD_DIR_SRC_SIMU_$(1)):
+	mkdir -p $$@
 
-# # Make build directory for the sources
+#
+# Sources generation
+#
+$$(BUILD_DIR_SRC_SIMU_$(1))/%.v: $$(TOPMODULES_SRC_PATH)/testbench/%.v
+	cp $$< $$@
+endef
+$(foreach par, $(PAR_SETS), $(eval $(call SIM_MODULESTOP_TEMPLATE,$(par))))
 
 
-# $$(BUILD_DIR_SRC_$(1)):
-# 	mkdir -p $$@
-
-
-# # Sources generation
-# #
-
-# $$(BUILD_DIR_SIMU_SRC_$(1))/%.v: $$(TOPMODULES_SRC_PATH)/%.v
-# 	cp $$< $$@
-
-# $$(BUILD_DIR_SIMU_SRC_$(1))/%.v: $$(COMMON_SRC_PATH)/rearrange_vector.v
-# 	cp $$< $$@
-# endef
-
-# $(foreach par, $(PAR_SETS), $(eval $(call MODULESTOP_SRC_TEMPLATE,$(par))))
-
-# #Add the build directory as order-only-prerequisites to every source file target
-# $(SIMMODULESTOP): | $$(@D)
-
-# 
-
+# Add the build directory as order-only-prerequisites to every source file target
+$(MODULESTOP) $(SIM_MODULESTOP): | $$(@D)
 #
 # Synthesis, Implement, Generate and Program targets and files
 #
