@@ -3,7 +3,7 @@ ifdef SRCDIR
 VPATH = $(SRCDIR)
 all: $(TARGETS)
 
-ROOT_PATH := $(abspath $(dir $(lastword $(MAKEFILE_LIST))))
+export ROOT_PATH := $(abspath $(dir $(lastword $(MAKEFILE_LIST))))
 
 include config.mk
 

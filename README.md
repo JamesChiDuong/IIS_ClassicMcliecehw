@@ -114,6 +114,7 @@ If you want to run the simulation of Data_Receiver modules. Go into the folder `
 
 
 # SECTION 2: What needs to be changed to adapt the code for another design
+
   
   ## With TARGET=sim
 
