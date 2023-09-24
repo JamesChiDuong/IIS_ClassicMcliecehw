@@ -39,6 +39,8 @@ $$(BUILD_DIR_SRC_$(1))/mem_single.v: $$(MEMORY_SRC_PATH)/mem_single.v
 $$(BUILD_DIR_SRC_$(1))/mem_dual.v: $$(MEMORY_SRC_PATH)/mem_dual.v
 	cp $$< $$@
 
+$$(BUILD_DIR_TB_$(1))/mem.v: $$(MEMORY_SRC_PATH)/mem.v
+	cp $$< $$@
 endef
 
 $(foreach par, $(PAR_SETS), $(eval $(call MEMORY_SRC_TEMPLATE,$(par))))

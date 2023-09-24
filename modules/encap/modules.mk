@@ -13,8 +13,7 @@ ENCRYPTION_SUBMODULES := MEMORY_DUAL
 # Export ROOT_PATH from FPGA.mk
 export ROOT_PATH
 
-#include $(ROOT_PATH)/modules/FPGA/parameters.mk
-include /home/james/Documents/IIS/FPGA/UART/modules/FPGA/parameters.mk
+include $(ROOT_PATH)/modules/FPGA/parameters.mk
 BUILD_DIR ?= $(ENCRYPTION_SRC_PATH)/build
 RESULTS_DIR ?= $(BUILD_DIR)/results
 COMMON_SRC_PATH ?=  $(ROOT_PATH)/modules/common

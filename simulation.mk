@@ -64,13 +64,17 @@ TARGETS := $(SIM)
 BUILD_DIR = $(ROOT_PATH)/build
 NPROC ?= 1
 
+TOPMODULE ?= encap
+#export SIMU_DIR := $(BUILD_DIR)/simulation
 export SIMU_DIR := $(BUILD_DIR)/simulation
-
 # PLAT_SRC_PATH 	:= $(abspath $(dir $(lastword $(MAKEFILE_LIST))))
 PLAT_DIR_SRC	:= $(ROOT_PATH)/platform
 MODULE_DIR_SRC	:= $(ROOT_PATH)/modules
 export BUILD_MODULES_DIR_SRC := $(SIMU_DIR)/verilog
 # VERILOG_FILE	:= $(MODULE_DIR_SRC)/*.v
+
+#-----Define TOP_MODULES----------#
+
 
 
 .PHONY: all
@@ -90,8 +94,8 @@ $(TARGETS):
 		PAR_SETS="$(PAR_SETS)" \
 		XILINX_MODELS="$(XILINX_MODELS)" \
 		SYSTEMIZER="$(SYSTEMIZER)"
-	cp -r $(PLAT_DIR_SRC) $(SIMU_DIR)
-	mkdir -p $(BUILD_MODULES_DIR_SRC)
+	cp -r $(PLAT_DIR_SRC)/cpp $(SIMU_DIR)
+	cp -r $(PLAT_DIR_SRC)/Makefile $(SIMU_DIR)
 	cp -r $(MODULE_DIR_SRC)/verilog.mk $(BUILD_MODULES_DIR_SRC)
 	$(MAKE) -C $(SIMU_DIR)
 

@@ -29,14 +29,21 @@ ifndef BUILD_DIR_TEMPLATE
 define BUILD_DIR_TEMPLATE =
 
 #Parameter-specific build directory root
+ifeq ($(TARGET),sim)
+BUILD_DIR_$(1) = $$(BUILD_DIR)
 
+# Parameter-specific source, testbench, and KAT directory
+
+BUILD_DIR_SRC_$(1) = $$(BUILD_DIR_$(1))/verilog
+BUILD_DIR_TB_$(1) = $$(BUILD_DIR_$(1))/verilog/testbench
+else
 BUILD_DIR_$(1) = $$(BUILD_DIR)/$(1)/$$(TOPMODULE)
 
 # Parameter-specific source, testbench, and KAT directory
 
 BUILD_DIR_SRC_$(1) = $$(BUILD_DIR_$(1))/src
-
-BUILD_DIR_SRC_SIMU_$(1) =$$(BUILD_DIR_$(1))/simulation
+BUILD_DIR_TB_$(1) = $$(BUILD_DIR_$(1))/verilog/testbench
+endif
 
 endef
 $(foreach par, $(PAR_SETS), $(eval $(call BUILD_DIR_TEMPLATE,$(par))))
@@ -53,13 +60,13 @@ SLICED_PUBKEY_COLUMN_WIDTHS ?= 32
 # Export ROOT_PATH from FPGA.mk
 export ROOT_PATH
 
-# include $(ROOT_PATH)/platform/rtl/rtl.mk 
-# include $(ROOT_PATH)/modules/encap/modules.mk
-# include $(COMMON_SRC_PATH)/modules.mk
+include $(ROOT_PATH)/platform/rtl/rtl.mk 
+include $(ROOT_PATH)/modules/encap/modules.mk
+include $(COMMON_SRC_PATH)/modules.mk
 
-include /home/james/Documents/IIS/FPGA/UART/platform/rtl/rtl.mk
-include /home/james/Documents/IIS/FPGA/UART/modules/encap/modules.mk
-include /home/james/Documents/IIS/FPGA/UART/modules/common/modules.mk
+# include /home/james/Documents/IIS/FPGA/UART/platform/rtl/rtl.mk
+# include /home/james/Documents/IIS/FPGA/UART/modules/encap/modules.mk
+# include /home/james/Documents/IIS/FPGA/UART/modules/common/modules.mk
 
 
 
@@ -79,7 +86,9 @@ MODULESTOP_SRC = $(TOPMODULE).v
 MODULESTOP_SRC += $(ADDITIONAL_MODULE).v
 
 # Add the sources of the submodules
-MODULESTOP_SRC += $(foreach module,$(MODULESTOP_SUBMODULES),$($(module)_SRC))
+MODULESTOP_UART_SRC = $(foreach module,$(UART_SUBMODULES),$($(module)_SRC))
+MODULESTOP_SRC += $(foreach module,$(SUBMODULES),$($(module)_SRC))
+
 MODULESTOP_SIM_SRC = $(MODULESTOP_SRC)
 # Define comulated target for source generation
 
@@ -88,6 +97,12 @@ sources: $(addprefix sources-, $(PAR_SETS))
 # .PHONY: sim
 # sim: $(addprefix sim-, $(PAR_SETS))
 # Set of all sources
+
+MODULESTOP_UART = 
+
+define MODULESTOP_UART_SRC_TEMPLATE
+
+endef
 MODULESTOP =
 
 # Define the parameter-specific sources and targets
@@ -95,7 +110,7 @@ define MODULESTOP_SRC_TEMPLATE =
 
 # Define all required targets to be included in the modules above.
 # The sort function filters double entries.
-MODULESTOP_$(1) = $(sort $(addprefix $$(BUILD_DIR_SRC_$(1))/,$(MODULESTOP_SRC)))
+MODULESTOP_$(1) = $(sort $(addprefix $$(BUILD_DIR_SRC_$(1))/,$(MODULESTOP_SRC) + $(MODULESTOP_UART_SRC)))
 # Collect all sources
 MODULESTOP += $$(MODULESTOP_$(1))
 
@@ -128,7 +143,7 @@ ifeq ($(TOPMODULE_CHECK),${TOPMODULE})
 $(MODULESTOP): | $$(@D)
 
 
-MODULESTOP_TB_SRC = encap_tb.v
+MODULESTOP_TB_SRC = encap_tb.v 
 
 .PHONY: sim
 sim: $(addprefix sim-, $(PAR_SETS))
@@ -137,7 +152,7 @@ SIM_MODULESTOP =
 
 define SIM_MODULESTOP_TEMPLATE = 
 # Define all required targets to be included in the modules above.
-SIM_MODULESTOP_$(1) = $(addprefix $$(BUILD_DIR_SRC_SIMU_$(1))/,$(MODULESTOP_TB_SRC))
+SIM_MODULESTOP_$(1) = $(addprefix $$(BUILD_DIR_TB_$(1))/,$(MODULESTOP_TB_SRC))
 
 # Collect all testbench targets
 SIM_MODULESTOP += $$(SIM_MODULESTOP_$(1))
@@ -147,13 +162,13 @@ SIM_MODULESTOP += $$(SIM_MODULESTOP_$(1))
 sim-$(1): $$(MODULESTOP_$(1)) $$(SIM_MODULESTOP_$(1))
 
 # Make build directory for the testbench sources
-$$(BUILD_DIR_SRC_SIMU_$(1)):
+$$(BUILD_DIR_TB_$(1)):
 	mkdir -p $$@
 
 #
 # Sources generation
 #
-$$(BUILD_DIR_SRC_SIMU_$(1))/%.v: $$(TOPMODULES_SRC_PATH)/testbench/%.v
+$$(BUILD_DIR_TB_$(1))/%.v: $$(TOPMODULES_SRC_PATH)/testbench/%.v
 	cp $$< $$@
 endef
 $(foreach par, $(PAR_SETS), $(eval $(call SIM_MODULESTOP_TEMPLATE,$(par))))

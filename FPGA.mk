@@ -4,7 +4,6 @@ _SOURCE :=
 export ROOT_PATH := $(abspath $(dir $(lastword $(MAKEFILE_LIST))))
 
 BUILD_PATH := $(ROOT_PATH)/build
-BUILD_FPGA_PATH :=$(ROOT_PATH)/modules/build_FPGA
 # Include the parameter set definitions
 PAR_FILE := $(ROOT_PATH)/modules/FPGA/parameters.mk
 include $(PAR_FILE)
@@ -17,29 +16,34 @@ undefine NO_CHECK
 
 NO_SUB_INCLUDES = True
 
-
 XILINX_MODELS_FILE := $(ROOT_PATH)/modules/FPGA/Xilinx/models.mk
 include $(XILINX_MODELS_FILE)
 
 # Source code directory for the parametrizable modules
 MODULES_DIR 	:= $(ROOT_PATH)/modules
-PLAT_DIR_SRC	:= $(ROOT_PATH)/platform
-RTL_DIR_SRC		:= $(PLAT_DIR_SRC)/rtl/*.v
 
-TOPMODULES = TranAndRecei
+
+TOPMODULES = encap
 # TOPMODULES = Data_Receiver
 # Define individual targets for the single steps.
 SOURCES := $(addsuffix -sources,$(TOPMODULES))
 SYNTHESIS := $(addsuffix -synthesis,$(TOPMODULES))
 PROGRAM := $(addsuffix -program,$(TOPMODULES))
-
 # Comulate the targets.
 TARGETS := $(SOURCES) $(SYNTHESIS) $(PROGRAM)
 
 # Build directory
-BULID_DIR = $(ROOT_PATH)/build
-
+BUILD_DIR = $(ROOT_PATH)/build
 NPROC ?= 1
+
+export SIMU_DIR := $(BUILD_DIR)
+
+# PLAT_SRC_PATH 	:= $(abspath $(dir $(lastword $(MAKEFILE_LIST))))
+PLAT_DIR_SRC	:= $(ROOT_PATH)/platform
+MODULE_DIR_SRC	:= $(ROOT_PATH)/modules
+export BUILD_MODULES_DIR_SRC := $(SIMU_DIR)/verilog
+# VERILOG_FILE	:= $(MODULE_DIR_SRC)/*.v
+
 
 .PHONY: all
 all: synthesis
@@ -55,21 +59,23 @@ program: $(PROGRAM)
 .PHONY: synthesis
 synthesis: $(SYNTHESIS)
 
-
 .PHONY: $(TARGETS)
 $(TARGETS):
 	$(MAKE) -C $(MODULES_DIR)\
 		-f modules.mk $(lastword $(subst -, ,$@)) \
 		-j$(NPROC) \
-		BUILD_DIR=$(BUILD_DIR) \
+		BUILD_DIR=$(SIMU_DIR) \
 		PAR_SETS="$(PAR_SETS)" \
 		XILINX_MODELS="$(XILINX_MODELS)" \
 		SYSTEMIZER="$(SYSTEMIZER)"
 
+
 clean:
 	$(MAKE) -C $(MODULES_DIR)\
 		-f modules.mk $(lastword $(subst -, ,$@))
+	rm -rf $(BUILD_PATH)
 .PHONY: help
+
 help:
 	@printf "Target list:\n\n"
 	@printf "  $(TOPMODULES):\n\t Build sources, testbenches, and run simulations and\n"
