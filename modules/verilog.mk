@@ -12,25 +12,24 @@ VERILATOR 	:= verilator
 VFLAGS 		:= -Wall --MMD --trace -y $(RTLDR) -cc
 
 #We need to change the name modules or delete the name. In the example, we have 2 moudles 
-MODULES 	:= encap
+MODULES 	:= encap_tb
 MODULES2 	:= Data_Receiver
 
 .PHONY: test  test$(MODULES) test$(MODULES2)
 ## }}}
 #test: testline testlinelite testhello testhellolite speechfifo speechfifolite
-# test:$(MODULES)  $(MODULES2) 
+test:$(MODULES)  $(MODULES2) 
 
-# $(MODULES2): 		$(VDIRFB)/V$(MODULES2)__ALL.a
-
-
-# $(MODULES): 		$(VDIRFB)/V$(MODULES)__ALL.a
+$(MODULES2): 		$(VDIRFB)/V$(MODULES2)__ALL.a
 
 
-# $(VDIRFB)/V$(MODULES2)__ALL.a: 		$(VDIRFB)/V$(MODULES2).cpp
+$(MODULES): 		$(VDIRFB)/V$(MODULES)__ALL.a
 
-# $(VDIRFB)/V$(MODULES)__ALL.a: 		$(VDIRFB)/V$(MODULES).cpp
 
-test:
+$(VDIRFB)/V$(MODULES2)__ALL.a: 		$(VDIRFB)/V$(MODULES2).cpp
+
+$(VDIRFB)/V$(MODULES)__ALL.a: 		$(VDIRFB)/V$(MODULES).cpp
+
 $(VDIRFB)/V%.mk:  $(VDIRFB)/V%.h
 $(VDIRFB)/V%.h:   $(VDIRFB)/V%.cpp
 $(VDIRFB)/V%.cpp: $(FBDIR)/%.v

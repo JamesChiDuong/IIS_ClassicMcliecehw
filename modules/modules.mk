@@ -34,8 +34,8 @@ BUILD_DIR_$(1) = $$(BUILD_DIR)
 
 # Parameter-specific source, testbench, and KAT directory
 
-BUILD_DIR_SRC_$(1) = $$(BUILD_DIR_$(1))/verilog
-BUILD_DIR_TB_$(1) = $$(BUILD_DIR_$(1))/verilog/testbench
+BUILD_DIR_SRC_$(1) = $$(BUILD_DIR_$(1))/rtl
+BUILD_DIR_TB_$(1) = $$(BUILD_DIR_$(1))/verilog
 else
 BUILD_DIR_$(1) = $$(BUILD_DIR)/$(1)/$$(TOPMODULE)
 
