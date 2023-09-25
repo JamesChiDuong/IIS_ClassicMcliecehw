@@ -18,19 +18,19 @@ MODULES2 	:= Data_Receiver
 .PHONY: test  test$(MODULES) test$(MODULES2)
 ## }}}
 #test: testline testlinelite testhello testhellolite speechfifo speechfifolite
-test:$(MODULES)  $(MODULES2) 
+# test:$(MODULES)  $(MODULES2) 
 
-$(MODULES2): 		$(VDIRFB)/V$(MODULES2)__ALL.a
-
-
-$(MODULES): 		$(VDIRFB)/V$(MODULES)__ALL.a
+# $(MODULES2): 		$(VDIRFB)/V$(MODULES2)__ALL.a
 
 
-$(VDIRFB)/V$(MODULES2)__ALL.a: 		$(VDIRFB)/V$(MODULES2).cpp
-
-$(VDIRFB)/V$(MODULES)__ALL.a: 		$(VDIRFB)/V$(MODULES).cpp
+# $(MODULES): 		$(VDIRFB)/V$(MODULES)__ALL.a
 
 
+# $(VDIRFB)/V$(MODULES2)__ALL.a: 		$(VDIRFB)/V$(MODULES2).cpp
+
+# $(VDIRFB)/V$(MODULES)__ALL.a: 		$(VDIRFB)/V$(MODULES).cpp
+
+test:
 $(VDIRFB)/V%.mk:  $(VDIRFB)/V%.h
 $(VDIRFB)/V%.h:   $(VDIRFB)/V%.cpp
 $(VDIRFB)/V%.cpp: $(FBDIR)/%.v

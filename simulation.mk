@@ -95,8 +95,10 @@ $(TARGETS):
 		XILINX_MODELS="$(XILINX_MODELS)" \
 		SYSTEMIZER="$(SYSTEMIZER)"
 	cp -r $(PLAT_DIR_SRC)/cpp $(SIMU_DIR)
+	cp -r $(PLAT_DIR_SRC)/rtl $(SIMU_DIR)
 	cp -r $(PLAT_DIR_SRC)/Makefile $(SIMU_DIR)
 	cp -r $(MODULE_DIR_SRC)/verilog.mk $(BUILD_MODULES_DIR_SRC)
+
 	$(MAKE) -C $(SIMU_DIR)
 
 

@@ -170,6 +170,9 @@ $$(BUILD_DIR_TB_$(1)):
 #
 $$(BUILD_DIR_TB_$(1))/%.v: $$(TOPMODULES_SRC_PATH)/testbench/%.v
 	cp $$< $$@
+
+#Set of all files to perform the simulation
+SIM_SRC_$(1)_$(2) =  
 endef
 $(foreach par, $(PAR_SETS), $(eval $(call SIM_MODULESTOP_TEMPLATE,$(par))))
 
