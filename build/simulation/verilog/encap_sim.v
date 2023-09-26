@@ -1,62 +1,39 @@
-/*
- * 
- *
- * Copyright (C) 2021
- * Author: Sanjay Deshpande <sanjay.deshpande@yale.edu>
- *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 3 of the License, or
- * (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software Foundation,
- * Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301  USA
- *
-*/
-
-`timescale 1ns/1ps
-
-module encap_tb
-       #(
-           parameter parameter_set =1,
+module encap_sim
+            #(
+            parameter parameter_set =1,
 
 
-           parameter n = (parameter_set == 1)? 3488:
-           (parameter_set == 2)? 4608:
-           (parameter_set == 3)? 6688:
-           (parameter_set == 4)? 6960:
-           8192,
+            parameter n = (parameter_set == 1)? 3488:
+            (parameter_set == 2)? 4608:
+            (parameter_set == 3)? 6688:
+            (parameter_set == 4)? 6960:
+            8192,
 
-           parameter m = (parameter_set == 1)? 12:13,
+            parameter m = (parameter_set == 1)? 12:13,
 
-           parameter t = (parameter_set == 1)? 64:
-           (parameter_set == 2)? 96:
-           (parameter_set == 3)? 128:
-           (parameter_set == 4)? 119:
-           128,
+            parameter t = (parameter_set == 1)? 64:
+            (parameter_set == 2)? 96:
+            (parameter_set == 3)? 128:
+            (parameter_set == 4)? 119:
+            128,
 
 
-           parameter k = n-m*t,
-           parameter l = m*t,
+            parameter k = n-m*t,
+            parameter l = m*t,
 
-           parameter col_width = 64,
-           parameter e_width = 64, // error_width
+            parameter col_width = 64,
+            parameter e_width = 64, // error_width
 
-           parameter n_elim = col_width*((n+col_width-1)/col_width),
-           parameter l_n_elim = l*n_elim,
-           parameter KEY_START_ADDR = l*(l/col_width)
-       )(
-           input wire 	clk,
-           input wire 	rst,
-           output wire done
-       );
-
+            parameter n_elim = col_width*((n+col_width-1)/col_width),
+            parameter l_n_elim = l*n_elim,
+            parameter KEY_START_ADDR = l*(l/col_width)
+            )(
+            input wire 	clk,
+            input wire 	rst,
+            input i_uart_rx,
+            output o_uart_tx,
+            output wire done
+            );
 // input
 reg seed_valid = 1'b0;
 reg K_col_valid = 1'b0;
@@ -111,6 +88,7 @@ keccak_top shake_instance
                .force_done(force_done_shake)
            );
 
+
 encap_seq_gen # (.parameter_set(parameter_set), .m(m), .t(t), .n(n), .e_width(e_width), .col_width(col_width), .KEY_START_ADDR(KEY_START_ADDR))
          DUT  (
              .clk(clk),
@@ -147,11 +125,12 @@ encap_seq_gen # (.parameter_set(parameter_set), .m(m), .t(t), .n(n), .e_width(e_
 
          );
 
-// initial
-// begin
-//     $dumpfile(`FILE_VCD);
-//     $dumpvars();
-// end
+initial
+begin
+    //$dumpfile(`FILE_VCD);
+    $dumpfile("encap_sim.vcd");
+    $dumpvars();
+end
 
 // Memory loading procedure
 reg [31:0] ctr = 0;
@@ -167,10 +146,7 @@ integer START_SEED = 0;
 integer STOP_SEED = START_SEED + SIZE_SEED;
 integer START_PK = STOP_SEED + 1;
 integer STOP_PK = START_PK + SIZE_PK;
-// integer START_C0 = STOP_PK;
-// integer STOP_C0 = START_C0 + SIZE_C0;
-// integer START_C1 = STOP_C0;
-// integer STOP_C1 = START_C1 + SIZE_C1;
+
 
 integer SIZE_TOTAL = STOP_SEED;
 
@@ -289,20 +265,19 @@ time time_fixedweight;
 
 reg [17*8-1:0] prefix;
 
-// initial
-// begin
-//     f_cycles_profile = $fopen(`FILE_CYCLES_PROFILE,"w");
-//     $sformat(prefix, "[mceliece%0d%0d]", DUT.n, DUT.t);
-// end
-
-// always @(posedge DUT.done)
-// begin
-//     $writememb(`FILE_K_OUT, DUT.hash_mem.mem,0,7);
-//     $writememb(`FILE_CIPHER0_OUT, DUT.encryption_unit.encrypt_mem.mem);
-//     $writememb(`FILE_CIPHER1_OUT, DUT.C1_mem.mem);
-//     $writememb(`FILE_ERROR_OUT, DUT.error_vector_gen.onegen_instance.mem_dual_B.mem);
-//     $fflush();
-// end
+initial
+begin
+    f_cycles_profile = $fopen("`FILE_CYCLES_PROFILE","w");
+    $sformat(prefix, "[mceliece%0d%0d]", DUT.n,DUT.t);
+end
+always @(posedge DUT.done)
+begin
+    $writememb("`FILE_K_OUT", DUT.hash_mem.mem,0,7);
+    $writememb("`FILE_CIPHER0_OUT", DUT.encryption_unit.encrypt_mem.mem);
+    $writememb("`FILE_CIPHER1_OUT", DUT.C1_mem.mem);
+    $writememb("`FILE_ERROR_OUT", DUT.error_vector_gen.onegen_instance.mem_dual_B.mem);
+    $fflush();
+end
 
 always @(posedge seed_valid)
 begin
@@ -336,8 +311,9 @@ end
 
 always @(posedge DUT.done_error)
 begin
-    time_encrypt_start = $time;
-    $display("%s Start Encode. (%0d cycles)", prefix, time_encrypt_start/2);
+    time_fixedweight = ($time-time_fixedweight_start)/2;
+    $display("%s FixedWeight finished. (%0d cycles)", prefix, time_fixedweight);
+    $fwrite(f_cycles_profile, "fixedweight %0d %0d\n", time_fixedweight_start/2, time_fixedweight);
     $fflush();
 end
 
@@ -349,22 +325,21 @@ begin
     $fflush();
 end
 
-// mem_single #(.WIDTH(col_width), .DEPTH(((l_n_elim+(col_width-l_n_elim%col_width)%col_width)/col_width)), .FILE(`FILE_PK_SLICED) ) publickey
-//            (
-//                .clock(clk),
-//                .data(0),
-//                .address(addr_PK),
-//                .wr_en(0),
-//                .q(PK_col)
-//            );
+mem_single #(.WIDTH(col_width), .DEPTH(((l_n_elim+(col_width-l_n_elim%col_width)%col_width)/col_width)), .FILE("`FILE_PK_SLICED") ) publickey
+           (
+               .clock(clk),
+               .data(0),
+               .address(addr_PK),
+               .wr_en(0),
+               .q(PK_col)
+           );
 
-// mem_single #(.WIDTH(32), .DEPTH(16), .FILE(`FILE_MEM_SEED) ) mem_init_seed
-//            (
-//                .clock(clk),
-//                .data(0),
-//                .address(addr_seed),
-//                .wr_en(0),
-//                .q(seed_from_ram)
-//            );
-
-endmodule
+mem_single #(.WIDTH(32), .DEPTH(16), .FILE("`FILE_MEM_SEED") ) mem_init_seed
+           (
+               .clock(clk),
+               .data(0),
+               .address(addr_seed),
+               .wr_en(0),
+               .q(seed_from_ram)
+           );
+endmodule;

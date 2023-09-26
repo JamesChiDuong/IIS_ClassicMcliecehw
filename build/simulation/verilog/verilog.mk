@@ -12,7 +12,7 @@ VERILATOR 	:= verilator
 VFLAGS 		:= -Wall --MMD --trace -y $(RTLDR) -cc
 
 #We need to change the name modules or delete the name. In the example, we have 2 moudles 
-MODULES 	:= encap_tb
+MODULES 	:= encap_sim
 MODULES2 	:= Data_Receiver
 
 .PHONY: test  test$(MODULES) test$(MODULES2)
@@ -25,7 +25,7 @@ $(MODULES2): 		$(VDIRFB)/V$(MODULES2)__ALL.a
 
 $(MODULES): 		$(VDIRFB)/V$(MODULES)__ALL.a
 
-
+$(VDIRFB)/Vencap__ALL.a: $(VDIRFB)/Vencap.cpp
 $(VDIRFB)/V$(MODULES2)__ALL.a: 		$(VDIRFB)/V$(MODULES2).cpp
 
 $(VDIRFB)/V$(MODULES)__ALL.a: 		$(VDIRFB)/V$(MODULES).cpp

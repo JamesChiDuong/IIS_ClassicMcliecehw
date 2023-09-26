@@ -143,7 +143,7 @@ ifeq ($(TOPMODULE_CHECK),${TOPMODULE})
 $(MODULESTOP): | $$(@D)
 
 
-MODULESTOP_TB_SRC = encap_tb.v 
+MODULESTOP_TB_SRC = encap_sim.v 
 
 .PHONY: sim
 sim: $(addprefix sim-, $(PAR_SETS))
@@ -171,8 +171,41 @@ $$(BUILD_DIR_TB_$(1)):
 $$(BUILD_DIR_TB_$(1))/%.v: $$(TOPMODULES_SRC_PATH)/testbench/%.v
 	cp $$< $$@
 
-#Set of all files to perform the simulation
-SIM_SRC_$(1)_$(2) =  
+# Set of all files to perform the simulation
+$$(ENCAPSULATION_VERILATOR_BIN_$(1)_$(2)): $$(ENCAPSULATION_SIM_$(1)_$(2)) | $$(RESULTS_DIR)
+	$(VERILATOR) \
+	--unroll-count 1024 \
+	-Wno-fatal \
+	--timescale-override 1ps/1ps \
+	--trace \
+	--Mdir $$(BUILD_DIR_TB_$(1))/obj_dir_$(2) \
+	--top-module encap_tb \
+	-Gparameter_set=$$(id_$(1)) \
+	-Gcol_width=$(2) \
+	-Ge_width=$(2) \
+	-GKEY_START_ADDR=0 \
+	-DFILE_MEM_SEED=\"$$(KAT_DIR_$(1))/$(KAT_FILE_SEED)\" \
+	-DFILE_PK_SLICED=\"$$(KAT_DIR_$(1))/$$(KAT_FILE_PUBKEY_$(2))\" \
+	-DFILE_CIPHER0_OUT=\"$$(BUILD_DIR_TB_$(1))/cipher_0_$(2).out\" \
+	-DFILE_CIPHER1_OUT=\"$$(BUILD_DIR_TB_$(1))/cipher_1_$(2).out\" \
+	-DFILE_K_OUT=\"$$(BUILD_DIR_TB_$(1))/K_$(2).out\" \
+	-DFILE_ERROR_OUT=\"$$(BUILD_DIR_TB_$(1))/error_$(2).out\" \
+	-DFILE_VCD=\"$$(BUILD_DIR_TB_$(1))/wave_$(2).vcd\" \
+	-DFILE_CYCLES_PROFILE=\"$$(ENCAPSULATION_RESULT_TB_$(1)_$(2))\" \
+	-I$$(BUILD_DIR_SRC_$(1)) \
+	-I$$(BUILD_DIR_TB_$(1)) \
+	--cc \
+	$$(BUILD_DIR_SRC_$(1))/clog2.v \
+	$$(ENCAPSULATION_TB_$(1)) \
+	$$(filter-out $$(BUILD_DIR_SRC_$(1))/clog2.v,$$(ENCAPSULATION_$(1))) \
+	--exe $$< \
+	--build \
+	-j 8 \
+	--threads 1 \
+	--x-initial 0 \
+	-o $$@
+
+
 endef
 $(foreach par, $(PAR_SETS), $(eval $(call SIM_MODULESTOP_TEMPLATE,$(par))))
 
