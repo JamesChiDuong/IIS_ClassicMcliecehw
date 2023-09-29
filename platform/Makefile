@@ -3,12 +3,13 @@ all: rtl bench
 .PHONY: rtl
 ## {{{
 rtl:
-	 cd rtl ; make -f rtl.mk
+	#  cd rtl ; make -f rtl.mk
+	cd verilog ; make -f verilog.mk
 
 .PHONY: bench
 ## {{{
 bench: rtl
-	cd verilog ; make -f verilog.mk
+	#cd verilog ; make -f verilog.mk
 	cd cpp     ; make -f cpp.mk
 
 clean:

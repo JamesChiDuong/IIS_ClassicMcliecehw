@@ -30,8 +30,8 @@ module encap_sim
             )(
             input wire 	clk,
             input wire 	rst,
-            input i_uart_rx;
-            output o_uart_tx;
+            input i_uart_rx,
+            output o_uart_tx,
             output wire done
             );
 // input

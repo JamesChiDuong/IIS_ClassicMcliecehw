@@ -9,12 +9,12 @@ INCS	:= -I$(RTLD)/obj_dir/ -I$(VROOT)/include
 VOBJDR	:= $(RTLD)/obj_dir
 SYSVDR	:= $(VROOT)/include
 #We need to change the name modules or delete the name. In the example, we have 2 moudles
-MODULES := encap
+MODULES := tb
 MODULES2:= Data_Receiver
 
-SOURCES := $(MODULES2).cpp $(MODULES).cpp uartsim.cpp uartsim.h
+SOURCES := $(MODULES).cpp uartsim.cpp uartsim.h #$(MODULES2).cpp 
 ## }}}
-all:	$(OBJDIR)/ $(MODULES2) $(MODULES) test
+all:	$(OBJDIR)/  $(MODULES) test #$(MODULES2)
 
 
 # Verilator's generated Makefile sets VM_*
@@ -34,12 +34,12 @@ $(OBJDIR)/%.o: $(SYSVDR)/%.cpp
 
 
 ## }}}
-##Data_Receiver
-DATARESRCS := $(MODULES2).cpp uartsim.cpp
-DATAREOBJ := $(subst .cpp,.o,$(DATARESRCS))
-DATAREOBJS:= $(addprefix $(OBJDIR)/,$(DATAREOBJ)) $(VLIB)
-$(MODULES2): $(DATAREOBJS) $(VOBJDR)/V$(MODULES2)__ALL.a
-	$(CXX) $(FLAGS) $(INCS) $^ -lpthread -o $@
+# ##Data_Receiver
+# DATARESRCS := $(MODULES2).cpp uartsim.cpp
+# DATAREOBJ := $(subst .cpp,.o,$(DATARESRCS))
+# DATAREOBJS:= $(addprefix $(OBJDIR)/,$(DATAREOBJ)) $(VLIB)
+# $(MODULES2): $(DATAREOBJS) $(VOBJDR)/V$(MODULES2)__ALL.a
+# 	$(CXX) $(FLAGS) $(INCS) $^ -lpthread -o $@
 
 ##Top
 TOPSRCS := $(MODULES).cpp uartsim.cpp

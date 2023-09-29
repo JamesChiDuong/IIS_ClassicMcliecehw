@@ -34,7 +34,7 @@ BUILD_DIR_$(1) = $$(BUILD_DIR)
 
 # Parameter-specific source, testbench, and KAT directory
 
-BUILD_DIR_SRC_$(1) = $$(BUILD_DIR_$(1))/rtl
+BUILD_DIR_SRC_$(1) = $$(BUILD_DIR_$(1))/verilog
 BUILD_DIR_TB_$(1) = $$(BUILD_DIR_$(1))/verilog
 else
 BUILD_DIR_$(1) = $$(BUILD_DIR)/$(1)/$$(TOPMODULE)
@@ -60,13 +60,13 @@ SLICED_PUBKEY_COLUMN_WIDTHS ?= 32
 # Export ROOT_PATH from FPGA.mk
 export ROOT_PATH
 
-include $(ROOT_PATH)/platform/rtl/rtl.mk 
-include $(ROOT_PATH)/modules/encap/modules.mk
-include $(COMMON_SRC_PATH)/modules.mk
+# include $(ROOT_PATH)/platform/rtl/rtl.mk 
+# include $(ROOT_PATH)/modules/encap/modules.mk
+# include $(COMMON_SRC_PATH)/modules.mk
 
-# include /home/james/Documents/IIS/FPGA/UART/platform/rtl/rtl.mk
-# include /home/james/Documents/IIS/FPGA/UART/modules/encap/modules.mk
-# include /home/james/Documents/IIS/FPGA/UART/modules/common/modules.mk
+include /home/james/Documents/IIS/FPGA/Cryto/ClassicMceliehw_FPGA/ClassicMceliehw_FPGA/platform/rtl/rtl.mk
+include /home/james/Documents/IIS/FPGA/Cryto/ClassicMceliehw_FPGA/ClassicMceliehw_FPGA/modules/encap/modules.mk
+include /home/james/Documents/IIS/FPGA/Cryto/ClassicMceliehw_FPGA/ClassicMceliehw_FPGA/modules/common/modules.mk
 
 
 
@@ -143,11 +143,12 @@ ifeq ($(TOPMODULE_CHECK),${TOPMODULE})
 $(MODULESTOP): | $$(@D)
 
 
-MODULESTOP_TB_SRC = encap_sim.v 
-
+MODULESTOP_TB_SRC = encap_tb.v 
+# Define Verilator-specific testbench source
+ENCAPSULATION_VERILATOR_TB_SRC = $(TOPMODULES_SRC_PATH)/testbench/tb.cpp
 .PHONY: sim
 sim: $(addprefix sim-, $(PAR_SETS))
-# # Set of all sources
+# Set of all sources
 SIM_MODULESTOP = 
 
 define SIM_MODULESTOP_TEMPLATE = 
@@ -171,41 +172,6 @@ $$(BUILD_DIR_TB_$(1)):
 $$(BUILD_DIR_TB_$(1))/%.v: $$(TOPMODULES_SRC_PATH)/testbench/%.v
 	cp $$< $$@
 
-# Set of all files to perform the simulation
-$$(ENCAPSULATION_VERILATOR_BIN_$(1)_$(2)): $$(ENCAPSULATION_SIM_$(1)_$(2)) | $$(RESULTS_DIR)
-	$(VERILATOR) \
-	--unroll-count 1024 \
-	-Wno-fatal \
-	--timescale-override 1ps/1ps \
-	--trace \
-	--Mdir $$(BUILD_DIR_TB_$(1))/obj_dir_$(2) \
-	--top-module encap_tb \
-	-Gparameter_set=$$(id_$(1)) \
-	-Gcol_width=$(2) \
-	-Ge_width=$(2) \
-	-GKEY_START_ADDR=0 \
-	-DFILE_MEM_SEED=\"$$(KAT_DIR_$(1))/$(KAT_FILE_SEED)\" \
-	-DFILE_PK_SLICED=\"$$(KAT_DIR_$(1))/$$(KAT_FILE_PUBKEY_$(2))\" \
-	-DFILE_CIPHER0_OUT=\"$$(BUILD_DIR_TB_$(1))/cipher_0_$(2).out\" \
-	-DFILE_CIPHER1_OUT=\"$$(BUILD_DIR_TB_$(1))/cipher_1_$(2).out\" \
-	-DFILE_K_OUT=\"$$(BUILD_DIR_TB_$(1))/K_$(2).out\" \
-	-DFILE_ERROR_OUT=\"$$(BUILD_DIR_TB_$(1))/error_$(2).out\" \
-	-DFILE_VCD=\"$$(BUILD_DIR_TB_$(1))/wave_$(2).vcd\" \
-	-DFILE_CYCLES_PROFILE=\"$$(ENCAPSULATION_RESULT_TB_$(1)_$(2))\" \
-	-I$$(BUILD_DIR_SRC_$(1)) \
-	-I$$(BUILD_DIR_TB_$(1)) \
-	--cc \
-	$$(BUILD_DIR_SRC_$(1))/clog2.v \
-	$$(ENCAPSULATION_TB_$(1)) \
-	$$(filter-out $$(BUILD_DIR_SRC_$(1))/clog2.v,$$(ENCAPSULATION_$(1))) \
-	--exe $$< \
-	--build \
-	-j 8 \
-	--threads 1 \
-	--x-initial 0 \
-	-o $$@
-
-
 endef
 $(foreach par, $(PAR_SETS), $(eval $(call SIM_MODULESTOP_TEMPLATE,$(par))))
 
@@ -213,6 +179,10 @@ $(foreach par, $(PAR_SETS), $(eval $(call SIM_MODULESTOP_TEMPLATE,$(par))))
 # Add the build directory as order-only-prerequisites to every source file target
 $(MODULESTOP) $(SIM_MODULESTOP): | $$(@D)
 #
+
+
+# Define Verilator-specific testbench source
+MODULESTOP_VERILATOR_TB_SRC = $(TOPMODULES_SRC_PATH)/testbench/tb.cpp
 # Synthesis, Implement, Generate and Program targets and files
 #
 # Include vendor- and devices-specific definitions and recipes
