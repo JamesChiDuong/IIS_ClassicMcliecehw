@@ -34,6 +34,7 @@ module encap_sim
             output o_uart_tx,
             output wire done
             );
+/*********Classic Variable*************/
 // input
 reg seed_valid = 1'b0;
 reg K_col_valid = 1'b0;
@@ -75,6 +76,72 @@ wire dout_valid_shake;
 wire [31:0]dout_shake;
 wire force_done_shake;
 
+/******************UART Protocol Variable***************/
+localparam  DBITS = 8,                                  // 8 bit Data
+            DATA_LENGTH = 8,                           // String length of the Data buffer    
+            BR_BITS = 6,                                // Counter limit
+            BR_LIMIT = 53,                              // Baudrate limit
+            SB_TICK = 16;                               // Sb tick
+reg tx_Send;                                    
+wire tx_done;
+wire rx_done;
+wire tick;
+wire [DBITS-1:0] rx_data_out;                           // Rx Data which receive from Rx module
+reg [2:0] rx_current_state, rx_next_state;
+reg [2:0] tx_current_state, tx_next_state;
+
+integer STDERR = 32'h8000_0002;
+
+//********************Memory loading procedure*************/
+reg [31:0] ctr = 0;
+//reg loading_done = 0;
+
+integer SIZE_SEED = 16;
+integer SIZE_PK = k*l/col_width;
+integer SIZE_C0 = (l + (32-l%32)%32)/32;
+integer SIZE_C1 = 8;
+integer SIZE_K = 8;
+
+integer START_SEED = 0;
+integer STOP_SEED = START_SEED + SIZE_SEED;
+integer START_PK = STOP_SEED + 1;
+integer STOP_PK = START_PK + SIZE_PK;
+integer SIZE_TOTAL = STOP_SEED;
+
+/*********************Clock cycle count profiling************** */
+integer f_cycles_profile;
+time    time_encap_start;
+time time_encapsulation;
+time time_encrypt_start;
+time time_encrypt;
+time time_fixedweight_start;
+time time_fixedweight;
+
+reg [17*8-1:0] prefix;
+ /**************Main Program***************/
+ initial begin
+     tx_Send = 1'b0;
+     rx_current_state = 3'd0;
+     tx_current_state = 3'd0;
+end
+
+baud_rate_generator #(.N(BR_BITS),.M(BR_LIMIT)) 
+            BAUD_RATE_GEN   
+            (
+                .clk(clk), 
+                .reset(reset),
+                .tick(tick)
+            );
+Receiver #(.DBITS(DBITS),.SB_TICK(SB_TICK))
+            UART_RX_UNIT
+            (
+                .clk(clk),
+                .reset(reset),
+                .rx(i_uart_rx),
+                .sample_tick(tick),
+                .data_ready(rx_done),
+                .data_out(rx_data_out)
+            ); 
 keccak_top shake_instance
            (
                .rst(rst),
@@ -87,8 +154,6 @@ keccak_top shake_instance
                .dout(dout_shake),
                .force_done(force_done_shake)
            );
-
-
 encap_seq_gen # (.parameter_set(parameter_set), .m(m), .t(t), .n(n), .e_width(e_width), .col_width(col_width), .KEY_START_ADDR(KEY_START_ADDR))
          DUT  (
              .clk(clk),
@@ -124,31 +189,30 @@ encap_seq_gen # (.parameter_set(parameter_set), .m(m), .t(t), .n(n), .e_width(e_
              .force_done_shake(force_done_shake)
 
          );
+mem_single #(.WIDTH(col_width), .DEPTH(((l_n_elim+(col_width-l_n_elim%col_width)%col_width)/col_width)), .FILE(`FILE_PK_SLICED) ) publickey
+           (
+               .clock(clk),
+               .data(0),
+               .address(addr_PK),
+               .wr_en(0),
+               .q(PK_col)
+           );
 
-initial
-begin
-    //$dumpfile(`FILE_VCD);
-    $dumpfile("encap_sim.vcd");
-    $dumpvars();
-end
-
-// Memory loading procedure
-reg [31:0] ctr = 0;
-//reg loading_done = 0;
-
-integer SIZE_SEED = 16;
-integer SIZE_PK = k*l/col_width;
-integer SIZE_C0 = (l + (32-l%32)%32)/32;
-integer SIZE_C1 = 8;
-integer SIZE_K = 8;
-
-integer START_SEED = 0;
-integer STOP_SEED = START_SEED + SIZE_SEED;
-integer START_PK = STOP_SEED + 1;
-integer STOP_PK = START_PK + SIZE_PK;
+mem_single #(.WIDTH(32), .DEPTH(16), .FILE(`FILE_MEM_SEED) ) mem_init_seed
+           (
+               .clock(clk),
+               .data(0),
+               .address(addr_seed),
+               .wr_en(0),
+               .q(seed_from_ram)
+           );
 
 
-integer SIZE_TOTAL = STOP_SEED;
+// // initial
+// // begin
+// //     $dumpfile(`FILE_VCD);
+// //     $dumpvars();
+// // end
 
 always @(posedge clk)
 begin
@@ -249,33 +313,21 @@ begin
     //  end
 end
 
-// always @(posedge DUT.done)
-// begin
-//     K_col_valid <= 1'b0;
-// end
-
-/* Clock cycle count profiling */
-integer f_cycles_profile;
-time    time_encap_start;
-time time_encapsulation;
-time time_encrypt_start;
-time time_encrypt;
-time time_fixedweight_start;
-time time_fixedweight;
-
-reg [17*8-1:0] prefix;
-
+always @(posedge DUT.done)
+begin
+    K_col_valid <= 1'b0;
+end
 initial
 begin
-    f_cycles_profile = $fopen("`FILE_CYCLES_PROFILE","w");
+    f_cycles_profile = $fopen(`FILE_CYCLES_PROFILE,"w");
     $sformat(prefix, "[mceliece%0d%0d]", DUT.n, DUT.t);
 end
 always @(posedge DUT.done)
 begin
-    $writememb("`FILE_K_OUT", DUT.hash_mem.mem,0,7);
-    $writememb("`FILE_CIPHER0_OUT", DUT.encryption_unit.encrypt_mem.mem);
-    $writememb("`FILE_CIPHER1_OUT", DUT.C1_mem.mem);
-    $writememb("`FILE_ERROR_OUT", DUT.error_vector_gen.onegen_instance.mem_dual_B.mem);
+    $writememb(`FILE_K_OUT, DUT.hash_mem.mem,0,7);
+    $writememb(`FILE_CIPHER0_OUT, DUT.encryption_unit.encrypt_mem.mem);
+    $writememb(`FILE_CIPHER1_OUT, DUT.C1_mem.mem);
+    $writememb(`FILE_ERROR_OUT, DUT.error_vector_gen.onegen_instance.mem_dual_B.mem);
     $fflush();
 end
 
@@ -325,21 +377,5 @@ begin
     $fflush();
 end
 
-mem_single #(.WIDTH(col_width), .DEPTH(((l_n_elim+(col_width-l_n_elim%col_width)%col_width)/col_width)), .FILE("`FILE_PK_SLICED") ) publickey
-           (
-               .clock(clk),
-               .data(0),
-               .address(addr_PK),
-               .wr_en(0),
-               .q(PK_col)
-           );
 
-mem_single #(.WIDTH(32), .DEPTH(16), .FILE("`FILE_MEM_SEED") ) mem_init_seed
-           (
-               .clock(clk),
-               .data(0),
-               .address(addr_seed),
-               .wr_en(0),
-               .q(seed_from_ram)
-           );
 endmodule;

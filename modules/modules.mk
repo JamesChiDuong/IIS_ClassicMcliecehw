@@ -10,8 +10,11 @@ include $(MODULESTOP_SRC_PATH)/FPGA/parameters.mk
 include $(MODULESTOP_SRC_PATH)/FPGA/tools.mk
 
 #-----Define TOP_MODULES----------#
-TOPMODULE ?= encap
-TOPMODULE_CHECK ?= encap
+export TOPMODULES
+export TOPMODULE_SIMU
+
+TOPMODULE ?= $(TOPMODULES)
+TOPMODULE_CHECK ?= $(TOPMODULES)
 
 #build directory
 BUILD_DIR ?= $(MODULESTOP_SRC_PATH)/build
@@ -60,13 +63,13 @@ SLICED_PUBKEY_COLUMN_WIDTHS ?= 32
 # Export ROOT_PATH from FPGA.mk
 export ROOT_PATH
 
-# include $(ROOT_PATH)/platform/rtl/rtl.mk 
-# include $(ROOT_PATH)/modules/encap/modules.mk
-# include $(COMMON_SRC_PATH)/modules.mk
+include $(ROOT_PATH)/platform/rtl/rtl.mk 
+include $(ROOT_PATH)/modules/encap/modules.mk
+include $(COMMON_SRC_PATH)/modules.mk
 
-include /home/james/Documents/IIS/FPGA/Cryto/ClassicMceliehw_FPGA/ClassicMceliehw_FPGA/platform/rtl/rtl.mk
-include /home/james/Documents/IIS/FPGA/Cryto/ClassicMceliehw_FPGA/ClassicMceliehw_FPGA/modules/encap/modules.mk
-include /home/james/Documents/IIS/FPGA/Cryto/ClassicMceliehw_FPGA/ClassicMceliehw_FPGA/modules/common/modules.mk
+# include /home/james/Documents/IIS/FPGA/Cryto/ClassicMceliehw_FPGA/ClassicMceliehw_FPGA/platform/rtl/rtl.mk
+# include /home/james/Documents/IIS/FPGA/Cryto/ClassicMceliehw_FPGA/ClassicMceliehw_FPGA/modules/encap/modules.mk
+# include /home/james/Documents/IIS/FPGA/Cryto/ClassicMceliehw_FPGA/ClassicMceliehw_FPGA/modules/common/modules.mk
 
 
 
@@ -143,9 +146,9 @@ ifeq ($(TOPMODULE_CHECK),${TOPMODULE})
 $(MODULESTOP): | $$(@D)
 
 
-MODULESTOP_TB_SRC = encap_tb.v 
+MODULESTOP_TB_SRC = $(TOPMODULE_SIMU).v 
 # Define Verilator-specific testbench source
-ENCAPSULATION_VERILATOR_TB_SRC = $(TOPMODULES_SRC_PATH)/testbench/tb.cpp
+
 .PHONY: sim
 sim: $(addprefix sim-, $(PAR_SETS))
 # Set of all sources
@@ -182,7 +185,6 @@ $(MODULESTOP) $(SIM_MODULESTOP): | $$(@D)
 
 
 # Define Verilator-specific testbench source
-MODULESTOP_VERILATOR_TB_SRC = $(TOPMODULES_SRC_PATH)/testbench/tb.cpp
 # Synthesis, Implement, Generate and Program targets and files
 #
 # Include vendor- and devices-specific definitions and recipes

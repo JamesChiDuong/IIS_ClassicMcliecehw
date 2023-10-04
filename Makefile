@@ -1,11 +1,14 @@
 SHELL = sh -xv
 ifdef SRCDIR
+
 VPATH = $(SRCDIR)
 all: $(TARGETS)
 
 export ROOT_PATH := $(abspath $(dir $(lastword $(MAKEFILE_LIST))))
 
 include config.mk
+
+#Set Topmodule
 
 # # Include generated dependencies
 #-include $(filter %.d,$(OBJ:.o=.d))

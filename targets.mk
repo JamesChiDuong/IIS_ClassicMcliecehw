@@ -3,6 +3,9 @@ _TARGETS :=
 
 TARGET ?=
 
+export TOPMODULES := encap
+export TOPMODULE_SIMU := encap_sim
+
 ifeq ($(TARGET),unix)
 DEVICE := x86_64
 endif
@@ -20,6 +23,7 @@ DEVICE := artix7_100t
 endif
 
 RETAINED_VARS += TARGET PLATFORM
+
 
 ifneq ($(TARGET),)
 $(info ---Picking PLATFORM = $(PLATFORM) DEVICE=$(DEVICE) for target $(TARGET)---)

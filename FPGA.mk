@@ -23,7 +23,7 @@ include $(XILINX_MODELS_FILE)
 MODULES_DIR 	:= $(ROOT_PATH)/modules
 
 
-TOPMODULES = encap
+export TOPMODULES
 # TOPMODULES = Data_Receiver
 # Define individual targets for the single steps.
 SOURCES := $(addsuffix -sources,$(TOPMODULES))

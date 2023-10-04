@@ -1,32 +1,3 @@
-# ifndef _SOURCE
-# _SOURCE :=
-
-# export DEVICE ?=
-# export OBJDIR ?=
-
-# ifeq ($(DEVICE),)
-# $(error No DEVICE specified for linker script generator)
-# endif
-
-# export SIMU_DIR := $(CURDIR)/simulation
-
-# PLAT_SRC_PATH 	:= $(abspath $(dir $(lastword $(MAKEFILE_LIST))))
-# PLAT_DIR_SRC	:= $(PLAT_SRC_PATH)/platform
-# MODULE_DIR_SRC	:= $(PLAT_SRC_PATH)/modules
-# BUILD_MODULES_DIR_SRC := $(SIMU_DIR)/verilog
-# VERILOG_FILE	:= $(MODULE_DIR_SRC)/*.v
-# export VERILOG_FILE
-# all : simulation
-# simulation: 
-# 	cp -r $(PLAT_DIR_SRC) $(SIMU_DIR)
-# 	mkdir -p $(BUILD_MODULES_DIR_SRC)
-# 	cp -r $(VERILOG_FILE) $(BUILD_MODULES_DIR_SRC)
-# 	cp -r $(MODULE_DIR_SRC)/verilog.mk $(BUILD_MODULES_DIR_SRC)
-# 	$(MAKE) -C $(SIMU_DIR)
-# clean:
-# 	rm -rf $(BUILD_DIR)
-# endif
-
 ifndef _SOURCE
 _SOURCE :=
 
@@ -52,8 +23,7 @@ include $(XILINX_MODELS_FILE)
 MODULES_DIR 	:= $(ROOT_PATH)/modules
 
 
-TOPMODULES = encap
-# TOPMODULES = Data_Receiver
+export TOPMODULES
 # Define individual targets for the single steps.
 SIM := $(addsuffix -sim,$(TOPMODULES))
 
@@ -64,7 +34,6 @@ TARGETS := $(SIM)
 BUILD_DIR = $(ROOT_PATH)/build
 NPROC ?= 1
 
-TOPMODULE ?= encap
 #export SIMU_DIR := $(BUILD_DIR)/simulation
 export SIMU_DIR := $(BUILD_DIR)/simulation
 # PLAT_SRC_PATH 	:= $(abspath $(dir $(lastword $(MAKEFILE_LIST))))
@@ -74,7 +43,6 @@ export BUILD_MODULES_DIR_SRC := $(SIMU_DIR)/verilog
 # VERILOG_FILE	:= $(MODULE_DIR_SRC)/*.v
 
 #-----Define TOP_MODULES----------#
-
 
 
 .PHONY: all
@@ -95,10 +63,8 @@ $(TARGETS):
 		XILINX_MODELS="$(XILINX_MODELS)" \
 		SYSTEMIZER="$(SYSTEMIZER)"
 	cp -r $(PLAT_DIR_SRC)/cpp $(SIMU_DIR)
-	# cp -r $(PLAT_DIR_SRC)/rtl $(SIMU_DIR)
 	cp -r $(PLAT_DIR_SRC)/Makefile $(SIMU_DIR)
 	cp -r $(MODULE_DIR_SRC)/verilog.mk $(BUILD_MODULES_DIR_SRC)
-
 	$(MAKE) -C $(SIMU_DIR)
 
 
