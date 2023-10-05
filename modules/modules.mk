@@ -56,7 +56,7 @@ endif
 #
 # Configurations and options of the module
 #
-SLICED_PUBKEY_COLUMN_WIDTHS ?= 32
+SLICED_PUBKEY_COLUMN_WIDTHS ?= 32 160
 
 # Include makefiles for the submodules
 #
@@ -176,7 +176,9 @@ $$(BUILD_DIR_TB_$(1))/%.v: $$(TOPMODULES_SRC_PATH)/testbench/%.v
 	cp $$< $$@
 
 endef
-$(foreach par, $(PAR_SETS), $(eval $(call SIM_MODULESTOP_TEMPLATE,$(par))))
+$(foreach par, $(PAR_SETS), \
+	$(foreach width, $(SLICED_PUBKEY_COLUMN_WIDTHS), \
+		$(eval $(call SIM_MODULESTOP_TEMPLATE,$(par),$(width)))))
 
 
 # Add the build directory as order-only-prerequisites to every source file target

@@ -125,23 +125,23 @@ reg [17*8-1:0] prefix;
      tx_current_state = 3'd0;
 end
 
-baud_rate_generator #(.N(BR_BITS),.M(BR_LIMIT)) 
-            BAUD_RATE_GEN   
-            (
-                .clk(clk), 
-                .reset(reset),
-                .tick(tick)
-            );
-Receiver #(.DBITS(DBITS),.SB_TICK(SB_TICK))
-            UART_RX_UNIT
-            (
-                .clk(clk),
-                .reset(reset),
-                .rx(i_uart_rx),
-                .sample_tick(tick),
-                .data_ready(rx_done),
-                .data_out(rx_data_out)
-            ); 
+// baud_rate_generator #(.N(BR_BITS),.M(BR_LIMIT)) 
+//             BAUD_RATE_GEN   
+//             (
+//                 .clk(clk), 
+//                 .reset(reset),
+//                 .tick(tick)
+//             );
+// Receiver #(.DBITS(DBITS),.SB_TICK(SB_TICK))
+//             UART_RX_UNIT
+//             (
+//                 .clk(clk),
+//                 .reset(reset),
+//                 .rx(i_uart_rx),
+//                 .sample_tick(tick),
+//                 .data_ready(rx_done),
+//                 .data_out(rx_data_out)
+//             ); 
 keccak_top shake_instance
            (
                .rst(rst),
@@ -317,65 +317,65 @@ always @(posedge DUT.done)
 begin
     K_col_valid <= 1'b0;
 end
-initial
-begin
-    f_cycles_profile = $fopen(`FILE_CYCLES_PROFILE,"w");
-    $sformat(prefix, "[mceliece%0d%0d]", DUT.n, DUT.t);
-end
-always @(posedge DUT.done)
-begin
-    $writememb(`FILE_K_OUT, DUT.hash_mem.mem,0,7);
-    $writememb(`FILE_CIPHER0_OUT, DUT.encryption_unit.encrypt_mem.mem);
-    $writememb(`FILE_CIPHER1_OUT, DUT.C1_mem.mem);
-    $writememb(`FILE_ERROR_OUT, DUT.error_vector_gen.onegen_instance.mem_dual_B.mem);
-    $fflush();
-end
+// initial
+// begin
+//     f_cycles_profile = $fopen(`FILE_CYCLES_PROFILE,"w");
+//     $sformat(prefix, "[mceliece%0d%0d]", DUT.n, DUT.t);
+// end
+// always @(posedge DUT.done)
+// begin
+//     $writememb(`FILE_K_OUT, DUT.hash_mem.mem,0,7);
+//     $writememb(`FILE_CIPHER0_OUT, DUT.encryption_unit.encrypt_mem.mem);
+//     $writememb(`FILE_CIPHER1_OUT, DUT.C1_mem.mem);
+//     $writememb(`FILE_ERROR_OUT, DUT.error_vector_gen.onegen_instance.mem_dual_B.mem);
+//     $fflush();
+// end
 
-always @(posedge seed_valid)
-begin
-    time_encap_start = $time;
-    $display("%s Start Encapsulation. (%0d cycles)", prefix, time_encap_start/2);
-    $fflush();
-end
+// always @(posedge seed_valid)
+// begin
+//     time_encap_start = $time;
+//     $display("%s Start Encapsulation. (%0d cycles)", prefix, time_encap_start/2);
+//     $fflush();
+// end
 
-always @(posedge DUT.done)
-begin
-    time_encapsulation = ($time-time_encap_start)/2;
-    $display("%s Encapsulation finished. (%0d cycles)", prefix, time_encapsulation);
-    $fwrite(f_cycles_profile, "encapsulation %0d %0d\n", time_encap_start/2, time_encapsulation);
-    $fflush();
-end
+// always @(posedge DUT.done)
+// begin
+//     time_encapsulation = ($time-time_encap_start)/2;
+//     $display("%s Encapsulation finished. (%0d cycles)", prefix, time_encapsulation);
+//     $fwrite(f_cycles_profile, "encapsulation %0d %0d\n", time_encap_start/2, time_encapsulation);
+//     $fflush();
+// end
 
-always @(negedge rst)
-begin
-    time_fixedweight_start = $time;
-    $display("%s Start FixedWeight. (%0d cycles)", prefix, time_fixedweight_start/2);
-    $fflush();
-end
+// always @(negedge rst)
+// begin
+//     time_fixedweight_start = $time;
+//     $display("%s Start FixedWeight. (%0d cycles)", prefix, time_fixedweight_start/2);
+//     $fflush();
+// end
 
-always @(posedge DUT.done_error)
-begin
-    time_fixedweight = ($time-time_fixedweight_start)/2;
-    $display("%s FixedWeight finished. (%0d cycles)", prefix, time_fixedweight);
-    $fwrite(f_cycles_profile, "fixedweight %0d %0d\n", time_fixedweight_start/2, time_fixedweight);
-    $fflush();
-end
+// always @(posedge DUT.done_error)
+// begin
+//     time_fixedweight = ($time-time_fixedweight_start)/2;
+//     $display("%s FixedWeight finished. (%0d cycles)", prefix, time_fixedweight);
+//     $fwrite(f_cycles_profile, "fixedweight %0d %0d\n", time_fixedweight_start/2, time_fixedweight);
+//     $fflush();
+// end
 
-always @(posedge DUT.done_error)
-begin
-    time_fixedweight = ($time-time_fixedweight_start)/2;
-    $display("%s FixedWeight finished. (%0d cycles)", prefix, time_fixedweight);
-    $fwrite(f_cycles_profile, "fixedweight %0d %0d\n", time_fixedweight_start/2, time_fixedweight);
-    $fflush();
-end
+// always @(posedge DUT.done_error)
+// begin
+//     time_fixedweight = ($time-time_fixedweight_start)/2;
+//     $display("%s FixedWeight finished. (%0d cycles)", prefix, time_fixedweight);
+//     $fwrite(f_cycles_profile, "fixedweight %0d %0d\n", time_fixedweight_start/2, time_fixedweight);
+//     $fflush();
+// end
 
-always @(posedge DUT.done_encrypt)
-begin
-    time_encrypt = ($time-time_encrypt_start)/2;
-    $display("%s Encode finished. (%0d cycles)", prefix, time_encrypt);
-    $fwrite(f_cycles_profile, "encode %0d %0d\n", time_encrypt_start/2, time_encrypt);
-    $fflush();
-end
+// always @(posedge DUT.done_encrypt)
+// begin
+//     time_encrypt = ($time-time_encrypt_start)/2;
+//     $display("%s Encode finished. (%0d cycles)", prefix, time_encrypt);
+//     $fwrite(f_cycles_profile, "encode %0d %0d\n", time_encrypt_start/2, time_encrypt);
+//     $fflush();
+// end
 
 
 endmodule;

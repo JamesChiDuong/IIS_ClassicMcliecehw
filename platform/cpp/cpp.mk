@@ -72,9 +72,8 @@ tags:	$(SOURCES) $(HEADERS)
 
 .PHONY: clean
 clean:
-	rm -f ./$(MODULES2)
 	rm -f ./$(MODULES)
-	rm -f $(MODULES2).vcd $(MODULES).vcd
+	rm -f $(MODULES).vcd
 	rm -rf $(OBJDIR)/
 
 ifneq ($(MAKECMDGOALS),clean)
