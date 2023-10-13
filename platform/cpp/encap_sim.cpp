@@ -200,7 +200,7 @@ int	main(int argc, char **argv)
 #define	TRACE_CLOSE	while(0)
 #endif
 
-   // Clear any initial break condition
+ //  Clear any initial break condition
    for(int i=0; i<(baudclocks*24); i++) {
       tb.clk = 1;
       tb.eval();
@@ -221,6 +221,14 @@ int	main(int argc, char **argv)
       TRACE_NEGEDGE;
       clocks++;
       tb.i_uart_rx = (*uart)(tb.o_uart_tx);
+      if(clocks <=10)
+      {
+        tb.rst = 1;
+      }
+      else
+      {
+        tb.rst = 0;
+      }
    }
    TRACE_CLOSE;
 

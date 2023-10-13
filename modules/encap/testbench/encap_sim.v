@@ -91,7 +91,19 @@ reg [2:0] rx_current_state, rx_next_state;
 reg [2:0] tx_current_state, tx_next_state;
 
 integer STDERR = 32'h8000_0002;
-
+enum logic [1:0]
+{
+    STATE_IDLE,
+    STATE_TYPE,
+    STATE_LENGTH,
+    STATE_VALUE
+}state;
+//Register to store the current TLV data byte
+reg [DBITS-1:0] tlv_data_byte;
+reg [DBITS-1:0] tlv_type_reg;
+reg [DBITS-1:0] tlv_length_reg;
+integer data_length =0;
+reg [DBITS-1:0] tlv_value_reg;
 //********************Memory loading procedure*************/
 reg [31:0] ctr = 0;
 //reg loading_done = 0;
@@ -102,12 +114,14 @@ integer SIZE_C0 = (l + (32-l%32)%32)/32;
 integer SIZE_C1 = 8;
 integer SIZE_K = 8;
 
-integer START_SEED = 0;
+integer START_SEED = 1;
 integer STOP_SEED = START_SEED + SIZE_SEED;
 integer START_PK = STOP_SEED + 1;
 integer STOP_PK = START_PK + SIZE_PK;
 integer SIZE_TOTAL = STOP_SEED;
 
+reg write_en;
+reg [31:0] data_tlv_length;
 /*********************Clock cycle count profiling************** */
 integer f_cycles_profile;
 time    time_encap_start;
@@ -125,23 +139,23 @@ reg [17*8-1:0] prefix;
      tx_current_state = 3'd0;
 end
 
-// baud_rate_generator #(.N(BR_BITS),.M(BR_LIMIT)) 
-//             BAUD_RATE_GEN   
-//             (
-//                 .clk(clk), 
-//                 .reset(reset),
-//                 .tick(tick)
-//             );
-// Receiver #(.DBITS(DBITS),.SB_TICK(SB_TICK))
-//             UART_RX_UNIT
-//             (
-//                 .clk(clk),
-//                 .reset(reset),
-//                 .rx(i_uart_rx),
-//                 .sample_tick(tick),
-//                 .data_ready(rx_done),
-//                 .data_out(rx_data_out)
-//             ); 
+baud_rate_generator #(.N(BR_BITS),.M(BR_LIMIT)) 
+            BAUD_RATE_GEN   
+            (
+                .clk(clk), 
+                .reset(rst),
+                .tick(tick)
+            );
+Receiver #(.DBITS(DBITS),.SB_TICK(SB_TICK))
+            UART_RX_UNIT
+            (
+                .clk(clk),
+                .reset(rst),
+                .rx(i_uart_rx),
+                .sample_tick(tick),
+                .data_ready(rx_done),
+                .data_out(rx_data_out)
+            ); 
 keccak_top shake_instance
            (
                .rst(rst),
@@ -198,15 +212,22 @@ mem_single #(.WIDTH(col_width), .DEPTH(((l_n_elim+(col_width-l_n_elim%col_width)
                .q(PK_col)
            );
 
-mem_single #(.WIDTH(32), .DEPTH(16), .FILE(`FILE_MEM_SEED) ) mem_init_seed
+// mem_single #(.WIDTH(32), .DEPTH(16), .FILE(`FILE_MEM_SEED) ) mem_init_seed
+//            (
+//                .clock(clk),
+//                .data(0),
+//                .address(addr_seed),
+//                .wr_en(0),
+//                .q(seed_from_ram)
+//            );
+mem_single #(.WIDTH(32), .DEPTH(16)) mem_init_seed
            (
                .clock(clk),
-               .data(0),
+               .data(tlv_value_reg),
                .address(addr_seed),
-               .wr_en(0),
+               .wr_en(write_en),
                .q(seed_from_ram)
            );
-
 
 // // initial
 // // begin
@@ -216,10 +237,15 @@ mem_single #(.WIDTH(32), .DEPTH(16), .FILE(`FILE_MEM_SEED) ) mem_init_seed
 
 always @(posedge clk)
 begin
-    if (rst)
+    if(rst)
     begin
+        state <= STATE_IDLE;
+        tlv_type_reg <= 8'b0;
+        tlv_length_reg <= 8'b0;
+        tlv_value_reg <= 8'b0;
+
         ctr <= 0;
-	   addr_h = 0;
+	    addr_h = 0;
         addr_seed <= 0;
         //  addr_C0 <= 0;
         //  addr_C1 <= 0;
@@ -231,41 +257,83 @@ begin
         //  rd_C0 <= 1'b0;
         //  rd_C1 <= 1'b0;
         // rd_K <= 1'b0;
-
-    end
-    else
-    begin
-        // Wait until the field ordering module is done.
-        if(ctr >= SIZE_TOTAL+1)// || ctr == STOP_SEED && PK_ready == 1'b0)
-        begin
-            ctr <= ctr;
-        end
-        else
-            // Count until all memory is written.
-            if (ctr < SIZE_TOTAL+1)
-            begin
-                ctr <= ctr + 1;
-            end
+        write_en <= 1'b0;
+        data_tlv_length = 31'd0;
     end
 end
 
-integer i;
 
+/***********TLV decode*******************/
+always @(posedge clk)
+begin
+    case (state)
+        STATE_IDLE : begin
+        if((rx_data_out != 8'b0) && (rx_done))
+        begin
+            state <= STATE_TYPE;
+            tlv_data_byte <= rx_data_out;
+        end
+        end
+        STATE_TYPE: begin
+        if(rx_done)
+        begin
+            state <= STATE_LENGTH;
+            tlv_type_reg <= tlv_data_byte;
+            tlv_data_byte <= rx_data_out;
+        end
+        end
+        STATE_LENGTH: begin
+        if(rx_done)
+        begin
+            state <= STATE_VALUE;
+            tlv_length_reg <= tlv_data_byte;
+            tlv_value_reg <= rx_data_out;
+            data_tlv_length +=  tlv_length_reg;
+            addr_seed <= addr_seed + 1;  
+        end
+        end
+        STATE_VALUE: begin
+        if((tlv_length_reg == 8'b1))
+        begin
+            state <= STATE_IDLE;
+        end
+        else
+        begin
+            if(rx_done)
+            begin
+                tlv_length_reg <= tlv_length_reg - 1'b1;
+                tlv_value_reg <= rx_data_out;  
+            end
+        end
+        end
+        default: tlv_data_byte <= rx_data_out;
+    endcase
+end
+
+/***************START Encapsulation*************************/
+
+// integer i;
+always @(posedge clk)
+begin
+    
+end
 always @(posedge clk)
 begin
     seed <= seed_from_ram;
 
     // loading seed
-    if (ctr >= START_SEED && ctr < STOP_SEED)
+    if (data_tlv_length >= START_SEED && data_tlv_length < STOP_SEED)
     begin
         seed_valid <= 1'b1;
-        if (ctr > START_SEED)
-            addr_seed <= addr_seed + 1;
+        write_en <= 1'b1;
+        // if ((data_tlv_length < STOP_SEED) && (state == STATE_VALUE))
+            // addr_seed <= addr_seed + 1;
     end
     else
     begin
         addr_seed <= addr_seed;
         seed_valid <= 1'b0;
+        write_en <= 1'b0;
     end
     // // loading PK
     // if (ctr >= START_PK && ctr < STOP_PK)
@@ -313,15 +381,116 @@ begin
     //  end
 end
 
-always @(posedge DUT.done)
-begin
-    K_col_valid <= 1'b0;
-end
+// always @(posedge DUT.done)
+// begin
+//     K_col_valid <= 1'b0;
+// end
+
+// always @(posedge clk)
+// begin
+//     if (rst)
+//     begin
+//         ctr <= 0;
+// 	   addr_h = 0;
+//         addr_seed <= 0;
+//         //  addr_C0 <= 0;
+//         //  addr_C1 <= 0;
+//         // addr_PK <= 0;
+//         // addr_K <= 0;
+
+//         seed_valid <= 1'b0;
+//         K_col_valid <= 1'b0;
+//         //  rd_C0 <= 1'b0;
+//         //  rd_C1 <= 1'b0;
+//         // rd_K <= 1'b0;
+
+//     end
+//     else
+//     begin
+//         // Wait until the field ordering module is done.
+//         if(ctr >= SIZE_TOTAL+1)// || ctr == STOP_SEED && PK_ready == 1'b0)
+//         begin
+//             ctr <= ctr;
+//         end
+//         else
+//             // Count until all memory is written.
+//             if (ctr < SIZE_TOTAL+1)
+//             begin
+//                 ctr <= ctr + 1;
+//             end
+//     end
+// end
+
+// integer i;
+
+// always @(posedge clk)
+// begin
+//     seed <= seed_from_ram;
+
+//     // loading seed
+//     if (ctr >= START_SEED && ctr < STOP_SEED)
+//     begin
+//         seed_valid <= 1'b1;
+//         if (ctr > START_SEED)
+//             addr_seed <= addr_seed + 1;
+//     end
+//     else
+//     begin
+//         addr_seed <= addr_seed;
+//         seed_valid <= 1'b0;
+//     end
+//     // // loading PK
+//     // if (ctr >= START_PK && ctr < STOP_PK)
+//     // begin
+//     //     K_col_valid <= 1'b1;
+//     //    if (ctr > START_PK)
+//     //      addr_PK <= addr_PK + 1;
+//     // end
+//     // else
+//     // begin
+//     //     addr_PK <= addr_PK;
+//     // end
+//     // // reading C0
+//     // if (ctr > START_C0 && ctr <= STOP_C0)
+//     //   begin
+//     //      addr_C0 <= addr_C0 + 1;
+//     //      rd_C0 <= 1'b1;
+//     //   end
+//     // else
+//     //   begin
+//     //      addr_C0 <= addr_C0;
+//     //      rd_C0 <= 1'b0;
+//     //   end
+//     // // reading C1
+//     //  if (ctr > START_C1 && ctr <= STOP_C1)
+//     //  begin
+//     //      addr_C1 <= addr_C1 + 1;
+//     //      rd_C1 <= 1'b1;
+//     //  end
+//     //  else
+//     //  begin
+//     //      addr_C1 <= addr_C1;
+//     //      rd_C1 <= 1'b0;
+//     //  end
+//     //  // reading K
+//     //  if (ctr > START_K && ctr < STOP_POLY)
+//     //  begin
+//     //      addr_K <= addr_K + 1;
+//     //      rd_K <= 1'b1;
+//     //  end
+//     //  else
+//     //  begin
+//     //      addr_K <= addr_K;
+//     //      rd_K <= 1'b0;
+//     //  end
+// end
+
 // initial
 // begin
 //     f_cycles_profile = $fopen(`FILE_CYCLES_PROFILE,"w");
 //     $sformat(prefix, "[mceliece%0d%0d]", DUT.n, DUT.t);
 // end
+
 // always @(posedge DUT.done)
 // begin
 //     $writememb(`FILE_K_OUT, DUT.hash_mem.mem,0,7);
@@ -363,9 +532,8 @@ end
 
 // always @(posedge DUT.done_error)
 // begin
-//     time_fixedweight = ($time-time_fixedweight_start)/2;
-//     $display("%s FixedWeight finished. (%0d cycles)", prefix, time_fixedweight);
-//     $fwrite(f_cycles_profile, "fixedweight %0d %0d\n", time_fixedweight_start/2, time_fixedweight);
+//     time_encrypt_start = $time;
+//     $display("%s Start Encode. (%0d cycles)", prefix, time_encrypt_start/2);
 //     $fflush();
 // end
 
@@ -376,6 +544,5 @@ end
 //     $fwrite(f_cycles_profile, "encode %0d %0d\n", time_encrypt_start/2, time_encrypt);
 //     $fflush();
 // end
-
 
 endmodule;
