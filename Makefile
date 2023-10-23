@@ -31,5 +31,6 @@ $(OBJDIR): %:
 
 clean:
 	$(MAKE) -f FPGA.mk clean
+	$(MAKE) -f simulation.mk clean
 	rm -rf $(OBJDIR)
 endif

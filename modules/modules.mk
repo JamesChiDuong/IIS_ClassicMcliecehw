@@ -12,6 +12,7 @@ include $(MODULESTOP_SRC_PATH)/FPGA/tools.mk
 #-----Define TOP_MODULES----------#
 export TOPMODULES
 export TOPMODULE_SIMU
+export ROOT_PATH
 
 TOPMODULE ?= $(TOPMODULES)
 TOPMODULE_CHECK ?= $(TOPMODULES)
@@ -23,7 +24,7 @@ KAT_DIR ?= $(BUILD_DIR)/kat
 RESULTS_DIR ?= $(BUILD_DIR)/results
 # Source path for the common used modules
 COMMON_SRC_PATH ?= $(MODULESTOP_SRC_PATH)/common
-
+KATGEN_SRC_PATH ?= $(ROOT_PATH)/host/kat
 .SECONDEXPANSION:
 #
 # Parameter-specific build subdirectories
@@ -39,6 +40,7 @@ BUILD_DIR_$(1) = $$(BUILD_DIR)
 
 BUILD_DIR_SRC_$(1) = $$(BUILD_DIR_$(1))/verilog
 BUILD_DIR_TB_$(1) = $$(BUILD_DIR_$(1))/verilog
+BUILD_DIR_KAT_$(1) = $$(KAT_DIR/$(1))
 else
 BUILD_DIR_$(1) = $$(BUILD_DIR)/$(1)/$$(TOPMODULE)
 
@@ -61,16 +63,10 @@ SLICED_PUBKEY_COLUMN_WIDTHS ?= 32 160
 # Include makefiles for the submodules
 #
 # Export ROOT_PATH from FPGA.mk
-export ROOT_PATH
 
-include $(ROOT_PATH)/platform/rtl/rtl.mk 
-include $(ROOT_PATH)/modules/encap/modules.mk
+include platform/rtl/rtl.mk 
+include modules/encap/modules.mk
 include $(COMMON_SRC_PATH)/modules.mk
-
-# include /home/james/Documents/IIS/FPGA/Cryto/ClassicMceliehw_FPGA/ClassicMceliehw_FPGA/platform/rtl/rtl.mk
-# include /home/james/Documents/IIS/FPGA/Cryto/ClassicMceliehw_FPGA/ClassicMceliehw_FPGA/modules/encap/modules.mk
-# include /home/james/Documents/IIS/FPGA/Cryto/ClassicMceliehw_FPGA/ClassicMceliehw_FPGA/modules/common/modules.mk
-
 
 
 TOPMODULES_SRC_PATH := $(MODULESTOP_SRC_PATH)/$(TOPMODULE)
@@ -155,6 +151,9 @@ sim: $(addprefix sim-, $(PAR_SETS))
 SIM_MODULESTOP = 
 
 define SIM_MODULESTOP_TEMPLATE = 
+
+KAT_FILE_PUBKEY_$(2) = $(basename $(KAT_FILE_PUBKEY))_$(2)$(suffix $(KAT_FILE_PUBKEY))
+
 # Define all required targets to be included in the modules above.
 SIM_MODULESTOP_$(1) = $(addprefix $$(BUILD_DIR_TB_$(1))/,$(MODULESTOP_TB_SRC))
 
@@ -174,6 +173,7 @@ $$(BUILD_DIR_TB_$(1)):
 #
 $$(BUILD_DIR_TB_$(1))/%.v: $$(TOPMODULES_SRC_PATH)/testbench/%.v
 	cp $$< $$@
+
 
 endef
 $(foreach par, $(PAR_SETS), \

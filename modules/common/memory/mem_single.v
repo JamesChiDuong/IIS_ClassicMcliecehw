@@ -2,7 +2,6 @@ module mem_single
   #(
     parameter WIDTH = 8,
     parameter DEPTH = 64,
-    /* verilator lint_off UNUSEDSIGNAL */
     parameter FILE = "",
     parameter INIT = 0
   )

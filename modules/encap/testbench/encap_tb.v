@@ -91,7 +91,6 @@ wire [31:0]K_out;
 //shake interface
 wire din_valid_shake_enc;
 wire [31:0] din_shake_enc;
-wire [31:0] din_shake_test;
 wire dout_ready_shake_enc;
 
 wire din_ready_shake;
@@ -173,7 +172,8 @@ integer STOP_PK = START_PK + SIZE_PK;
 // integer START_C1 = STOP_C0;
 // integer STOP_C1 = START_C1 + SIZE_C1;
 
-integer SIZE_TOTAL = STOP_SEED;
+// integer SIZE_TOTAL = STOP_SEED;
+integer SIZE_TOTAL = STOP_PK;
 
 always @(posedge clk)
 begin
@@ -187,9 +187,9 @@ begin
         // addr_PK <= 0;
         // addr_K <= 0;
 
-        seed_valid <= 1'b0;
+        // x` <= 1'b0;
         K_col_valid <= 1'b0;
-        //  rd_C0 <= 1'b0;
+        //  rd_C0 <= 1'
         //  rd_C1 <= 1'b0;
         // rd_K <= 1'b0;
 
@@ -197,7 +197,7 @@ begin
     else
     begin
         // Wait until the field ordering module is done.
-        if(ctr >= SIZE_TOTAL+1)// || ctr == STOP_SEED && PK_ready == 1'b0)
+        if((ctr >= SIZE_TOTAL+1))//|| (ctr == STOP_SEED && PK_ready == 1'b0))
         begin
             ctr <= ctr;
         end
@@ -228,17 +228,17 @@ begin
         addr_seed <= addr_seed;
         seed_valid <= 1'b0;
     end
-    // // loading PK
-    // if (ctr >= START_PK && ctr < STOP_PK)
-    // begin
-    //     K_col_valid <= 1'b1;
+    // loading PK
+    if (ctr >= START_PK && ctr < STOP_PK)
+    begin
+        K_col_valid <= 1'b1;
     //    if (ctr > START_PK)
     //      addr_PK <= addr_PK + 1;
-    // end
-    // else
-    // begin
-    //     addr_PK <= addr_PK;
-    // end
+    end
+    else
+    begin
+        //addr_PK <= addr_PK;
+    end
     // // reading C0
     // if (ctr > START_C0 && ctr <= STOP_C0)
     //   begin

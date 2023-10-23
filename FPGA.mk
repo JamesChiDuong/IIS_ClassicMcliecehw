@@ -71,8 +71,6 @@ $(TARGETS):
 
 
 clean:
-	$(MAKE) -C $(MODULES_DIR)\
-		-f modules.mk $(lastword $(subst -, ,$@))
 	rm -rf $(BUILD_PATH)
 .PHONY: help
 

@@ -5,6 +5,10 @@ all:	test
 
 export TOPMODULE_SIMU
 export ROOT_PATH
+
+PAR_FILE := $(ROOT_PATH)/modules/FPGA/parameters.mk
+include $(PAR_FILE)
+
 YYMMDD		=`date +%Y%m%d`
 CXX   		:= g++
 FBDIR 		:= .
@@ -20,8 +24,8 @@ FILE_K_OUT	:= -DFILE_K_OUT=\"result_K_$(MODULES).out\"
 FILE_CIPHER0_OUT := -DFILE_CIPHER0_OUT=\"result_cipher_0_$(MODULES).out\"
 FILE_CIPHER1_OUT := -DFILE_CIPHER1_OUT=\"result_cipher_1_$(MODULES).out\"
 FILE_ERROR_OUT	 := -DFILE_ERROR_OUT=\"result_error_$(MODULES).out\"
-FILE_MEM_SEED    := -DFILE_MEM_SEED=\"$(ROOT_PATH)/host/kat/$(KAT_FILE_SEED)\"
-FILE_PK_SLICED	 :=	-DFILE_PK_SLICED=\"$(ROOT_PATH)/host/kat/$(KAT_FILE_PUBKEY)\"
+FILE_MEM_SEED    := -DFILE_MEM_SEED=\"$(ROOT_PATH)/host/kat/kat_generate/$(KAT_FILE_SEED)\"
+FILE_PK_SLICED	 :=	-DFILE_PK_SLICED=\"$(ROOT_PATH)/host/kat/kat_generate/$(KAT_FILE_PUBKEY)\"
 VFLAGS 		:= -Wall --MMD --trace --Wno-fatal --timescale-override 1ps/1ps -y $(RTLDR) --top-module $(MODULES) \$(FILE_VCD) \$(FILE_CYCLES_PROFILE) \$(FILE_K_OUT) \$(FILE_CIPHER0_OUT) \$(FILE_CIPHER1_OUT) \$(FILE_ERROR_OUT) \$(FILE_MEM_SEED) \$(FILE_PK_SLICED) --cc
 
 #We need to change the name modules or delete the name. In the example, we have 2 moudles

@@ -4,6 +4,7 @@ _SOURCE :=
 ROOT_PATH := $(abspath $(dir $(lastword $(MAKEFILE_LIST))))
 
 BUILD_PATH := $(ROOT_PATH)/build
+KAT_DIR = $(ROOT_PATH)/host/kat/kat_generate
 # Include the parameter set definitions
 PAR_FILE := $(ROOT_PATH)/modules/FPGA/parameters.mk
 include $(PAR_FILE)
@@ -55,6 +56,7 @@ sim: $(SIM)
 
 .PHONY: $(TARGETS)
 $(TARGETS):
+	$(MAKE) -C $(ROOT_PATH)/host/kat gen-kat -j$(NPROC) KAT_DIR=$(KAT_DIR) PAR_SETS=$(PAR_MODULE)
 	$(MAKE) -C $(MODULES_DIR)\
 		-f modules.mk $(lastword $(subst -, ,$@)) \
 		-j$(NPROC) \
@@ -69,9 +71,8 @@ $(TARGETS):
 
 
 clean:
-	$(MAKE) -C $(MODULES_DIR)\
-		-f modules.mk $(lastword $(subst -, ,$@))
 	rm -rf $(BUILD_PATH)
+	rm -rf $(ROOT_PATH)/host/kat/kat_generate
 .PHONY: help
 
 help:
