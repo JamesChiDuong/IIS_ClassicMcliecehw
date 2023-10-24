@@ -3,8 +3,9 @@
 ## Project's Structure
 The project is a GNU Makefile project.
 The modules are written in Verilog and parameterized with built-in Verilog mechanisms, SageMath, and Python scripts.
-The makefile at the top includes targets for the top modules:
-    TranAndRecei  Data Receiver.
+
+The purpose of projects is testing the ClassicMelieHW via UART protocol. We can generate the data from SageMath and send these data from Python scripts to the ClassicMelieHW module via UART protocol. And We also can check the data and finished time via Python terminal.
+
 The makefile project automates the source, simulation, synthesis, implementation, generate the bitstream, and program the FPGA(for Xilinx devices) 
 
 The makefile structure enables the automated building process
@@ -14,9 +15,10 @@ The purpose of the individual folders is as follows:
 
 | Folder          | Description                                                                |
 | --------------- | -------------------------------------------------------------------------- |
-| `build/`        | Build folder including generated sources, results, and simulation file.                                                                      |
-| `host/`         | Python test code. It includes 2 files. The Test_Data_Receiver.py uses to test Data_Receiver modules and the Test_TranAndRecei.py is used to test TranAndRecei modules                                                                    |
-| `modules/`      | User HDL code. This includes these top modules Verilog file and modules/FPGA folder.                                                               |
+| `build/`        | Build folder including generated sources, results, and simulation file.                                                                                          |
+| `host/`         | Python test code. It include the scripts to test the encapsulation module in the ClassicMcelieHW project.                                                                       |
+| `host/kat`      | Know answer test generation anf verification scripts.                      |
+| `modules/`      | User HDL code. This includes these top modules Verilog file and modules/FPGA folder.                                                                                        |
 | `platform/`     | simulation CPP code is used to simulate these top modules, including `platform/cpp` and `platform/rtl`. The folder cpp has a cpp file to simulate via Verilator. The folder rtl has these modules for UART communication                     | 
 | `Makefile`      | Top Makefile.                                          |
 | `config.mk`     | To make sure we need to move the previous target when running the new target|
@@ -26,10 +28,20 @@ The purpose of the individual folders is as follows:
 
 ## How to use the Makefile
 
-In this source code, I will use 2 top modules to test these cases.
-- The Data_Receiver.v is the top module with testing to transfer data from the keyboard and receive back the data via UART protocol. We can test the simulation with many rounds
+The top Makefile includes the cumulated targets for the sub-targets defined in the sub-Makefiles in the individual sub-folders. 
+All targtes have their dependencies so that you can build arbitrary targets and all dependencies are build recursively. 
+This enables a parallel build process as well. 
 
-- The TranAndRecei.v and alu.v is the two modules for the purpose that we send two data from the Python test file via UART protocol. The TranAnRecei.v is a top module. The alu module is the additional submodule. The two data which is sent by Python Test files are the input for the alu modules, after calculating by full adder modules, these data include two data, the sum of two data will be sent back to the Python test file via UART protocol. In the simulation with Verilator, we can test the simulation in many rounds but In the FPGA, we can only test one round. Because in the Verilog file, I only implement the one-round code.
+To generate targets for all parameter sets, the Makefiles use the second expansion feature of make, c.f., [3].
+Therewith, we are able to generate targets for all combinations, e.g., over all Classic McEliece parameter sets, design simulators, or supported FPGA models,for design source generation, simulation execution, or synthesis runs.
+
+**Before we run the code, make sure you have installed: sage --pip install uttlv sage --pip install pySerial**
+
+The purpose test is interfaces between serial IO and the encaps top module to receive commands and to receive and send data as requested. A sequence of commands sends from the host to the FPGA could be:
+
+1. set public key
+
+2. set seed
 
 ### Target 'sim':
 
@@ -38,40 +50,46 @@ In this source code, I will use 2 top modules to test these cases.
   ```
   When we run the command:
 
-   The program will generate the `build/simulation/cpp`, `build/simulation/rtl`, `/build/simulation/verilog` and will run `.mk file` of each folder. After running, the terminal will compile and run the code. It will open the pseudo-terminal and wait for the test file from `host/` folder.
-
+   The program will generate the kat file `host/kat/kat_generate`, and generate these folder `build/simulation/cpp`, `build/simulation/rtl`, `/build/simulation/verilog`. Then, The program will run `.mk file` of each folder. After running, the terminal will compile and run the code. It will open the pseudo-terminal and wait for the test file from `host/` folder.
+  
    `Example 1:`
   
   | TOP MODULE FILE          |      TEST PYTHON FILE                                      |
   | ---------------          |     --------------------------------------------------------------------------              |
-  |`./Data_Receiver`         | `python3 Test_Data_Receiver.py /dev/pts/4 hello`           |
-  | Slave device: /dev/pts/4 |  Send Data:  hello                                         |
-  | Received 6 bytes: hello                                                              
-  | Successfully read 6 characters: hello                                                 | 
-  | Sent 6 bytes: hello      |  Received Data:  hello                                     |
+  |`./encap_sim`             | `python3 Test_encap_sim.py /dev/pts/4 set_seed`            |
+  | Slave device: /dev/pts/4 |  Send Data:  0x20400000000
+                                Send Data:  0x20400000000
+                                Send Data:  0x20400000000
+                                Send Data:  0x20400000000
+                                Send Data:  0x20400000000
+                                Send Data:  0x20400000000
+                                Send Data:  0x20400000000
+                                Send Data:  0x20400000000
+                                Send Data:  0x20400000000
+                                Send Data:  0x20400000000
+                                Send Data:  0x20400000000
+                                Send Data:  0x20400000000
+                                Send Data:  0x20400000000
+                                Send Data:  0x20400000000
+                                Send Data:  0x20400000000
+                                Send Data:  0x20401000000                                 |
+
+  | [mceliece348864] Start Encapsulation. (5155211 cycles)
+    [mceliece348864] Start FixedWeight. (5155211 cycles)
+    [mceliece348864] Start Encode. (5155752 cycles)
+    [mceliece348864] FixedWeight finished. (541 cycles)
+    [mceliece348864] Encode finished. (16899 cycles)
+    [mceliece348864] Encapsulation finished. (17897 cycles)  |  -------------------Read Data-------------------
+
+    Start Encapsulation:  5155211 cycles
+    Stop Encapsulation:  17897  cycles
+    Start FixedWeight:  5155211 cycles
+    Stop FixedWeight:  541 cycles
+    Start Encode:  5155752 cycles
+    Stop Encode:  16899 cycles                                                            |
   |We can't stop the program expect we interrupt the program |                            |
 
   `Example 2:`
-  We will use Python scripts decides which operands will be choose. We will implement with `addition, subtraction, and multiplicaton` to test with design.
-  * The syntax additional: python3 Test_TranAndRecei.py /dev/pts/4 110 101 add
-  * The syntax subtraction: python3 Test_TranAndRecei.py /dev/pts/4 110 101 sub
-  * The syntax multiplicaton: python3 Test_TranAndRecei.py /dev/pts/4 110 101 mul
-  * The syntax division: python3 Test_TranAndRecei.py /dev/pts/4 110 101 div
-
-  | TOP MODULE FILE                 |      TEST PYTHON FILE                                      |
-  | ---------------                 |     --------------------------------------------------------------------------              |
-  |`./TranAndRecei`                 | `python3 Test_TranAndRecei.py /dev/pts/4 110 100 add`      |
-  | Slave device: /dev/pts/4        | Send Data:  0x6e64010c0a                                    |
-  | Received 12 bytes: 110-100-add |
-  |Successfully read 7 characters:   nd�
-  |Sent 7 bytes:   nd�
-  |PASS!                            |  Number of Bytes: 7.0                                       |
-  |                                 |  Received Data:  0x20206e640100d20a                           |
-  |                                 |  Number1:  0x6e 110                                         |
-  |                                 |  Number2:  0x64 100                                         |
-  |                                 |  Operand:  0x1 add                                          |
-  |                                 |  Result:  0xd2 210                                          |           
-  | We can't stop the program expect we interrupt the program                                     |
 
 #### NOTE:
 If you want to run the simulation of Data_Receiver modules. Go into the folder `platform/cpp/cpp` and remove the `#` character at test target.
@@ -122,7 +140,7 @@ If you want to run the simulation of Data_Receiver modules. Go into the folder `
 
    - The `platform/cpp` to change the simulation top modules file
    
-   - The `modules/verilog.mk`,`platform/cpp/cpp.mk` to change the name of the modules at the MODULES and MODULES2 variables in this file.
+   - The `simulation.mk`to change the name of the modules at the TOPMODULES and TOPMODULES_SIMU variables in this file.
 
   ## With TARGET=ArtixA7
 

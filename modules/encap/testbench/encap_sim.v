@@ -365,19 +365,6 @@ always @(posedge clk ) begin
        end
         default: tlv_value_reg <= 8'd0;
     endcase
-    // if(tlv_value_reg == 8'd2)
-    // begin
-    //     if(ctr >= SIZE_TOTAL+1)// || ctr == STOP_SEED && PK_ready == 1'b0)
-    //     begin
-    //         ctr <= ctr;
-    //     end
-    //     else
-    //         // Count until all memory is written.
-    //         if (ctr < SIZE_TOTAL+1)
-    //         begin
-    //             ctr <= ctr + 1;
-    //         end
-    // end
 end
 integer i;
 
@@ -389,9 +376,6 @@ begin
     if (ctr >= START_SEED && ctr < STOP_SEED+1)
     begin
         seed_valid <= 1'b1;
-        // if (ctr > START_SEED)
-        //     // addr_seed <= addr_seed+1;
-        //     // write_en <= 1'b1;
     end
     else
     begin
