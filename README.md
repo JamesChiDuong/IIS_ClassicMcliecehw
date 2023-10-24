@@ -79,7 +79,9 @@ The purpose test is interfaces between serial IO and the encaps top module to re
   |  [mceliece348864] Start Encode. (5155752 cycles)       |                               |  
   |  [mceliece348864] FixedWeight finished. (541 cycles)   |                               |
   |  [mceliece348864] Encode finished. (16899 cycles)      |                               |
-  |  [mceliece348864] Encapsulation finished. (17897 cycles)|  -------------------Read Data-------------------                                                                  |
+  |  [mceliece348864] Encapsulation finished. (17897 cycles)|                              |  
+  
+  -------------------Read Data-------------------                                                                  |
 
 |   Start Encapsulation:  5155211 cycles |                                                  |
 |    Stop Encapsulation:  17897  cycles  |                                                 |
