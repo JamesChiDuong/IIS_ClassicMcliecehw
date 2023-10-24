@@ -74,15 +74,6 @@ The purpose test is interfaces between serial IO and the encaps top module to re
   |                          |    Send Data:  0x20400000000                               |
   |                          |    Send Data:  0x20401000000                               |
   |[mceliece348864] Start Encapsulation. (5155211 cycles) |                               |
-  -------------------Read Data-------------------                                                                  |
-
-|   Start Encapsulation:  5155211 cycles |                                                  |
-|    Stop Encapsulation:  17897  cycles  |                                                 |
-|    Start FixedWeight:  5155211 cycles  |                                                 |
-|    Stop FixedWeight:  541 cycles       |                                                 |
-|    Start Encode:  5155752 cycles       |                                                 |
-|    Stop Encode:  16899 cycles                                                            |
-|   We can't stop the program expect we interrupt the program |                            |
 
   `Example 2:`
 
