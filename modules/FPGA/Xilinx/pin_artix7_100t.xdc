@@ -31,8 +31,8 @@ set_property -dict {PACKAGE_PIN C9 IOSTANDARD LVCMOS33} [get_ports done]
 #set_property -dict { PACKAGE_PIN B9    IOSTANDARD LVCMOS33 } [get_ports { btn2 }]; #IO_L11N_T1_SRCC_16 Sch=btn[2]
 ## USB-UART Interface
 ## USB-UART Interface
-# set_property -dict { PACKAGE_PIN D10   IOSTANDARD LVCMOS33 } [get_ports o_uart_tx]; #IO_L19N_T3_VREF_16 Sch=uart_rxd_out
-# set_property -dict { PACKAGE_PIN A9 IOSTANDARD LVCMOS33} [get_ports i_uart_rx]
+set_property -dict { PACKAGE_PIN D10   IOSTANDARD LVCMOS33 } [get_ports o_uart_tx]; #IO_L19N_T3_VREF_16 Sch=uart_rxd_out
+set_property -dict { PACKAGE_PIN A9 IOSTANDARD LVCMOS33} [get_ports i_uart_rx]
 
 # ## Pmod Header JA
 # set_property -dict { PACKAGE_PIN G13   IOSTANDARD LVCMOS33 } [get_ports { data[0] }]; #IO_0_15 Sch=ja[1]
@@ -46,7 +46,5 @@ set_property -dict {PACKAGE_PIN C9 IOSTANDARD LVCMOS33} [get_ports done]
 
 
 # ## ChipKit Outer Digital Header
-# set_property -dict { PACKAGE_PIN V15   IOSTANDARD LVCMOS33 } [get_ports { o_uart_tx  }]; #IO_L16P_T2_CSI_B_14 Sch=ck_io[0]
-# set_property -dict { PACKAGE_PIN U16   IOSTANDARD LVCMOS33 } [get_ports { i_uart_rx  }]; #IO_L18P_T2_A12_D28_14 Sch=ck_io[1]
-set_property -dict { PACKAGE_PIN P14   IOSTANDARD LVCMOS33 } [get_ports { o_uart_tx }]; #IO_L8N_T1_D12_14 Sch=ck_io[2]
-set_property -dict { PACKAGE_PIN T11   IOSTANDARD LVCMOS33 } [get_ports { i_uart_rx }]; #IO_L19P_T3_A10_D26_14 Sch=ck_io[3]
+# set_property -dict { PACKAGE_PIN P14   IOSTANDARD LVCMOS33 } [get_ports { o_uart_tx }]; #IO_L8N_T1_D12_14 Sch=ck_io[2]
+# set_property -dict { PACKAGE_PIN T11   IOSTANDARD LVCMOS33 } [get_ports { i_uart_rx }]; #IO_L19P_T3_A10_D26_14 Sch=ck_io[3]
