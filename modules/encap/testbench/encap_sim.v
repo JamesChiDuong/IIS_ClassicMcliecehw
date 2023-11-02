@@ -1,3 +1,4 @@
+`timescale 1ns/1ps
 module encap_sim
             #(
             parameter parameter_set =1,
@@ -77,27 +78,24 @@ wire [31:0]dout_shake;
 wire force_done_shake;
 
 /******************UART Protocol Variable***************/
-enum logic [1:0]
-{
-    STATE_IDLE,
-    STATE_TYPE,
-    STATE_LENGTH,
-    STATE_VALUE
-}state;
-enum logic [2:0]
-{
-    STATE_START_MODE,
-    STATE_SET_SEED,
-    STATE_SET_PK,
-    STATE_LOAD_MEMORY,
-    STATE_STOP
-}state_mode;
-enum logic [1:0]
-{
-    STATE_TX_START,
-    STATE_TX_SEND,
-    STATE_TX_STOP
-}state_tx;
+parameter [2:0] STATE_START_MODE      = 3'b000,
+                STATE_SET_SEED        = 3'b001,
+                STATE_SET_PK          = 3'b100,
+                STATE_LOAD_MEMORY     = 3'b101,
+                STATE_STOP            = 3'b111;
+
+parameter [1:0] STATE_IDLE      = 2'b00,
+                STATE_TYPE      = 2'b01,
+                STATE_LENGTH    = 2'b10,
+                STATE_VALUE     = 2'b11;
+parameter [1:0] STATE_TX_START      = 2'b00,
+                STATE_TX_SEND      = 2'b01,
+                STATE_TX_STOP     = 2'b11;
+
+
+reg [2:0] state_mode;
+reg [1:0] state;
+reg [1:0] state_tx;
 localparam  DBITS = 8,                                  // 8 bit Data
             DATA_LENGTH = 48,                           // String length of the Data buffer    
             BR_BITS = 6,                                // Counter limit
@@ -122,7 +120,6 @@ integer data_length =0;
 //********************Memory loading procedure*************/
 reg [31:0] ctr = 0;
 //reg loading_done = 0;
-
 integer SIZE_SEED = 16;
 integer SIZE_PK = k*l/col_width;
 integer SIZE_C0 = (l + (32-l%32)%32)/32;
@@ -130,10 +127,12 @@ integer SIZE_C1 = 8;
 integer SIZE_K = 8;
 
 integer START_SEED = 1;
-integer STOP_SEED = START_SEED + SIZE_SEED;
-integer START_PK = STOP_SEED + 1;
-integer STOP_PK = START_PK + SIZE_PK;
-integer SIZE_TOTAL = STOP_SEED;
+integer STOP_SEED = 17;
+integer START_PK = 18;
+integer STOP_PK = 17 + k*l/col_width;
+
+
+integer SIZE_TOTAL = 16;
 
 reg write_en;
 reg [3:0] data_tlv_length;
@@ -212,15 +211,15 @@ encap_seq_gen # (.parameter_set(parameter_set), .m(m), .t(t), .n(n), .e_width(e_
              .force_done_shake(force_done_shake)
 
          );
-mem_single #(.WIDTH(col_width), .DEPTH(((l_n_elim+(col_width-l_n_elim%col_width)%col_width)/col_width)), .FILE(`FILE_PK_SLICED) ) 
-            publickey
-           (
-               .clock(clk),
-               .data(0),
-               .address(addr_PK),
-               .wr_en(0),
-               .q(PK_col)
-           );
+// mem_single #(.WIDTH(col_width), .DEPTH(((l_n_elim+(col_width-l_n_elim%col_width)%col_width)/col_width)), .FILE(`FILE_PK_SLICED) ) 
+//             publickey
+//            (
+//                .clock(clk),
+//                .data(0),
+//                .address(addr_PK),
+//                .wr_en(0),
+//                .q(PK_col)
+//            );
 
 // mem_single #(.WIDTH(32), .DEPTH(16), .FILE(`FILE_MEM_SEED) ) 
 //             mem_init_seed
@@ -235,7 +234,7 @@ Transmitter #(.DBITS(DBITS),.SB_TICK(SB_TICK))
             UART_TX_UNIT
             (
                 .clk(clk),
-                .reset(reset),
+                .reset(rst),
                 .tx_start(tx_Send),
                 .sample_tick(tick),
                 .data_in(tx_data_in),
@@ -310,7 +309,7 @@ begin
             state <= STATE_VALUE;
             tlv_length_reg <= tlv_data_byte;
             tlv_value_reg <= rx_data_out;
-            data_tlv_length +=  tlv_length_reg;
+            data_tlv_length = data_tlv_length +  tlv_length_reg;
 
             addr_seed <= data_tlv_length;
             write_en <= 1'b1;
@@ -433,27 +432,27 @@ always @(posedge clk) begin
     if(DUT.done)
     begin
         state_tx <= STATE_TX_START;
-        for(i = 0; i <8; i++)
+        for(i = 0; i <8; i= i +1)
         begin
             tx_Data_Buffer[i] <= ((time_encap_start/2) >> 8*i) & 8'hff; // /2
         end
-        for(i = 8; i <16; i++)
+        for(i = 8; i <16; i = i +1)
         begin
             tx_Data_Buffer[i] <= ((time_encapsulation) >> 8*(i-8)) & 8'hff;
         end
-        for(i = 16; i <24; i++)
+        for(i = 16; i <24; i = i +1)
         begin
             tx_Data_Buffer[i] <= ((time_fixedweight_start/2) >> 8*(i-16)) & 8'hff;
         end
-        for(i = 24; i <32; i++)
+        for(i = 24; i <32; i = i+1)
         begin
             tx_Data_Buffer[i] <= (time_fixedweight >> 8*(i-24)) & 8'hff;
         end
-        for(i = 32; i <40; i++)
+        for(i = 32; i <40; i = i+1)
         begin
             tx_Data_Buffer[i] <= ((time_encrypt_start/2) >> 8*(i-32)) & 8'hff;
         end
-        for(i = 40; i <48; i++)
+        for(i = 40; i <48; i=i+1)
         begin
             tx_Data_Buffer[i] <= (time_encrypt >> 8*(i-40)) & 8'hff;
         end
@@ -568,4 +567,4 @@ begin
     $fflush();
 end
 
-endmodule;
+endmodule

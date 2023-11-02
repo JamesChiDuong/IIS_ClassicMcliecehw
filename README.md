@@ -26,6 +26,7 @@ The purpose of the individual folders is as follows:
 | `simulation.mk` | To run for the TARGET = sim for simulation             |
 | `target.mk`     | To set the target for the top make file                    |
 
+
 ## How to use the Makefile
 
 The top Makefile includes the cumulated targets for the sub-targets defined in the sub-Makefiles in the individual sub-folders. 
@@ -81,10 +82,6 @@ The purpose test is interfaces between serial IO and the encaps top module to re
   |[mceliece348864] Encapsulation finished. (17897 cycles)| Start Encode:  5155752 cycles        |
   |                                                       | Stop Encode:  16899 cycles           |
   
-  `Example 2:`
-
-#### NOTE:
-If you want to run the simulation of Data_Receiver modules. Go into the folder `platform/cpp/cpp` and remove the `#` character at test target.
 ### Target 'ArtixA7':
 
   ```bash
@@ -97,31 +94,42 @@ If you want to run the simulation of Data_Receiver modules. Go into the folder `
    `Example 1:`
   | TOP MODULE FILE          |      TEST PYTHON FILE                                      |
   | ---------------          |     --------------------------------------------------------------------------              |
-  |`./Data_Receiver`         | `python3 Test_Data_Receiver.py /dev/ttyUSB1`               |
-  |                          | Send Data:  Hello from Python file                         |
-  |                          | Received Data:  Hello from Python file                     |
-
-   `Example 2:`
-  * The syntax additional: python3 Test_TranAndRecei.py /dev/ttyUSB1 110 101 add
-  * The syntax subtraction: python3 Test_TranAndRecei.py /dev/ttyUSB1 110 101 sub
-  * The syntax multiplicaton: python3 Test_TranAndRecei.py /dev/ttyUSB1 110 101 mul
-  * The syntax division: python3 Test_TranAndRecei.py /dev/ttyUSB1 110 101 div
-
-  | TOP MODULE FILE          |      TEST PYTHON FILE                                      |
-  | ---------------          |     --------------------------------------------------------------------------              |
-  |`./TranAndRecei`          | `python3 Test_TranAndRecei.py /dev/ttyUSB1 110 100 add`        |
-  |                          | Send Data:  0x6e64010c0a                                        |
-  |                          |  Number of Bytes: 7.0                                       |
-  |                          |  Received Data:  0x20206e640100d20a                           |
-  |                          |  Number1:  0x6e 110                                         |
-  |                          |  Number2:  0x64 100                                         |
-  |                          |  Operand:  0x1 add                                          |
-  |                          |  Result:  0xd2 210                                          |           
+  |                          | `python3 Test_encap_sim.py /dev/ttyUSB1 set_seed`            |
+  |                          |    Send Data:  0x20400000000                               |
+  |                          |    Send Data:  0x20400000000                               |
+  |                          |    Send Data:  0x20400000000                               |
+  |                          |    Send Data:  0x20400000000                               |
+  |                          |    Send Data:  0x20400000000                               |
+  |                          |    Send Data:  0x20400000000                               |
+  |                          |    Send Data:  0x20400000000                               |
+  |                          |    Send Data:  0x20400000000                               |
+  |                          |    Send Data:  0x20400000000                               |
+  |                          |    Send Data:  0x20400000000                               |
+  |                          |    Send Data:  0x20400000000                               |
+  |                          |    Send Data:  0x20400000000                               |
+  |                          |    Send Data:  0x20400000000                               |
+  |                          |    Send Data:  0x20400000000                               |
+  |                          |    Send Data:  0x20400000000                               |
+  |                          |    Send Data:  0x20401000000                               |
+|                            |-------------------Read Data-------------------                                                                        |
+|                                                  | Start Encapsulation:  11868184517423707 cycles |
+  |                                                | Stop Encapsulation:  11868309606246954  cycles   |
+  |                                                |Start FixedWeight:  11868309606246954 cycles   |
+|                                                  | Stop FixedWeight: 11868309606246954 cycles        |
+  |                                                | Start Encode:  11868309606246954 cycles        |
+  |                                                | Stop Encode:  11868309606246954 cycles           |
+           
   
   ## NOTE:
    - We need to use `make clean` before running the new target
    - To list the USB port of your device, open the terminal: `sudo ls /dev/ttyUSB*`
 
+
+### Target 'clean':
+To delete all of the generated file and folder during building the code processing.
+
+### Target 'clean_withou_kat':
+To also delete all of the generated file and folder during building the code processing expect the kat generate folder.
 
 # SECTION 2: What needs to be changed to adapt the code for another design
 
@@ -132,7 +140,7 @@ If you want to run the simulation of Data_Receiver modules. Go into the folder `
 
    - The `platform/cpp` to change the simulation top modules file
    
-   - The `simulation.mk`to change the name of the modules at the TOPMODULES and TOPMODULES_SIMU variables in this file.
+   - The `target.mk`to change the name of the modules at the TOPMODULES and TOPMODULES_SIMU variables in this file. With TOPMODULES variable is a module we want to test such as: encap, decap, joint_design,... And the TOPMODULES_SIMU variable is a module at the testbench folder of each module. In the project, the TOPMODULES_SIMU is a top-module.
 
   ## With TARGET=ArtixA7
 
@@ -152,9 +160,4 @@ If you want to run the simulation of Data_Receiver modules. Go into the folder `
 
    - Another file in `modules/FPGA/Xilinx/timing__` to create the clock for FPGA, we don't need to change
 
-   - The `modules/modules.mk/` to change the top modules. 
-   Example: If I want to program FPGA with Data_Receiver is a top module. I only change the name of the top module at TOPMODULE and TOPMODULE_CHECK variable and also delete the fullAdder.v at MODULESTOP_SRC variable because, in the Data_Receiver, I don't use the alu module.
-
-
-
-  
+- The `target.mk`to change the name of the modules at the TOPMODULES and TOPMODULES_SIMU variables in this file. With TOPMODULES variable is a module we want to test such as: encap, decap, joint_design,... And the TOPMODULES_SIMU variable is a module at the testbench folder of each module. In the project, the TOPMODULES_SIMU is a top-module.

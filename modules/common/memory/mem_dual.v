@@ -4,7 +4,6 @@
  * Public domain.
  *
  */
-
 module mem_dual
 #(
   parameter WIDTH = 8,
@@ -49,20 +48,19 @@ module mem_dual
         mem[address_0] <= data_0;
         q_0 <= data_0;
       end
-    else
+    else if(wren_0 == 0)
+    begin
       q_0 <= mem[address_0];
-  end
-
-  always @ (posedge clock)
-  begin
-    if (wren_1)
-      begin
+    end
+    if(wren_1)
+    begin
         mem[address_1] <= data_1;
         q_1 <= data_1;
-      end
-    else
+    end
+    else if(wren_1 == 0)
+    begin
       q_1 <= mem[address_1];
+    end
   end
-
 endmodule
 

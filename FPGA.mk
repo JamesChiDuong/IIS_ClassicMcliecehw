@@ -4,6 +4,8 @@ _SOURCE :=
 export ROOT_PATH := $(abspath $(dir $(lastword $(MAKEFILE_LIST))))
 
 BUILD_PATH := $(ROOT_PATH)/build
+
+KAT_DIR = $(ROOT_PATH)/host/kat/kat_generate
 # Include the parameter set definitions
 PAR_FILE := $(ROOT_PATH)/modules/FPGA/parameters.mk
 include $(PAR_FILE)
@@ -61,6 +63,7 @@ synthesis: $(SYNTHESIS)
 
 .PHONY: $(TARGETS)
 $(TARGETS):
+	$(MAKE) -C $(ROOT_PATH)/host/kat gen-kat -j$(NPROC) KAT_DIR=$(KAT_DIR) PAR_SETS=$(PAR_MODULE)
 	$(MAKE) -C $(MODULES_DIR)\
 		-f modules.mk $(lastword $(subst -, ,$@)) \
 		-j$(NPROC) \
@@ -69,9 +72,13 @@ $(TARGETS):
 		XILINX_MODELS="$(XILINX_MODELS)" \
 		SYSTEMIZER="$(SYSTEMIZER)"
 
-
 clean:
 	rm -rf $(BUILD_PATH)
+	rm -rf $(ROOT_PATH)/modules/*.bit
+	rm -rf $(ROOT_PATH)/modules/*.html
+	rm -rf $(ROOT_PATH)/modules/*.xml
+	rm -rf $(ROOT_PATH)/modules/*.txt
+	rm -rf $(ROOT_PATH)/modules/.Xil
 .PHONY: help
 
 help:

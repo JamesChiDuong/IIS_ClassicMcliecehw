@@ -3,7 +3,7 @@
 ## }}}
 all:	test
 
-export TOPMODULE_SIMU
+export TOPMODULES_SIMU
 export ROOT_PATH
 
 PAR_FILE := $(ROOT_PATH)/modules/FPGA/parameters.mk
@@ -15,7 +15,7 @@ FBDIR 		:= .
 VDIRFB		:= $(FBDIR)/obj_dir
 RTLDR 		:= ../rtl
 VERILATOR 	:= verilator
-MODULES 	:= $(TOPMODULE_SIMU)
+MODULES 	:= $(TOPMODULES_SIMU)
 KAT_FILE_SEED := mem_512.kat
 KAT_FILE_PUBKEY := pubkey.kat
 FILE_VCD	:= -DFILE_VCD=\"result_$(MODULES).vcd\"

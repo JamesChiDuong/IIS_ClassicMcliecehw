@@ -9,8 +9,8 @@ INCS	:= -I$(RTLD)/obj_dir/ -I$(VROOT)/include
 VOBJDR	:= $(RTLD)/obj_dir
 SYSVDR	:= $(VROOT)/include
 #We need to change the name modules or delete the name. In the example, we have 2 moudles
-export TOPMODULE_SIMU
-MODULES := $(TOPMODULE_SIMU)
+export TOPMODULES_SIMU
+MODULES := $(TOPMODULES_SIMU)
 
 SOURCES := $(MODULES).cpp uartsim.cpp uartsim.h #$(MODULES2).cpp 
 ## }}}

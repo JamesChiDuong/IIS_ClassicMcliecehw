@@ -13,7 +13,8 @@ ENCRYPTION_SUBMODULES := MEMORY_DUAL
 # Export ROOT_PATH from FPGA.mk
 export ROOT_PATH
 
-include modules/FPGA/parameters.mk
+include /home/james/Documents/IIS/FPGA/Cryto/ClassicMceliehw_FPGA/ClassicMceliehw_FPGA/modules/FPGA/parameters.mk
+#include modules/FPGA/parameters.mk
 BUILD_DIR ?= $(ENCRYPTION_SRC_PATH)/build
 RESULTS_DIR ?= $(BUILD_DIR)/results
 COMMON_SRC_PATH ?=  $(ROOT_PATH)/modules/common
@@ -43,8 +44,8 @@ endif
 
 
 # Include the submodules after the directory definitions
-include $(COMMON_SRC_PATH)/modules.mk
-
+# include $(COMMON_SRC_PATH)/modules.mk
+include /home/james/Documents/IIS/FPGA/Cryto/ClassicMceliehw_FPGA/ClassicMceliehw_FPGA/modules/common/modules.mk
 
 # Set the source files of this module
 ENCRYPTION_SRC = encryption.v
@@ -211,5 +212,3 @@ endef
 
 $(foreach par, $(PAR_SETS), $(eval $(call FIXED_WEIGHT_SRC_TEMPLATE,$(par))))
 endif
-
-

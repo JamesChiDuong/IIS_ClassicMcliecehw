@@ -29,6 +29,9 @@ $(OBJDIR): %:
 
 .PHONY: clean
 
+clean_without_kat:
+	$(MAKE) -f FPGA.mk clean
+	$(MAKE) -f simulation.mk clean_simu
 clean:
 	$(MAKE) -f FPGA.mk clean
 	$(MAKE) -f simulation.mk clean

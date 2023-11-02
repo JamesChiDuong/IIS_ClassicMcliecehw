@@ -88,14 +88,14 @@ int	main(int argc, char **argv)
       TRACE_NEGEDGE;
       clocks++;
       tb.i_uart_rx = (*uart)(tb.o_uart_tx);
-      if(Verilated::time() >0 && Verilated::time() <= 10)
-      {
-         tb.rst = 1;
-      }
-      else
-      {
-         tb.rst = 0;
-      }
+      // if(Verilated::time() >0 && Verilated::time() <= 10)
+      // {
+      //    tb.rst = 1;
+      // }
+      // else
+      // {
+      //    tb.rst = 0;
+      // }
    }
    TRACE_CLOSE;
 

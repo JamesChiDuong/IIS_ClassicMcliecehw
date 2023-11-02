@@ -34,7 +34,6 @@ foreach f $splitCont {
         # do nothing
     }
 }
-
 puts $parameters
 set splitPar [split $parameters " "] ;
 puts $splitPar

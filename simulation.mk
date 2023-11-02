@@ -69,7 +69,8 @@ $(TARGETS):
 	cp -r $(MODULE_DIR_SRC)/verilog.mk $(BUILD_MODULES_DIR_SRC)
 	$(MAKE) -C $(SIMU_DIR)
 
-
+clean_simu:
+	rm -rf $(BUILD_PATH)
 clean:
 	rm -rf $(BUILD_PATH)
 	rm -rf $(ROOT_PATH)/host/kat/kat_generate
