@@ -12,8 +12,8 @@ module mem_single
     input wire                     wr_en,
     output reg [WIDTH-1:0]         q
   );
-  
-  reg [WIDTH-1:0] mem [DEPTH-1:0]/* synthesis ramstyle = "M20K" */;
+
+  (* ram_style = "block" *) reg [WIDTH-1:0] mem [DEPTH-1:0];
   /* verilator lint_off UNUSEDSIGNAL */ 
   integer file;
   integer scan;

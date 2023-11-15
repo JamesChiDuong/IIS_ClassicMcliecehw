@@ -32,30 +32,6 @@ TB_SRC_PATH ?= $(MODULESTOP_SRC_PATH)/$(TOPMODULES)/testbench
 #
 # Parameter-specific build subdirectories
 #
-# ifndef BUILD_DIR_TEMPLATE
-# define BUILD_DIR_TEMPLATE =
-
-# #Parameter-specific build directory root
-# ifeq ($(TARGET),sim)
-# BUILD_DIR_$(1) = $$(BUILD_DIR)
-
-# # Parameter-specific source, testbench, and KAT directory
-
-# BUILD_DIR_SRC_$(1) = $$(BUILD_DIR_$(1))/verilog
-# BUILD_DIR_TB_$(1) = $$(BUILD_DIR_$(1))/verilog
-# BUILD_DIR_KAT_$(1) = $$(KAT_DIR/$(1))
-# else
-# BUILD_DIR_$(1) = $$(BUILD_DIR)/$(1)/$$(TOPMODULE)
-
-# # Parameter-specific source, testbench, and KAT directory
-
-# BUILD_DIR_SRC_$(1) = $$(BUILD_DIR_$(1))/src
-# BUILD_DIR_TB_$(1) = $$(BUILD_DIR_$(1))/src
-# endif
-
-# endef
-# $(foreach par, $(PAR_SETS), $(eval $(call BUILD_DIR_TEMPLATE,$(par))))
-# endif
 ifndef BUILD_DIR_TEMPLATE
 define BUILD_DIR_TEMPLATE =
 ifeq ($(TARGET),sim)
@@ -163,50 +139,6 @@ ifeq ($(TOPMODULE_CHECK),${TOPMODULE})
 
 #Add the build directory as order-only-prerequisites to every source file target
 $(MODULESTOP): | $$(@D)
-
-
-
-# Define Verilator-specific testbench source
-
-# .PHONY: sim
-# sim: $(addprefix sim-, $(PAR_SETS))
-# # Set of all sources
-# SIM_MODULESTOP = 
-
-# define SIM_MODULESTOP_TEMPLATE = 
-
-# KAT_FILE_PUBKEY_$(2) = $(basename $(KAT_FILE_PUBKEY))_$(2)$(suffix $(KAT_FILE_PUBKEY))
-
-# # Define all required targets to be included in the modules above.
-# SIM_MODULESTOP_$(1) = $(addprefix $$(BUILD_DIR_SRC_$(1))/,$(MODULESTOP_TB_SRC))
-
-# # Collect all testbench targets
-# SIM_MODULESTOP += $$(SIM_MODULESTOP_$(1))
-
-# # Define parameter-specific testbench targets
-# .PHONY: sim-$(1)
-# sim-$(1): $$(MODULESTOP_$(1)) $$(SIM_MODULESTOP_$(1))
-
-# # Make build directory for the testbench sources
-# $$(BUILD_DIR_TB_$(1)):
-# 	mkdir -p $$@
-
-# #
-# # Sources generation
-# #
-# $$(BUILD_DIR_TB_$(1))/%.v: $$(TOPMODULES_SRC_PATH)/testbench/%.v
-# 	cp $$< $$@
-
-
-# endef
-# $(foreach par, $(PAR_SETS), \
-# 	$(foreach width, $(SLICED_PUBKEY_COLUMN_WIDTHS), \
-# 		$(eval $(call SIM_MODULESTOP_TEMPLATE,$(par),$(width)))))
-
-
-# # Add the build directory as order-only-prerequisites to every source file target
-# $(MODULESTOP) $(SIM_MODULESTOP): | $$(@D)
-# #
 
 
 # Define Verilator-specific testbench source

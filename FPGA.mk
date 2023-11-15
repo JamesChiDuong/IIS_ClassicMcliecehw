@@ -32,7 +32,7 @@ SOURCES := $(addsuffix -sources,$(TOPMODULES))
 SYNTHESIS := $(addsuffix -synthesis,$(TOPMODULES))
 PROGRAM := $(addsuffix -program,$(TOPMODULES))
 # Comulate the targets.
-TARGETS := $(SOURCES) $(SYNTHESIS) $(PROGRAM)
+TARGETS :=$(SYNTHESIS) $(PROGRAM)
 
 # Build directory
 BUILD_DIR = $(ROOT_PATH)/build
@@ -51,9 +51,6 @@ export BUILD_MODULES_DIR_SRC := $(SIMU_DIR)/verilog
 all: synthesis
 
 .SECONDEXPANSION:
-
-.PHONY: sources
-sources: $(SOURCES)
 
 .PHONY: program
 program: $(PROGRAM)

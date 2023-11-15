@@ -32,7 +32,12 @@ module encap_sim
             input wire 	clk,
             input wire 	rst,
             input i_uart_rx,
+            input btn,
             output o_uart_tx,
+            output lcd1,
+            output lcd2,
+            output lcd3,
+            output lcd4,
             output wire done
             );
 /*********Classic Variable*************/
@@ -138,15 +143,20 @@ reg write_en;
 reg [3:0] data_tlv_length;
 /*********************Clock cycle count profiling************** */
 integer f_cycles_profile;
-time    time_encap_start;
-time time_encapsulation;
-time time_encrypt_start;
-time time_encrypt;
-time time_fixedweight_start;
-time time_fixedweight;
+reg [63:0]  time_encap_start;
+reg [63:0]  time_encapsulation;
+reg [63:0]  time_encrypt_start;
+reg [63:0]  time_encrypt;
+reg [63:0]  time_fixedweight_start;
+reg [63:0]  time_fixedweight;
 
+reg [63:0] time_counter_start;
+reg [63:0] data = 64'd18446744073709551615;
+// reg rst;
 reg [17*8-1:0] prefix;
  /**************Main Program***************/
+
+
 baud_rate_generator #(.N(BR_BITS),.M(BR_LIMIT)) 
             BAUD_RATE_GEN   
             (
@@ -250,17 +260,22 @@ mem_single #(.WIDTH(32), .DEPTH(16)) mem_init_seed
                .q(seed_from_ram)
            );
 
-// initial
-// begin
-//     $dumpfile(`FILE_VCD);
-//     $dumpvars();
-// end
+reg led1;
+reg led2;
+reg led3;
+reg led4;
+assign lcd1 = led1;
+assign lcd2 = led2;
+assign lcd3 = led3;
+assign lcd4 = led4;
 
-always @(posedge clk)
-begin
+
+/***********TLV decode*******************/
+always @(posedge clk ) begin
     if(rst)
     begin
         state <= STATE_IDLE;
+        
         tlv_type_reg <= 8'b0;
         tlv_length_reg <= 8'b0;
         tlv_value_reg <= 8'b0;
@@ -280,11 +295,17 @@ begin
         // rd_K <= 1'b0;
         write_en <= 1'b0;
         data_tlv_length = 4'd0;
+
+        led1 <= 1'b0;
+        led2 <= 1'b0;
+        led3 <= 1'b0;
+        led4 <= 1'b0;
+
+        time_counter_start = 64'd0;
     end
+    else
+        led1 <= 1'b1;
 end
-
-
-/***********TLV decode*******************/
 always @(posedge clk)
 begin
     case (state)
@@ -380,7 +401,7 @@ begin
     begin
         addr_seed <= addr_seed;
         seed_valid <= 1'b0;
-        write_en <= 1'b0;
+        // write_en <= 1'b0;
     end
     // // loading PK
     // if (ctr >= START_PK && ctr < STOP_PK)
@@ -427,6 +448,7 @@ begin
     //      rd_K <= 1'b0;
     //  end
 end
+
 /***************TRANSFER PROCSSESS*******************/
 always @(posedge clk) begin
     if(DUT.done)
@@ -434,7 +456,7 @@ always @(posedge clk) begin
         state_tx <= STATE_TX_START;
         for(i = 0; i <8; i= i +1)
         begin
-            tx_Data_Buffer[i] <= ((time_encap_start/2) >> 8*i) & 8'hff; // /2
+            tx_Data_Buffer[i] <= (((time_encap_start)/2) >> 8*i) & 8'hff; // /2
         end
         for(i = 8; i <16; i = i +1)
         begin
@@ -457,6 +479,7 @@ always @(posedge clk) begin
             tx_Data_Buffer[i] <= (time_encrypt >> 8*(i-40)) & 8'hff;
         end
     end
+
 end
 always @(posedge clk) begin
     tx_data_in <= tx_Data_Buffer[tx_index];
@@ -474,37 +497,25 @@ always @(posedge clk ) begin
       STATE_TX_START : begin
         if(DUT.done) begin
             state_tx <= STATE_TX_SEND;
+            tx_Send <= 1'b1;
         end
       end
       STATE_TX_SEND : begin
         if(tx_index == 6'd48)
         begin
+            led2 <= 1'b1;
             state_tx <= STATE_TX_STOP;
+            tx_Send <= 1'b0;
         end
       end
       STATE_TX_STOP : begin
         if((rx_data_out != 8'b0) && (rx_done))
         begin
             state_tx <= STATE_TX_START;
+            tx_Send <= 1'b0;
         end
       end
         default: state_tx <= STATE_TX_START;
-    endcase
-end
-always @(posedge clk) begin
-    case (state_tx)
-        STATE_TX_START : begin
-            tx_Send <= 1'b0;
-        end  
-        STATE_TX_SEND : begin
-            tx_Send <= 1'b1;
-        end
-        STATE_TX_STOP: begin
-            tx_Send <= 1'b0;
-        end
-        default: begin
-            tx_Send <= 1'b0;
-        end
     endcase
 end
 initial
@@ -513,40 +524,42 @@ begin
     $sformat(prefix, "[mceliece%0d%0d]", DUT.n, DUT.t);
 end
 
-always @(posedge DUT.done)
-begin
-    $writememb(`FILE_K_OUT, DUT.hash_mem.mem,0,7);
-    $writememb(`FILE_CIPHER0_OUT, DUT.encryption_unit.encrypt_mem.mem);
-    $writememb(`FILE_CIPHER1_OUT, DUT.C1_mem.mem);
-    $writememb(`FILE_ERROR_OUT, DUT.error_vector_gen.onegen_instance.mem_dual_B.mem);
-    $fflush();
-end
+// always @(posedge DUT.done)
+// begin
+//     //$writememb(`FILE_K_OUT, DUT.hash_mem.mem,0,7);
+//     // $writememb(`FILE_CIPHER0_OUT, DUT.encryption_unit.encrypt_mem.mem);
+//     // $writememb(`FILE_CIPHER1_OUT, DUT.C1_mem.mem);
+//     // $writememb(`FILE_ERROR_OUT, DUT.error_vector_gen.onegen_instance.mem_dual_B.mem);
+//     $fflush();
+// end
 
+always @(posedge clk ) begin
+    time_counter_start = time_counter_start + 1;
+end
 always @(posedge seed_valid)
 begin  
-    time_encap_start = $time;
+    time_encap_start = time_counter_start+1;
     $display("%s Start Encapsulation. (%0d cycles)", prefix, time_encap_start/2);
     $fflush();
 end
 
 always @(posedge DUT.done)
 begin
-    time_encapsulation = ($time-time_encap_start)/2;
+    time_encapsulation = (time_counter_start-time_encap_start)/2;
     $display("%s Encapsulation finished. (%0d cycles)", prefix, time_encapsulation);
     $fwrite(f_cycles_profile, "encapsulation %0d %0d\n", time_encap_start/2, time_encapsulation);
-    $fflush();
 end
 
 always @(posedge seed_valid)
 begin
-    time_fixedweight_start = $time;
+    time_fixedweight_start = time_counter_start+1;
     $display("%s Start FixedWeight. (%0d cycles)", prefix, time_fixedweight_start/2);
     $fflush();
 end
 
 always @(posedge DUT.done_error)
 begin
-    time_fixedweight = ($time-time_fixedweight_start)/2;
+    time_fixedweight = (time_counter_start-time_fixedweight_start)/2;
     $display("%s FixedWeight finished. (%0d cycles)", prefix, time_fixedweight);
     $fwrite(f_cycles_profile, "fixedweight %0d %0d\n", time_fixedweight_start/2, time_fixedweight);
     $fflush();
@@ -554,17 +567,16 @@ end
 
 always @(posedge DUT.done_error)
 begin
-    time_encrypt_start = $time;
+    time_encrypt_start = time_counter_start+1;
     $display("%s Start Encode. (%0d cycles)", prefix, time_encrypt_start/2);
     $fflush();
 end
 
 always @(posedge DUT.done_encrypt)
 begin
-    time_encrypt = ($time-time_encrypt_start)/2;
+    time_encrypt = (time_counter_start-time_encrypt_start)/2;
     $display("%s Encode finished. (%0d cycles)", prefix, time_encrypt);
     $fwrite(f_cycles_profile, "encode %0d %0d\n", time_encrypt_start/2, time_encrypt);
     $fflush();
 end
-
 endmodule

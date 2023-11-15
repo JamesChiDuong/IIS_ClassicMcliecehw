@@ -94,7 +94,7 @@ The purpose test is interfaces between serial IO and the encaps top module to re
    `Example 1:`
   | TOP MODULE FILE          |      TEST PYTHON FILE                                      |
   | ---------------          |     --------------------------------------------------------------------------              |
-  |                          | `python3 Test_encap_sim.py /dev/ttyUSB1 set_seed`            |
+  |                          | `python3 Test_encap_sim.py /dev/ttyUSB1 set_seed`          |
   |                          |    Send Data:  0x20400000000                               |
   |                          |    Send Data:  0x20400000000                               |
   |                          |    Send Data:  0x20400000000                               |
@@ -111,13 +111,13 @@ The purpose test is interfaces between serial IO and the encaps top module to re
   |                          |    Send Data:  0x20400000000                               |
   |                          |    Send Data:  0x20400000000                               |
   |                          |    Send Data:  0x20401000000                               |
-|                            |-------------------Read Data-------------------                                                                        |
-|                                                  | Start Encapsulation:  11868184517423707 cycles |
-  |                                                | Stop Encapsulation:  11868309606246954  cycles   |
-  |                                                |Start FixedWeight:  11868309606246954 cycles   |
-|                                                  | Stop FixedWeight: 11868309606246954 cycles        |
-  |                                                | Start Encode:  11868309606246954 cycles        |
-  |                                                | Stop Encode:  11868309606246954 cycles           |
+  |                          |-------------------Read Data-------------------             |
+  |                          | Start Encapsulation:  72057594037927680 cycles             |
+  |                          | Stop Encapsulation:  127  cycles                           |
+  |                          |Start FixedWeight:  72057594037927680 cycles                |
+  |                          | Stop FixedWeight: 127 cycles                               |
+  |                          | Start Encode:  72057594037862400 cycles                    |
+  |                          | Stop Encode:  32767 cycles                                 |
            
   
   ## NOTE:
@@ -140,7 +140,7 @@ To also delete all of the generated file and folder during building the code pro
 
    - The `platform/cpp` to change the simulation top modules file
    
-   - The `target.mk`to change the name of the modules at the TOPMODULES and TOPMODULES_SIMU variables in this file. With TOPMODULES variable is a module we want to test such as: encap, decap, joint_design,... And the TOPMODULES_SIMU variable is a module at the testbench folder of each module. In the project, the TOPMODULES_SIMU is a top-module.
+   - The `target.mk`to change the name of the modules at the TOPMODULES and TOPMODULES_SIMU variables in this file. With TOPMODULES variable is a module we want to test such as: encap, decap... And the TOPMODULES_SIMU variable is a module at the testbench folder of each module such as: In the testbench folder in the encap folder we has the encap_sim.v that is a testbench file for encap module. In the project, the TOPMODULES_SIMU is a top-module.
 
   ## With TARGET=ArtixA7
 
@@ -158,6 +158,6 @@ To also delete all of the generated file and folder during building the code pro
 
    - The `modules/FPGA/Xilinx/pin_artix7_100t.xdc` to configure the pin planner for your FPGA
 
-   - Another file in `modules/FPGA/Xilinx/timing__` to create the clock for FPGA, we don't need to change
+   - Another file in `modules/FPGA/Xilinx/timing__` to create the clock for FPGA, we don't need to change.
 
-- The `target.mk`to change the name of the modules at the TOPMODULES and TOPMODULES_SIMU variables in this file. With TOPMODULES variable is a module we want to test such as: encap, decap, joint_design,... And the TOPMODULES_SIMU variable is a module at the testbench folder of each module. In the project, the TOPMODULES_SIMU is a top-module.
+   - The `target.mk`to change the name of the modules at the TOPMODULES and TOPMODULES_SIMU variables in this file. With TOPMODULES variable is a module we want to test such as: encap, decap... And the TOPMODULES_SIMU variable is a module at the testbench folder of each module such as: In the testbench folder in the encap folder we has the encap_sim.v that is a testbench file for encap module. In the project, the TOPMODULES_SIMU is a top-module.

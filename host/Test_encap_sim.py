@@ -100,11 +100,12 @@ if __name__ == "__main__":
                 data = int.from_bytes(arr,'big')
                 print("Send Data: ",hex(data))
                 dev.write(arr)
+                time.sleep(0)
         else:
             print("Error: Please input set_pk or set_seed")
             exit()
-    dataRaw = dev.read(49)
-
+    dataRaw = dev.read(48)
+    #dataRaw = dev.readline() 
     for i in range(0, len(dataRaw),8):
         chunk = dataRaw[i:i+8]
         time_buffer[leng] = int.from_bytes(chunk, 'little')

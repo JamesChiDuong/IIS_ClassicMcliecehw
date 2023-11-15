@@ -4,6 +4,7 @@
  * Public domain.
  *
  */
+
 module mem_dual
 #(
   parameter WIDTH = 8,
@@ -23,7 +24,7 @@ module mem_dual
   output reg  [WIDTH-1:0]     q_1
 );
 
-  reg [WIDTH-1:0] mem [0:DEPTH-1] /* synthesis ramstyle = "M20K" */;
+    (* ram_style = "block" *) reg [WIDTH-1:0] mem [0:DEPTH-1];
 
   integer file;
   integer scan;
@@ -48,19 +49,19 @@ module mem_dual
         mem[address_0] <= data_0;
         q_0 <= data_0;
       end
-    else if(wren_0 == 0)
-    begin
+    else
       q_0 <= mem[address_0];
-    end
-    if(wren_1)
-    begin
+  end
+
+  always @ (posedge clock)
+  begin
+    if (wren_1)
+      begin
         mem[address_1] <= data_1;
         q_1 <= data_1;
-    end
-    else if(wren_1 == 0)
-    begin
+      end
+    else
       q_1 <= mem[address_1];
-    end
   end
-endmodule
 
+endmodule
