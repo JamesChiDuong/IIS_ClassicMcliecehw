@@ -49,7 +49,7 @@ int	main(int argc, char **argv)
    uart->setup(setup);
 
    // Make sure we don't run longer than 4 seconds ...
-   unsigned	clocks = 0;  
+   int	clocks = 0;  
    // VCD trace setup
 #define	VCDTRACE
 #ifdef	VCDTRACE
@@ -66,15 +66,15 @@ int	main(int argc, char **argv)
 #define	TRACE_CLOSE	while(0)
 #endif
 
- //  Clear any initial break condition
-   // for(int i=0; i<(baudclocks*24); i++) {
-   //    tb.clk = 1;
-   //    tb.eval();
-   //    tb.clk = 0;
-   //    tb.eval();
+  //Clear any initial break condition
+   for(int i=0; i<(baudclocks*24); i++) {
+      tb.clk = 1;
+      tb.eval();
+      tb.clk = 0;
+      tb.eval();
 
-   //    tb.i_uart_rx = 1;
-   // }
+      tb.i_uart_rx = 1;
+   }
 
    // Simulation loop: process the hello world string
    while(1)
@@ -88,14 +88,14 @@ int	main(int argc, char **argv)
       TRACE_NEGEDGE;
       clocks++;
       tb.i_uart_rx = (*uart)(tb.o_uart_tx);
-      // if(Verilated::time() >0 && Verilated::time() <= 10)
-      // {
-      //    tb.rst = 1;
-      // }
-      // else
-      // {
-      //    tb.rst = 0;
-      // }
+      if(Verilated::time() >0 && Verilated::time() <= 10)
+      {
+         tb.rst = 1;
+      }
+      else
+      {
+         tb.rst = 0;
+      }
    }
    TRACE_CLOSE;
 

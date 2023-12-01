@@ -15,7 +15,7 @@ FILE_CIPHER_0 = "cipher_0.kat"
 FILE_CIPHER_1 = "cipher_1.kat"
 FILE_DELTA = "delta.kat"
 FILE_DELTA_PRIME = "delta_prime.kat"
-FILE_PUBKEY = "pubkey.kat"
+FILE_PUBKEY = "pubkey_32.kat"
 FILE_POLY_G = "poly_g.kat"
 FILE_P = "P.kat"
 FILE_S = "s.kat"
@@ -60,7 +60,7 @@ leng = 0
 if __name__ == "__main__":
     config = {
     0x01: {TLV.Config.Type: int, TLV.Config.Name: 'SET_PK'},
-    0x02: {TLV.Config.Type: int, TLV.Config.Name: 'SET_SEED'},
+    0x02: {TLV.Config.Type: bytes, TLV.Config.Name: 'SET_SEED'},
 }
     tlv_array = TLV()
     TLV.set_global_tag_map(config)
@@ -79,49 +79,56 @@ if __name__ == "__main__":
     else:
         if((sys.argv[2] == "set_pk")):
             file = open(folder + "/" + FILE_PUBKEY)
-            lines = file.readlines()
+            lines = file.read().replace('\n','')
             file.close()
-            for row in lines:
-                set_pk = convert_binary_list_to_binary(row)
-                tlv_array['SET_PK'] = set_pk
-                arr = tlv_array.to_byte_array()
-                data = int.from_bytes(arr,'big')
-                print("Send Data: ",hex(data))
-                dev.write(arr)
+            data = [lines[i:i + 8] for i in range(0,len(lines),8)]
+            set_seed  = []
+            count = 0
+            for row in data:
+                set_seed_data = convert_binary_list_to_binary(row)
+                set_seed.append(set_seed_data)
+            tlv_array['SET_PK'] = bytes(set_seed)
+            arr = tlv_array.to_byte_array()
+            data = int.from_bytes(arr,'big')
+            print("Send Data: ",hex(data))
+            dev.write(arr)
 
         elif((sys.argv[2] == "set_seed")):
             file = open(folder + "/" + FILE_SEED)
-            lines = file.readlines()
+            lines = file.read().replace('\n','')
             file.close()
-            for row in lines:
-                set_seed = convert_binary_list_to_binary(row)
-                tlv_array['SET_SEED'] = set_seed
-                arr = tlv_array.to_byte_array()
-                data = int.from_bytes(arr,'big')
-                print("Send Data: ",hex(data))
-                dev.write(arr)
-                time.sleep(0)
+            data = [lines[i:i + 8] for i in range(0,len(lines),8)]
+            set_seed  = []
+            count = 0
+            for row in data:
+                set_seed_data = convert_binary_list_to_binary(row)
+                set_seed.append(set_seed_data)
+            tlv_array['SET_SEED'] = bytes(set_seed)
+            arr = tlv_array.to_byte_array()
+            data = int.from_bytes(arr,'big')
+            print("Send Data: ",hex(data))
+            dev.write(arr)
         else:
             print("Error: Please input set_pk or set_seed")
             exit()
-    dataRaw = dev.read(48)
-    #dataRaw = dev.readline() 
-    for i in range(0, len(dataRaw),8):
-        chunk = dataRaw[i:i+8]
-        time_buffer[leng] = int.from_bytes(chunk, 'little')
-        # print("Read Data:",hex(time_buffer[leng]))
-        leng += 1
+        dataRaw = dev.read(48)
+        #dataRaw = dev.readline() 
+        for i in range(0, len(dataRaw),8):
+            chunk = dataRaw[i:i+8]
+            time_buffer[leng] = int.from_bytes(chunk, 'little')
+            # print("Read Data:",hex(time_buffer[leng]))
+            leng += 1
 
-time_encap_start = time_buffer[0] >> 8
-time_encapsulation = time_buffer[1] >> 8
-time_fixedweight_start = time_buffer[2] >> 8 
-time_fixedweight = time_buffer[3] >> 8
-time_encrypt_start = time_buffer[4] >> 8
-time_encrypt = time_buffer[5] >> 8
-print("-------------------Read Data-------------------\r\n")
-print("Start Encapsulation: ",time_encap_start,"cycles")
-print("Stop Encapsulation: ",time_encapsulation," cycles")
-print("Start FixedWeight: ",time_fixedweight_start,"cycles")
-print("Stop FixedWeight: ",time_fixedweight,"cycles")
-print("Start Encode: ",time_encrypt_start,"cycles")
-print("Stop Encode: ",time_encrypt,"cycles")
+        time_encap_start = time_buffer[0] >> 8
+        time_encapsulation = time_buffer[1] >> 8
+        time_fixedweight_start = time_buffer[2] >> 8 
+        time_fixedweight = time_buffer[3] >> 8
+        time_encrypt_start = time_buffer[4] >> 8
+        time_encrypt = time_buffer[5] >> 8
+        print("-------------------Read Data-------------------\r\n")
+        print("Start Encapsulation: ",time_encap_start,"cycles")
+        print("Stop Encapsulation: ",time_encapsulation," cycles")
+        print("Start FixedWeight: ",time_fixedweight_start,"cycles")
+        print("Stop FixedWeight: ",time_fixedweight,"cycles")
+        print("Start Encode: ",time_encrypt_start,"cycles")
+        print("Stop Encode: ",time_encrypt,"cycles")

@@ -19,7 +19,7 @@ log2(651) = 10                   (counter bits N)
 module baud_rate_generator
     #(       
         parameter   N = 6,     // number of counter bits
-                    M = 53     // counter limit value
+                    M = 53    // counter limit value
     )
     (
         input clk,       

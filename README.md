@@ -40,9 +40,9 @@ Therewith, we are able to generate targets for all combinations, e.g., over all 
 
 The purpose test is interfaces between serial IO and the encaps top module to receive commands and to receive and send data as requested. A sequence of commands sends from the host to the FPGA could be:
 
-1. set public key
+1. set public key: In the set pk test, we will uset set_pk command which will be sent from host PC to the FPGA. The data will be get from `host/kat/kat_generate/pubkey_32.kat` and sent to the encap_tb module via UART protocol.
 
-2. set seed
+2. set seed: In the set seed test, we will use set_seed command which will be sent from host PC to the FPGA. The data will be get from `host/kat/kat_generate/mem_512.kat` and sent to the encap_tb module via UART protocol. After receiving the data, the encapsulation automaticlly starts and response to the host PC.
 
 ### Target 'sim':
 
@@ -58,22 +58,7 @@ The purpose test is interfaces between serial IO and the encaps top module to re
   | TOP MODULE FILE          |      TEST PYTHON FILE                                      |
   | ---------------          |     --------------------------------------------------------------------------              |
   |`./encap_sim`             | `python3 Test_encap_sim.py /dev/pts/4 set_seed`            |
-  | Slave device: /dev/pts/4 |    Send Data:  0x20400000000                               |
-  |                          |    Send Data:  0x20400000000                               |
-  |                          |    Send Data:  0x20400000000                               |
-  |                          |    Send Data:  0x20400000000                               |
-  |                          |    Send Data:  0x20400000000                               |
-  |                          |    Send Data:  0x20400000000                               |
-  |                          |    Send Data:  0x20400000000                               |
-  |                          |    Send Data:  0x20400000000                               |
-  |                          |    Send Data:  0x20400000000                               |
-  |                          |    Send Data:  0x20400000000                               |
-  |                          |    Send Data:  0x20400000000                               |
-  |                          |    Send Data:  0x20400000000                               |
-  |                          |    Send Data:  0x20400000000                               |
-  |                          |    Send Data:  0x20400000000                               |
-  |                          |    Send Data:  0x20400000000                               |
-  |                          |    Send Data:  0x20401000000                               |
+  | Slave device: /dev/pts/4 |    Send Data:  0x24000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000001000000                                                                               |
   |[mceliece348864] Start Encapsulation. (5155211 cycles) |-------------------Read Data-------------------                                                                        |
   |[mceliece348864] Start FixedWeight. (5155211 cycles)   | Start Encapsulation:  5155211 cycles |
   |[mceliece348864] Start Encode. (5155752 cycles)        | Stop Encapsulation:  17897  cycles   |
@@ -82,6 +67,20 @@ The purpose test is interfaces between serial IO and the encaps top module to re
   |[mceliece348864] Encapsulation finished. (17897 cycles)| Start Encode:  5155752 cycles        |
   |                                                       | Stop Encode:  16899 cycles           |
   
+   `Example 2:`
+  
+  | TOP MODULE FILE          |      TEST PYTHON FILE                                      |
+  | ---------------          |     --------------------------------------------------------------------------              |
+  |`./encap_sim`             | `python3 Test_encap_sim.py /dev/pts/4 set_pk`            |
+  | Slave device: /dev/pts/4 |    Send Data:  0x18303fc00a74c0bdf.............................29ce66c80ae3d69e25799                                                                 |
+  |[mceliece348864] Start Encapsulation. (2269461 cycles) |-------------------Read Data-------------------                                                                        |
+  |[mceliece348864] Start FixedWeight. (2269461 cycles)   | Start Encapsulation:  2269461 cycles |
+  |[mceliece348864] Start Encode. (2270002 cycles)        | Stop Encapsulation:  34024  cycles   |
+  |[mceliece348864] FixedWeight finished. (540 cycles)    | Start FixedWeight:  2269461 cycles   |
+  |[mceliece348864] Encode finished. (33026 cycles)       | Stop FixedWeight:  541 cycles        |
+  |[mceliece348864] Encapsulation finished. (34024 cycles)| Start Encode:  2270002 cycles        |
+  |                                                       | Stop Encode:  33026 cycles           |
+
 ### Target 'ArtixA7':
 
   ```bash
@@ -95,22 +94,7 @@ The purpose test is interfaces between serial IO and the encaps top module to re
   | TOP MODULE FILE          |      TEST PYTHON FILE                                      |
   | ---------------          |     --------------------------------------------------------------------------              |
   |                          | `python3 Test_encap_sim.py /dev/ttyUSB1 set_seed`          |
-  |                          |    Send Data:  0x20400000000                               |
-  |                          |    Send Data:  0x20400000000                               |
-  |                          |    Send Data:  0x20400000000                               |
-  |                          |    Send Data:  0x20400000000                               |
-  |                          |    Send Data:  0x20400000000                               |
-  |                          |    Send Data:  0x20400000000                               |
-  |                          |    Send Data:  0x20400000000                               |
-  |                          |    Send Data:  0x20400000000                               |
-  |                          |    Send Data:  0x20400000000                               |
-  |                          |    Send Data:  0x20400000000                               |
-  |                          |    Send Data:  0x20400000000                               |
-  |                          |    Send Data:  0x20400000000                               |
-  |                          |    Send Data:  0x20400000000                               |
-  |                          |    Send Data:  0x20400000000                               |
-  |                          |    Send Data:  0x20400000000                               |
-  |                          |    Send Data:  0x20401000000                               |
+  |                          |    Send Data:  0x24000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000001000000                               |
   |                          |-------------------Read Data-------------------             |
   |                          | Start Encapsulation:  72057594037927680 cycles             |
   |                          | Stop Encapsulation:  127  cycles                           |
@@ -120,6 +104,18 @@ The purpose test is interfaces between serial IO and the encaps top module to re
   |                          | Stop Encode:  32767 cycles                                 |
            
   
+  `Example 2:`
+  | TOP MODULE FILE          |      TEST PYTHON FILE                                      |
+  | ---------------          |     --------------------------------------------------------------------------              |
+  |                          | `python3 Test_encap_sim.py /dev/ttyUSB1 set_pk`            |
+  |                          |    Send Data:  0x18303fc00a74c0bdf.............................29ce66c80ae3d69e25799                                                                   |
+  |                          |-------------------Read Data-------------------             |
+  |                          | Start Encapsulation:  549755813887 cycles                  |
+  |                          | Stop Encapsulation:  72056494526300160  cycles             |
+  |                          |Start FixedWeight:  549755813887 cycles                     |
+  |                          | Stop FixedWeight: 72056494526300160 cycles                 |
+  |                          | Start Encode:  549755813887 cycles                         |
+  |                          | Stop Encode:  71776119061217280 cycles                     |
   ## NOTE:
    - We need to use `make clean` before running the new target
    - To list the USB port of your device, open the terminal: `sudo ls /dev/ttyUSB*`

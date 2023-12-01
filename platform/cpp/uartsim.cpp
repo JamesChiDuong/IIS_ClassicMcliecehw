@@ -141,6 +141,7 @@ int UARTSIM::rawtick(const int i_tx, const bool network)
 			m_rx_data = ((i_tx&1)<<31) | (m_rx_data>>1);
 		}
       m_rx_baudcounter = m_baud_counts-1;
+	  
 	}
    else
 		m_rx_baudcounter--;
@@ -281,8 +282,8 @@ void UARTSIM::PseudoTerminal_Init()
   	tty.c_oflag &= ~ONLCR; 					// Prevent conversion of newline to carriage return/line feed
     
 	/***************************************This will make read() always wait for bytes (exactly how many is determined by VMIN), so read() could block indefinitely.*/
-	tty.c_cc[VMIN] = 1;						
-    tty.c_cc[VTIME] = 0;
+	tty.c_cc[VMIN] = 2;						
+    tty.c_cc[VTIME] = 1;
     
 	cfsetispeed(&tty, B115200);				//Set baudrate
   	cfsetospeed(&tty, B115200);				//Set baudrate

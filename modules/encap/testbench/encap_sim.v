@@ -22,8 +22,8 @@ module encap_sim
             parameter k = n-m*t,
             parameter l = m*t,
 
-            parameter col_width = 64,
-            parameter e_width = 64, // error_width
+            parameter col_width = 32,
+            parameter e_width = 32, // error_width
 
             parameter n_elim = col_width*((n+col_width-1)/col_width),
             parameter l_n_elim = l*n_elim,
@@ -32,12 +32,7 @@ module encap_sim
             input wire 	clk,
             input wire 	rst,
             input i_uart_rx,
-            input btn,
             output o_uart_tx,
-            output lcd1,
-            output lcd2,
-            output lcd3,
-            output lcd4,
             output wire done
             );
 /*********Classic Variable*************/
@@ -59,6 +54,8 @@ reg  rd_en_c = 0;
 
 wire [`CLOG2((l_n_elim +(col_width-l_n_elim%col_width)%col_width)/col_width) - 1:0] addr_PK;
 wire 																			   PK_rd;
+
+reg [`CLOG2((l_n_elim +(col_width-l_n_elim%col_width)%col_width)/col_width) - 1:0] PK_addr;
 
 reg rd_C0;
 reg [`CLOG2((l + (32-l%32)%32)/32) -1 : 0]C0_addr;
@@ -119,11 +116,14 @@ integer STDERR = 32'h8000_0002;
 //Register to store the current TLV data byte
 reg [DBITS-1:0] tlv_data_byte;
 reg [DBITS-1:0] tlv_type_reg;
-reg [DBITS-1:0] tlv_length_reg;
+reg [(DBITS*3-1):0] tlv_length_reg;
+reg [DBITS-1:0] tlv_length_reg_check;
 reg [DBITS-1:0] tlv_value_reg;
-integer data_length =0;
+reg [(DBITS*3-1):0] data_tlv_length;
+
+reg [3:0] tlv_size_of_length_data;
 //********************Memory loading procedure*************/
-reg [31:0] ctr = 0;
+reg [39:0] ctr = 0;
 //reg loading_done = 0;
 integer SIZE_SEED = 16;
 integer SIZE_PK = k*l/col_width;
@@ -131,16 +131,20 @@ integer SIZE_C0 = (l + (32-l%32)%32)/32;
 integer SIZE_C1 = 8;
 integer SIZE_K = 8;
 
-integer START_SEED = 1;
-integer STOP_SEED = 17;
+integer START_SEED = 0;
+integer STOP_SEED = 16;
 integer START_PK = 18;
 integer STOP_PK = 17 + k*l/col_width;
 
 
 integer SIZE_TOTAL = 16;
 
-reg write_en;
-reg [3:0] data_tlv_length;
+reg write_en_setseed;
+reg write_en_setpk;
+
+reg [1:0] data_index;
+reg [32-1:0] mem_data;
+reg [3:0] counter;
 /*********************Clock cycle count profiling************** */
 integer f_cycles_profile;
 reg [63:0]  time_encap_start;
@@ -151,9 +155,10 @@ reg [63:0]  time_fixedweight_start;
 reg [63:0]  time_fixedweight;
 
 reg [63:0] time_counter_start;
-reg [63:0] data = 64'd18446744073709551615;
 // reg rst;
 reg [17*8-1:0] prefix;
+
+
  /**************Main Program***************/
 
 
@@ -221,25 +226,24 @@ encap_seq_gen # (.parameter_set(parameter_set), .m(m), .t(t), .n(n), .e_width(e_
              .force_done_shake(force_done_shake)
 
          );
-// mem_single #(.WIDTH(col_width), .DEPTH(((l_n_elim+(col_width-l_n_elim%col_width)%col_width)/col_width)), .FILE(`FILE_PK_SLICED) ) 
-//             publickey
-//            (
-//                .clock(clk),
-//                .data(0),
-//                .address(addr_PK),
-//                .wr_en(0),
-//                .q(PK_col)
-//            );
+mem_single #(.WIDTH(col_width), .DEPTH(((l_n_elim+(col_width-l_n_elim%col_width)%col_width)/col_width)) ) 
+            publickey
+           (
+               .clock(clk),
+               .data(mem_data),
+               .address(PK_addr),
+               .wr_en(write_en_setpk),
+               .q(PK_col)
+           );
+mem_single #(.WIDTH(32), .DEPTH(16)) mem_init_seed
+           (
+               .clock(clk),
+               .data(mem_data),
+               .address(addr_seed),
+               .wr_en(write_en_setseed),
+               .q(seed_from_ram)
+           );
 
-// mem_single #(.WIDTH(32), .DEPTH(16), .FILE(`FILE_MEM_SEED) ) 
-//             mem_init_seed
-//            (
-//                 .clock(clk),
-//                 .data(0),
-//                 .address(addr_seed),
-//                 .wr_en(0),
-//                 .q(seed_from_ram)
-//            );
 Transmitter #(.DBITS(DBITS),.SB_TICK(SB_TICK)) 
             UART_TX_UNIT
             (
@@ -251,23 +255,11 @@ Transmitter #(.DBITS(DBITS),.SB_TICK(SB_TICK))
                 .tx_done(tx_done),
                 .tx(o_uart_tx)
             );
-mem_single #(.WIDTH(32), .DEPTH(16)) mem_init_seed
-           (
-               .clock(clk),
-               .data(tlv_value_reg),
-               .address(addr_seed),
-               .wr_en(write_en),
-               .q(seed_from_ram)
-           );
 
-reg led1;
-reg led2;
-reg led3;
-reg led4;
-assign lcd1 = led1;
-assign lcd2 = led2;
-assign lcd3 = led3;
-assign lcd4 = led4;
+
+integer i;
+integer i1;
+integer j;
 
 
 /***********TLV decode*******************/
@@ -275,7 +267,7 @@ always @(posedge clk ) begin
     if(rst)
     begin
         state <= STATE_IDLE;
-        
+        state_mode <= STATE_START_MODE;
         tlv_type_reg <= 8'b0;
         tlv_length_reg <= 8'b0;
         tlv_value_reg <= 8'b0;
@@ -293,18 +285,14 @@ always @(posedge clk ) begin
         //  rd_C0 <= 1'b0;
         //  rd_C1 <= 1'b0;
         // rd_K <= 1'b0;
-        write_en <= 1'b0;
-        data_tlv_length = 4'd0;
-
-        led1 <= 1'b0;
-        led2 <= 1'b0;
-        led3 <= 1'b0;
-        led4 <= 1'b0;
+        write_en_setseed <= 1'b0;
+        write_en_setpk <= 1'b0;
+        data_tlv_length <= 24'd0;
+        tlv_size_of_length_data <= 4'd0;
 
         time_counter_start = 64'd0;
+        data_index <= 2'd0;
     end
-    else
-        led1 <= 1'b1;
 end
 always @(posedge clk)
 begin
@@ -319,33 +307,47 @@ begin
         STATE_TYPE: begin
         if(rx_done)
         begin
-            state <= STATE_LENGTH;
             tlv_type_reg <= tlv_data_byte;
             tlv_data_byte <= rx_data_out;
+            tlv_length_reg_check <= rx_data_out;
+            state <= STATE_LENGTH;
         end
         end
         STATE_LENGTH: begin
-        if(rx_done)
+        if((tlv_length_reg_check > 8'h7f) && (tlv_size_of_length_data == 0))
+        begin
+            tlv_size_of_length_data <= (tlv_length_reg_check & 8'b01111111) + 1;
+        end
+        if(tlv_size_of_length_data == 8'd1 || tlv_length_reg_check < 8'h7f)
         begin
             state <= STATE_VALUE;
-            tlv_length_reg <= tlv_data_byte;
-            tlv_value_reg <= rx_data_out;
-            data_tlv_length = data_tlv_length +  tlv_length_reg;
-
-            addr_seed <= data_tlv_length;
-            write_en <= 1'b1;
-        end
-        end
-        STATE_VALUE: begin
-        if((tlv_length_reg == 8'b1))
-        begin
-            state <= STATE_IDLE;
-            write_en <= 1'b0;
+            if(tlv_length_reg_check < 8'h7f)
+            begin
+                tlv_length_reg <= tlv_data_byte;
+            end
         end
         else
         begin
             if(rx_done)
             begin
+                tlv_data_byte <= rx_data_out;
+                tlv_size_of_length_data <= tlv_size_of_length_data - 1;
+                tlv_length_reg <= (tlv_length_reg | (rx_data_out << 8*(tlv_size_of_length_data-2)));  
+            end
+        end
+        end
+        STATE_VALUE: begin
+        if((tlv_length_reg == 8'b0))
+        begin
+            state <= STATE_IDLE;
+            tlv_size_of_length_data <= 4'd0;
+            data_tlv_length <= 24'd0;
+        end
+        else
+        begin
+            if(rx_done)
+            begin
+                
                 tlv_length_reg <= tlv_length_reg - 1'b1;
                 tlv_value_reg <= rx_data_out;
             end
@@ -354,26 +356,99 @@ begin
         default: tlv_data_byte <= rx_data_out;
     endcase
 end
-/***************START Encapsulation*************************/
+// /***************START Encapsulation*************************/
 always @(posedge clk ) begin
     case (state_mode)
        STATE_START_MODE : begin
-        if((tlv_value_reg == 8'd2) && (state == STATE_IDLE))
+        if((tlv_type_reg == 8'd1)&& (state == STATE_VALUE))
             state_mode <= STATE_SET_PK;
-        else if((tlv_value_reg == 8'd1))
+        else if((tlv_type_reg == 8'd2) && (state == STATE_VALUE))
             state_mode <= STATE_SET_SEED;
        end
        STATE_SET_PK : begin
-        
+        if(rx_done)
+        begin
+            data_index <= data_index + 1;
+            if(data_index == 0)
+            begin
+                mem_data <= rx_data_out << 24;
+                write_en_setpk <= 1'b0;
+            end
+            else
+            begin
+                mem_data <= mem_data | (rx_data_out << 8*(3-data_index));
+                if(data_index == 3)
+                begin
+                    write_en_setpk <= 1'b1;
+                end
+            end
+            if(tlv_length_reg % 4 == 0)
+            begin
+                counter <= counter + 1;
+                if(counter > 0)
+                begin
+                    PK_addr <= PK_addr + 1; 
+                end
+            end
+        end
+        if(tlv_length_reg == 0)
+        begin
+            if (ctr < STOP_PK+1)
+            begin
+                ctr <= ctr + 1;
+            end
+            if (ctr >= START_PK && ctr < STOP_PK)
+            begin
+                seed_valid <= 1'b1;
+            end
+            else
+            begin
+                state_mode <= STATE_STOP;
+            end
+        end
        end
        STATE_SET_SEED : begin
-        if (ctr < SIZE_TOTAL+1)
+        
+        seed <= seed_from_ram;    
+        if(rx_done)
         begin
-            ctr <= ctr + 1;
+            data_index <= data_index + 1;         
+            if(data_index == 0)
+            begin
+                mem_data <= rx_data_out << 24;
+                write_en_setseed <= 1'b0;
+            end
+            else
+            begin
+                mem_data <= mem_data | (rx_data_out << 8*(3-data_index));
+                if(data_index == 3)
+                begin
+                    write_en_setseed <= 1'b1;
+                end
+            end
+            if(tlv_length_reg % 4 == 0)
+            begin
+                counter <= counter + 1;        
+                if(counter > START_SEED)
+                begin
+                    addr_seed <= addr_seed + 1;
+                end
+            end
         end
-        else
+        if(tlv_length_reg == 0)
         begin
-            state_mode <= STATE_STOP;
+            if (ctr < SIZE_TOTAL+1)
+            begin
+                ctr <= ctr + 1;
+            end
+            if (ctr >= START_SEED && ctr < STOP_SEED+1)
+            begin
+                seed_valid <= 1'b1;
+            end
+            else
+            begin
+                state_mode <= STATE_STOP;
+            end
         end
        end
        STATE_STOP : begin
@@ -382,72 +457,13 @@ always @(posedge clk ) begin
             state_mode <= STATE_START_MODE;
         end
         ctr <= 31'd0;
+        seed_valid <= 1'b0;
+        addr_seed <= 0;
        end
         default: tlv_value_reg <= 8'd0;
     endcase
 end
-integer i;
 
-always @(posedge clk)
-begin
-    seed <= seed_from_ram;
-
-    // loading seed
-    if (ctr >= START_SEED && ctr < STOP_SEED+1)
-    begin
-        seed_valid <= 1'b1;
-    end
-    else
-    begin
-        addr_seed <= addr_seed;
-        seed_valid <= 1'b0;
-        // write_en <= 1'b0;
-    end
-    // // loading PK
-    // if (ctr >= START_PK && ctr < STOP_PK)
-    // begin
-    //     K_col_valid <= 1'b1;
-    //    if (ctr > START_PK)
-    //      addr_PK <= addr_PK + 1;
-    // end
-    // else
-    // begin
-    //     addr_PK <= addr_PK;
-    // end
-    // // reading C0
-    // if (ctr > START_C0 && ctr <= STOP_C0)
-    //   begin
-    //      addr_C0 <= addr_C0 + 1;
-    //      rd_C0 <= 1'b1;
-    //   end
-    // else
-    //   begin
-    //      addr_C0 <= addr_C0;
-    //      rd_C0 <= 1'b0;
-    //   end
-    // // reading C1
-    //  if (ctr > START_C1 && ctr <= STOP_C1)
-    //  begin
-    //      addr_C1 <= addr_C1 + 1;
-    //      rd_C1 <= 1'b1;
-    //  end
-    //  else
-    //  begin
-    //      addr_C1 <= addr_C1;
-    //      rd_C1 <= 1'b0;
-    //  end
-    //  // reading K
-    //  if (ctr > START_K && ctr < STOP_POLY)
-    //  begin
-    //      addr_K <= addr_K + 1;
-    //      rd_K <= 1'b1;
-    //  end
-    //  else
-    //  begin
-    //      addr_K <= addr_K;
-    //      rd_K <= 1'b0;
-    //  end
-end
 
 /***************TRANSFER PROCSSESS*******************/
 always @(posedge clk) begin
@@ -503,7 +519,6 @@ always @(posedge clk ) begin
       STATE_TX_SEND : begin
         if(tx_index == 6'd48)
         begin
-            led2 <= 1'b1;
             state_tx <= STATE_TX_STOP;
             tx_Send <= 1'b0;
         end
@@ -524,14 +539,14 @@ begin
     $sformat(prefix, "[mceliece%0d%0d]", DUT.n, DUT.t);
 end
 
-// always @(posedge DUT.done)
-// begin
-//     //$writememb(`FILE_K_OUT, DUT.hash_mem.mem,0,7);
-//     // $writememb(`FILE_CIPHER0_OUT, DUT.encryption_unit.encrypt_mem.mem);
-//     // $writememb(`FILE_CIPHER1_OUT, DUT.C1_mem.mem);
-//     // $writememb(`FILE_ERROR_OUT, DUT.error_vector_gen.onegen_instance.mem_dual_B.mem);
-//     $fflush();
-// end
+always @(posedge DUT.done)
+begin
+    //$writememb(`FILE_K_OUT, DUT.hash_mem.mem,0,7);
+    // $writememb(`FILE_CIPHER0_OUT, DUT.encryption_unit.encrypt_mem.mem);
+    // $writememb(`FILE_CIPHER1_OUT, DUT.C1_mem.mem);
+    // $writememb(`FILE_ERROR_OUT, DUT.error_vector_gen.onegen_instance.mem_dual_B.mem);
+    $fflush();
+end
 
 always @(posedge clk ) begin
     time_counter_start = time_counter_start + 1;

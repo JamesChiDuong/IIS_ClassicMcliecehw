@@ -8,7 +8,7 @@ module mem_single
   (
     input wire                     clock,
     input wire [WIDTH-1:0]         data,
-    input wire [(DEPTH)-1:0] address,
+    input wire [`CLOG2(DEPTH)-1:0] address,
     input wire                     wr_en,
     output reg [WIDTH-1:0]         q
   );
