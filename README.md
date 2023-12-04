@@ -98,7 +98,7 @@ The purpose test is interfaces between serial IO and the encaps top module to re
   |                          |-------------------Read Data-------------------             |
   |                          | Start Encapsulation:  72057594037927680 cycles             |
   |                          | Stop Encapsulation:  127  cycles                           |
-  |                          |Start FixedWeight:  72057594037927680 cycles                |
+  |                          | Start FixedWeight:  72057594037927680 cycles                |
   |                          | Stop FixedWeight: 127 cycles                               |
   |                          | Start Encode:  72057594037862400 cycles                    |
   |                          | Stop Encode:  32767 cycles                                 |
@@ -112,7 +112,7 @@ The purpose test is interfaces between serial IO and the encaps top module to re
   |                          |-------------------Read Data-------------------             |
   |                          | Start Encapsulation:  549755813887 cycles                  |
   |                          | Stop Encapsulation:  72056494526300160  cycles             |
-  |                          |Start FixedWeight:  549755813887 cycles                     |
+  |                          | Start FixedWeight:  549755813887 cycles                     |
   |                          | Stop FixedWeight: 72056494526300160 cycles                 |
   |                          | Start Encode:  549755813887 cycles                         |
   |                          | Stop Encode:  71776119061217280 cycles                     |
