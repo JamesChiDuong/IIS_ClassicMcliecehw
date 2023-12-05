@@ -380,7 +380,7 @@ begin
 
      
      s_k_and_e: begin
-                    wren_1 <= 1'b0;
+                    wren_1 = 1'b0;
                     shift_error <= 1'b1;
                     if ((count_k > 0 && count_k%32 == 0)|| (addr_0 == ram_depth-1 && count_k == l)) begin
                         wren_0 <= 1'b1;
