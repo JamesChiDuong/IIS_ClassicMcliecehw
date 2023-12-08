@@ -4,7 +4,7 @@ _TARGETS :=
 TARGET ?=
 
 export TOPMODULES := encap
-export TOPMODULES_SIMU := encap_sim
+export TOPMODULES_SIMU := encap_tb
 ifeq ($(TARGET),unix)
 DEVICE := x86_64
 endif

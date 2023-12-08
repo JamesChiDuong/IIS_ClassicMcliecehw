@@ -61,8 +61,8 @@ synthesis: $(SYNTHESIS)
 .PHONY: $(TARGETS)
 $(TARGETS):
 	$(MAKE) -C $(ROOT_PATH)/host/kat gen-kat -j$(NPROC) KAT_DIR=$(KAT_DIR) PAR_SETS=$(PAR_MODULE)
-	$(MAKE) -C $(MODULES_DIR)\
-		-f modules.mk $(lastword $(subst -, ,$@)) \
+	$(MAKE) -C $(MODULES_DIR)/$(firstword $(subst -, ,$@))\
+		-f module.mk $(lastword $(subst -, ,$@)) \
 		-j$(NPROC) \
 		BUILD_DIR=$(SIMU_DIR) \
 		PAR_SETS="$(PAR_SETS)" \

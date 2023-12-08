@@ -1,0 +1,8 @@
+In Makefile, there are two variables:
+
+1: num -- number of coefficients, in our case, num = 128.
+2: sec -- number of multipliers used in rad_conv.
+
+sec = 128 does not work. Can go back to the original vec_mul.v file if the sec = 128 case is needed.
+sec = 1, 2, 4, 8, 16, 32, 64 all works.
+

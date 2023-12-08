@@ -690,7 +690,7 @@ begin
       s_update_e_domain: begin
                             h_wren_1 <=  1'b1;
                             sel_ec <= 2'b00;
-                            sel_hram = 3'b010;
+                            sel_hram <= 3'b010;
                          end
                          
       s_wait_encrypt_done: begin
@@ -941,22 +941,22 @@ begin
      
      s_shake_sec: begin
                     sel_in_shake <= 3'b001;
-                    din_valid_h = 1'b1;
+                    din_valid_h <= 1'b1;
                   end
      
      s_shake_fir: begin
                     sel_in_shake <= 3'b001;
-                    din_valid_h = 1'b1;
+                    din_valid_h <= 1'b1;
                   end
      
                 
      s_shake_proc: begin
-                      sel_in_shake = 3'b001;
+                      sel_in_shake <= 3'b001;
                       din_valid_h <= 1'b0;
                    end
      
      s_stall_0: begin
-                    sel_in_shake = 3'b001;
+                    sel_in_shake <= 3'b001;
                     if (seed_ready_internal) begin
                         din_valid_h <= 1'b1;
                       end
@@ -965,7 +965,7 @@ begin
                       end
                  end        
     
-      default: din_valid_h = 1'b0;
+      default: din_valid_h <= 1'b0;
       
     endcase
 

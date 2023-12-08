@@ -4,7 +4,7 @@ _SOURCE :=
 ROOT_PATH := $(abspath $(dir $(lastword $(MAKEFILE_LIST))))
 
 BUILD_PATH := $(ROOT_PATH)/build
-KAT_DIR = $(ROOT_PATH)/host/kat/kat_generate
+KAT_DIR = $(BUILD_PATH)/kat
 # Include the parameter set definitions
 PAR_FILE := $(ROOT_PATH)/modules/FPGA/parameters.mk
 include $(PAR_FILE)
@@ -25,6 +25,8 @@ MODULES_DIR 	:= $(ROOT_PATH)/modules
 
 
 export TOPMODULES
+# Define complete targets of the topmodules.
+#TOPMODULES = encap decap keygen joint_design hello
 # Define individual targets for the single steps.
 SIM := $(addsuffix -sim,$(TOPMODULES))
 
@@ -54,20 +56,23 @@ all: sim
 .PHONY: sim
 sim: $(SIM)
 
+.PHONY: kat
+kat:
+	$(MAKE) -C $(ROOT_PATH)/kat gen-kat -j$(NPROC) KAT_DIR=$(KAT_DIR)  PAR_SETS=$(PAR_SETS)
 .PHONY: $(TARGETS)
 $(TARGETS):
-	$(MAKE) -C $(ROOT_PATH)/host/kat gen-kat -j$(NPROC) KAT_DIR=$(KAT_DIR) PAR_SETS=$(PAR_MODULE)
-	$(MAKE) -C $(MODULES_DIR)\
-		-f modules.mk $(lastword $(subst -, ,$@)) \
+	# $(MAKE) -C $(ROOT_PATH)/host/kat gen-kat -j$(NPROC) KAT_DIR=$(KAT_DIR) PAR_SETS=$(PAR_MODULE)
+	$(MAKE) -C $(MODULES_DIR)/$(firstword $(subst -, ,$@))\
+		-f module.mk $(lastword $(subst -, ,$@)) \
 		-j$(NPROC) \
-		BUILD_DIR=$(SIMU_DIR) \
-		PAR_SETS="$(PAR_SETS)" \
+		BUILD_DIR=$(BUILD_DIR) \
+		PAR_SETS="$(PAR_MODULE)" \
 		XILINX_MODELS="$(XILINX_MODELS)" \
 		SYSTEMIZER="$(SYSTEMIZER)"
-	cp -r $(PLAT_DIR_SRC)/cpp $(SIMU_DIR)
-	cp -r $(PLAT_DIR_SRC)/Makefile $(SIMU_DIR)
-	cp -r $(MODULE_DIR_SRC)/verilog.mk $(BUILD_MODULES_DIR_SRC)
-	$(MAKE) -C $(SIMU_DIR)
+	# cp -r $(PLAT_DIR_SRC)/cpp $(SIMU_DIR)
+	# cp -r $(PLAT_DIR_SRC)/Makefile $(SIMU_DIR)
+	# cp -r $(MODULE_DIR_SRC)/verilog.mk $(BUILD_MODULES_DIR_SRC)
+	# $(MAKE) -C $(SIMU_DIR)
 
 clean_simu:
 	rm -rf $(BUILD_PATH)
