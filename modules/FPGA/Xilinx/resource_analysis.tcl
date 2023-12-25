@@ -35,6 +35,7 @@ foreach f $splitCont {
     }
 }
 puts $parameters
+
 set splitPar [split $parameters " "] ;
 puts $splitPar
 foreach f $splitPar {
@@ -48,12 +49,13 @@ puts $macros
 #--STEP1: Synthesis design
 
 read_xdc $constraints_timing
-
+set_param synth.elaboration.rodinMoreOptions "rt::set_parameter var_size_limit 2678785"
 synth_design \
     -part $partname \
     -top $top_module \
     -mode default \
-    -verilog_define $macros
+    -verilog_define $macros \
+    -directive runtimeoptimized
 
 #After synthesis and befor implement we will read xdc pin
 #Reference: https://docs.xilinx.com/v/u/2013.2-English/ug903-vivado-using-constraints

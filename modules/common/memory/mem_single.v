@@ -6,6 +6,7 @@ module mem_single
     parameter INIT = 0
   )
   (
+    (* ram_style = "block" *)
     input wire                     clock,
     input wire [WIDTH-1:0]         data,
     input wire [`CLOG2(DEPTH)-1:0] address,
@@ -13,7 +14,8 @@ module mem_single
     output reg [WIDTH-1:0]         q
   );
 
-  (* ram_style = "block" *) reg [WIDTH-1:0] mem [DEPTH-1:0];
+  (* ram_style = "block" *) 
+  reg [WIDTH-1:0] mem [0:DEPTH-1] /* synthesis ramstyle = "M20K" */;
   /* verilator lint_off UNUSEDSIGNAL */ 
   integer file;
   integer scan;
@@ -39,7 +41,8 @@ module mem_single
           mem[address] <= data;
           q <= data;
         end
-      q <= mem[address];
+      else
+        q <= mem[address];
     end
   
 endmodule

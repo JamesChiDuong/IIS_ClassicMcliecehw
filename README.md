@@ -40,9 +40,20 @@ Therewith, we are able to generate targets for all combinations, e.g., over all 
 
 The purpose test is interfaces between serial IO and the encaps top module to receive commands and to receive and send data as requested. A sequence of commands sends from the host to the FPGA could be:
 
-1. set public key: In the set pk test, we will uset set_pk command which will be sent from host PC to the FPGA. The data will be get from `host/kat/kat_generate/pubkey_32.kat` and sent to the encap_tb module via UART protocol.
+1. set_seed: This is a the loading seed data from `host/kat/kat_generate/mem_512.kat` to memory in encap_sim module via UART protocol.
 
-2. set seed: In the set seed test, we will use set_seed command which will be sent from host PC to the FPGA. The data will be get from `host/kat/kat_generate/mem_512.kat` and sent to the encap_tb module via UART protocol. After receiving the data, the encapsulation automaticlly starts and response to the host PC.
+2. set_pk: This is a the loading public key data from `host/kat/kat_generate/pubkey_32.kat` to memory in encap_sim module via UART protocol.
+
+3. start_encap: This is a command for starting encapsulation.
+
+4. check_data: After finish the encapsulation, the python scrpit will be created 3 file `build/result/cipher_0.out`,`build/result/cipher_1.out`, `build/result/K.out` by receiving these data from encap_sim module. The check_data command will be check the output data by running `host/kat/kat.sage.py`.
+
+### The following step for testing could be:
+- `Step 1`: set_seed or set_pk command.
+- `Step 2`: set_seed or set_pk command.
+- `Step 3`: start_encap command.
+- `Step 4`: check_data command
+
 
 ### Target 'sim':
 
@@ -51,35 +62,51 @@ The purpose test is interfaces between serial IO and the encaps top module to re
   ```
   When we run the command:
 
-   The program will generate the kat file `host/kat/kat_generate`, and generate these folder `build/simulation/cpp`, `build/simulation/rtl`, `/build/simulation/verilog`. Then, The program will run `.mk file` of each folder. After running, the terminal will compile and run the code. It will open the pseudo-terminal and wait for the test file from `host/` folder.
+   The program will generate the kat file `host/kat/kat_generate`, and generate these folder `build/simulation/cpp`, `build/simulation/rtl`, `/build/simulation/verilog`.The result foler have a 3 output file `build/result/cipher_0.out`,`build/result/cipher_1.out`, `build/result/K.out`. Then, The program will run `.mk file` of each folder. After running, the terminal will compile and run the code. It will open the pseudo-terminal and wait for the test file from `host/` folder.
+  
   
    `Example 1:`
-  
+
+  - `First` is a loading seed data from seed file to memory by `set_seed` command.
+
   | TOP MODULE FILE          |      TEST PYTHON FILE                                      |
-  | ---------------          |     --------------------------------------------------------------------------              |
+  | ---------------          |     -------------------------------------------------------|
   |`./encap_sim`             | `python3 Test_encap_sim.py /dev/pts/4 set_seed`            |
-  | Slave device: /dev/pts/4 |    Send Data:  0x24000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000001000000                                                                               |
-  |[mceliece348864] Start Encapsulation. (5155211 cycles) |-------------------Read Data-------------------                                                                        |
-  |[mceliece348864] Start FixedWeight. (5155211 cycles)   | Start Encapsulation:  5155211 cycles |
-  |[mceliece348864] Start Encode. (5155752 cycles)        | Stop Encapsulation:  17897  cycles   |
-  |[mceliece348864] FixedWeight finished. (541 cycles)    | Start FixedWeight:  5155211 cycles   |
-  |[mceliece348864] Encode finished. (16899 cycles)       | Stop FixedWeight:  541 cycles        |
-  |[mceliece348864] Encapsulation finished. (17897 cycles)| Start Encode:  5155752 cycles        |
-  |                                                       | Stop Encode:  16899 cycles           |
-  
-   `Example 2:`
-  
-  | TOP MODULE FILE          |      TEST PYTHON FILE                                      |
-  | ---------------          |     --------------------------------------------------------------------------              |
-  |`./encap_sim`             | `python3 Test_encap_sim.py /dev/pts/4 set_pk`            |
-  | Slave device: /dev/pts/4 |    Send Data:  0x18303fc00a74c0bdf.............................29ce66c80ae3d69e25799                                                                 |
-  |[mceliece348864] Start Encapsulation. (2269461 cycles) |-------------------Read Data-------------------                                                                        |
-  |[mceliece348864] Start FixedWeight. (2269461 cycles)   | Start Encapsulation:  2269461 cycles |
-  |[mceliece348864] Start Encode. (2270002 cycles)        | Stop Encapsulation:  34024  cycles   |
-  |[mceliece348864] FixedWeight finished. (540 cycles)    | Start FixedWeight:  2269461 cycles   |
-  |[mceliece348864] Encode finished. (33026 cycles)       | Stop FixedWeight:  541 cycles        |
-  |[mceliece348864] Encapsulation finished. (34024 cycles)| Start Encode:  2270002 cycles        |
-  |                                                       | Stop Encode:  33026 cycles           |
+  | Slave device: /dev/pts/4 |    Send Data:  0x240000........00001000000                 |
+  |                          |-------------------Read Data-------------------             |
+  | [mceliece348864] Send Seed data completed| Send Seed data completed.                  |
+
+  - `Second` is a loading public data from public key file to memory by `set_pk` command.
+
+  |`./encap_sim`             | `python3 Test_encap_sim.py /dev/pts/4 set_pk`              |
+  | Slave device: /dev/pts/4 |  Send Data:  0x18303fc00a74c0bdf......29ce66c80ae3d69e25799|
+  |                          |-------------------Read Data-------------------             |
+  | [mceliece348864] Send Public key data completed.| Send Public key data completed.     |
+
+  - `Third` is a starting to encapsulation by `start_encap` command.
+
+  |`./encap_sim`             | `python3 Test_encap_sim.py /dev/pts/4 set_pk`              |
+  | Slave device: /dev/pts/4 |  Send Data:  0x30101                                       |
+  |                          |-------------------Read Data-------------------             |
+
+  |[mceliece348864] Start Encapsulation. (5155211 cycles) |Start Encapsulation:  5155211 cycles  |
+  |[mceliece348864] Start FixedWeight. (5155211 cycles)   |Stop Encapsulation:  17897  cycles    |
+  |[mceliece348864] Start Encode. (5155752 cycles)        |Start FixedWeight:  5155211 cycles    |
+  |[mceliece348864] FixedWeight finished. (541 cycles)    |Stop FixedWeight:  541 cycles         |
+  |[mceliece348864] Encode finished. (16899 cycles)       |Start Encode:  5155752 cycles         |
+  |[mceliece348864] Encapsulation finished. (17897 cycles)|Stop Encode:  16899 cycles            |
+  |                          |-------------------Writting to file-------------------             |
+  |                          | cipher_0.out:Done                                                 |
+  |                          | cipher_1.out:Done                                                 |
+  |                          | K.out:Done                                                        |
+
+  - `Finally` is a checking data from 3 file which is created a python script at a `build/result/` folder by `check_data` command.
+
+  | `python3 Test_encap_sim.py check_data`                         |
+  |------------------Checking encapsulation data-------------------|
+  |[mceliece348864-KAT] Checking encapsulation data.               |
+  |[mceliece348864-32-encapsulation] Test Passed!                  |
+
 
 ### Target 'ArtixA7':
 
@@ -90,32 +117,7 @@ The purpose test is interfaces between serial IO and the encaps top module to re
   
   The program will generate the `build/Artycs324g/Top_moduleName/src` and `build/results`. The `build/Artycs324g/Top_moduleName/src` has all the Verilog files on your project. The `build/results` has the log file which stores the command line on the bash.
 
-   `Example 1:`
-  | TOP MODULE FILE          |      TEST PYTHON FILE                                      |
-  | ---------------          |     --------------------------------------------------------------------------              |
-  |                          | `python3 Test_encap_sim.py /dev/ttyUSB1 set_seed`          |
-  |                          |    Send Data:  0x24000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000001000000                               |
-  |                          |-------------------Read Data-------------------             |
-  |                          | Start Encapsulation:  72057594037927680 cycles             |
-  |                          | Stop Encapsulation:  127  cycles                           |
-  |                          | Start FixedWeight:  72057594037927680 cycles                |
-  |                          | Stop FixedWeight: 127 cycles                               |
-  |                          | Start Encode:  72057594037862400 cycles                    |
-  |                          | Stop Encode:  32767 cycles                                 |
-           
-  
-  `Example 2:`
-  | TOP MODULE FILE          |      TEST PYTHON FILE                                      |
-  | ---------------          |     --------------------------------------------------------------------------              |
-  |                          | `python3 Test_encap_sim.py /dev/ttyUSB1 set_pk`            |
-  |                          |    Send Data:  0x18303fc00a74c0bdf.............................29ce66c80ae3d69e25799                                                                   |
-  |                          |-------------------Read Data-------------------             |
-  |                          | Start Encapsulation:  549755813887 cycles                  |
-  |                          | Stop Encapsulation:  72056494526300160  cycles             |
-  |                          | Start FixedWeight:  549755813887 cycles                     |
-  |                          | Stop FixedWeight: 72056494526300160 cycles                 |
-  |                          | Start Encode:  549755813887 cycles                         |
-  |                          | Stop Encode:  71776119061217280 cycles                     |
+
   ## NOTE:
    - We need to use `make clean` before running the new target
    - To list the USB port of your device, open the terminal: `sudo ls /dev/ttyUSB*`

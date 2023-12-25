@@ -14,6 +14,13 @@ log2(651) = 10                   (counter bits N)
  115,200 * 16 = 1,843,200
  100 * 10^6 / 1,843,200 = ~52     (counter limit M)
  log2(52) = 6                     (counter bits N)
+
+ For 4000000 baud with 100Mhz FPGA clock
+ 4000000 * 16 = 64000000
+  100 * 10^6 / 64000000 = 1.56
+
+  3500000 * 16 = 56000000
+  100*10^6/56000000 = 1.78
 */
 /* verilator lint_off EOFNEWLINE */
 module baud_rate_generator

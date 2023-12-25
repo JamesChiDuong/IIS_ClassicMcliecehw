@@ -177,8 +177,8 @@ $$(MODULESTOP_RESULT_SYNTH_CLOCKS_$(1)_$(2)_$(3)): $$(MODULESTOP_$(2)) $$(XILINX
 		$$(MODULESTOP_RESULT_SYNTH_TIMING_$(1)_$(2)_$(3)) \
 		$$(MODULESTOP_RESULT_SYNTH_TIMING_SUMMARY_$(1)_$(2)_$(3)) \
 		$$(MODULESTOP_RESULT_SYNTH_CLOCKS_$(1)_$(2)_$(3)) \
-		"parameter_set=$$(id_$(2)) col_width=$(3) e_width=$(3) KEY_START_ADDR=0"\
-		"$$(MODULESTOP_SYNTH_$(2))"
+		"parameter_set=$$(id_$(2)) col_width=$(3) e_width=$(3) KEY_START_ADDR=0"
+
 
 
 .PHONY: synthesis-$(1)-$(2)-$(3)

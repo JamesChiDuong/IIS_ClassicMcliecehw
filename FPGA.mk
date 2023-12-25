@@ -48,7 +48,7 @@ export BUILD_MODULES_DIR_SRC := $(SIMU_DIR)/verilog
 
 
 .PHONY: all
-all: program
+all: synthesis
 
 .SECONDEXPANSION:
 

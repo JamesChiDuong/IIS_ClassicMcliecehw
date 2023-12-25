@@ -13,6 +13,7 @@ module mem_dual
   parameter INIT = 0
 )
 (
+  (* ram_style = "block" *)
   input  wire                 clock,
   input  wire [WIDTH-1:0]     data_0,
   input  wire [WIDTH-1:0]     data_1,
@@ -23,8 +24,8 @@ module mem_dual
   output reg  [WIDTH-1:0]     q_0,
   output reg  [WIDTH-1:0]     q_1
 );
-
-    (* ram_style = "block" *) reg [WIDTH-1:0] mem [0:DEPTH-1];
+  (* ram_style = "block" *)
+  reg [WIDTH-1:0] mem [0:DEPTH-1] /* synthesis ramstyle = "M20K" */;
 
   integer file;
   integer scan;
@@ -65,3 +66,4 @@ module mem_dual
   end
 
 endmodule
+

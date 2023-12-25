@@ -24,7 +24,7 @@ int	main(int argc, char **argv)
    Verilated::commandArgs(argc, argv);
    UARTSIM		*uart;										// init uart pointer
                                                    //uart_PseudoTerminal Pseudo;							// Init Pseudo terminal
-   unsigned	setup = 868;								// init baudrate
+   unsigned	setup = 33;								// init baudrate
 
    for(int argn=1; argn<argc; argn++)
    {

@@ -75,7 +75,7 @@ reg  rd_en_c = 0;
 
 wire [`CLOG2((l_n_elim +(col_width-l_n_elim%col_width)%col_width)/col_width) - 1:0] addr_PK;
 wire 																			   PK_rd;
-
+reg [`CLOG2((l_n_elim +(col_width-l_n_elim%col_width)%col_width)/col_width) - 1:0] PK_addr;
 reg rd_C0;
 reg [`CLOG2((l + (32-l%32)%32)/32) -1 : 0]C0_addr;
 wire [31:0]C0_out;
@@ -165,14 +165,14 @@ integer SIZE_K = 8;
 
 integer  START_SEED= 0;
 integer STOP_SEED = START_SEED + SIZE_SEED;
-integer START_PK = STOP_SEED + 1;
+integer START_PK = 1856;
 integer STOP_PK = START_PK + SIZE_PK;
 // integer START_C0 = STOP_PK;
 // integer STOP_C0 = START_C0 + SIZE_C0;
 // integer START_C1 = STOP_C0;
 // integer STOP_C1 = START_C1 + SIZE_C1;
 
-integer SIZE_TOTAL = STOP_SEED;
+integer SIZE_TOTAL = STOP_PK;
 
 always @(posedge clk)
 begin
@@ -232,7 +232,7 @@ begin
     // begin
     //     K_col_valid <= 1'b1;
     //    if (ctr > START_PK)
-    //      addr_PK <= addr_PK + 1;
+    //      PK_addr <= PK_addr + 1;
     // end
     // else
     // begin
@@ -349,14 +349,14 @@ begin
     $fflush();
 end
 
-// mem_single #(.WIDTH(col_width), .DEPTH(((l_n_elim+(col_width-l_n_elim%col_width)%col_width)/col_width)), .FILE(`FILE_PK_SLICED) ) publickey
-//            (
-//                .clock(clk),
-//                .data(0),
-//                .address(addr_PK),
-//                .wr_en(0),
-//                .q(PK_col)
-//            );
+mem_single #(.WIDTH(col_width), .DEPTH(((l_n_elim+(col_width-l_n_elim%col_width)%col_width)/col_width)), .FILE(`FILE_PK_SLICED) ) publickey
+           (
+               .clock(clk),
+               .data(0),
+               .address(addr_PK),
+               .wr_en(0),
+               .q(PK_col)
+           );
 
 mem_single #(.WIDTH(32), .DEPTH(16), .FILE(`FILE_MEM_SEED) ) mem_init_seed
            (

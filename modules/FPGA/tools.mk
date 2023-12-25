@@ -41,7 +41,7 @@ endif
 endif
 
 VIVADO ?= vivado
-VIVADO_VERSION_MIN := 2019.2
+VIVADO_VERSION_MIN := 2019.2.1
 VIVADO_VERSION := $(shell $(VIVADO) -version | grep Vivado | cut -d" " -f2 | cut -d"v" -f2)
 ifndef NO_CHECK
 ifeq ($(shell printf '%s\n%s\n' $(VIVADO_VERSION_MIN) $(VIVADO_VERSION) | sort --check=quiet --version-sort; echo $$?), 1)
