@@ -87,6 +87,7 @@ The purpose test is interfaces between serial IO and the encaps top module to re
 
   - `Third` is a starting to encapsulation by `start_encap` command.
 
+  | TOP MODULE FILE          |      TEST PYTHON FILE                                      |
   | ---------------          |     -------------------------------------------------------|
   |`./encap_sim`             | `python3 Test_encap_sim.py /dev/pts/4 set_pk`              |
   | Slave device: /dev/pts/4 |  Send Data:  0x30101                                       |
@@ -105,6 +106,8 @@ The purpose test is interfaces between serial IO and the encaps top module to re
 
   - `Finally` is a checking data from 3 file which is created a python script at a `build/result/` folder by `check_data` command.
 
+  |   TEST PYTHON FILE                                             |
+  | ---------------                                                |
   | `python3 Test_encap_sim.py check_data`                         |
   |------------------Checking encapsulation data-------------------|
   |[mceliece348864-KAT] Checking encapsulation data.               |
