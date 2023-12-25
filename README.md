@@ -92,7 +92,6 @@ The purpose test is interfaces between serial IO and the encaps top module to re
   |`./encap_sim`             | `python3 Test_encap_sim.py /dev/pts/4 set_pk`              |
   | Slave device: /dev/pts/4 |  Send Data:  0x30101                                       |
   |                          |-------------------Read Data-------------------             |
-
   |[mceliece348864] Start Encapsulation. (5155211 cycles) |Start Encapsulation:  5155211 cycles  |
   |[mceliece348864] Start FixedWeight. (5155211 cycles)   |Stop Encapsulation:  17897  cycles    |
   |[mceliece348864] Start Encode. (5155752 cycles)        |Start FixedWeight:  5155211 cycles    |
