@@ -64,7 +64,7 @@ The purpose test is interfaces between serial IO and the encaps top module to re
 
    The program will generate the kat file `host/kat/kat_generate`, and generate these folder `build/simulation/cpp`, `build/simulation/rtl`, `/build/simulation/verilog`.The result foler have a 3 output file `build/result/cipher_0.out`,`build/result/cipher_1.out`, `build/result/K.out`. Then, The program will run `.mk file` of each folder. After running, the terminal will compile and run the code. It will open the pseudo-terminal and wait for the test file from `host/` folder.
   
-  
+
    `Example 1:`
 
   - `First` is a loading seed data from seed file to memory by `set_seed` command.
@@ -77,7 +77,7 @@ The purpose test is interfaces between serial IO and the encaps top module to re
   | [mceliece348864] Send Seed data completed| Send Seed data completed.                  |
 
   - `Second` is a loading public data from public key file to memory by `set_pk` command.
-
+  | ---------------          |     -------------------------------------------------------|
   |`./encap_sim`             | `python3 Test_encap_sim.py /dev/pts/4 set_pk`              |
   | Slave device: /dev/pts/4 |  Send Data:  0x18303fc00a74c0bdf......29ce66c80ae3d69e25799|
   |                          |-------------------Read Data-------------------             |
