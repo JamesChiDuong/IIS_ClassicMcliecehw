@@ -77,6 +77,8 @@ The purpose test is interfaces between serial IO and the encaps top module to re
   | [mceliece348864] Send Seed data completed| Send Seed data completed.                  |
 
   - `Second` is a loading public data from public key file to memory by `set_pk` command.
+  
+  | TOP MODULE FILE          |      TEST PYTHON FILE                                      |
   | ---------------          |     -------------------------------------------------------|
   |`./encap_sim`             | `python3 Test_encap_sim.py /dev/pts/4 set_pk`              |
   | Slave device: /dev/pts/4 |  Send Data:  0x18303fc00a74c0bdf......29ce66c80ae3d69e25799|
