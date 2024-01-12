@@ -56,6 +56,7 @@ module encap_tb
        )(
            input wire 	clk,
            input wire 	rst,
+           output lcd1,
            output wire done
        );
 
@@ -100,6 +101,8 @@ wire dout_valid_shake;
 wire [31:0]dout_shake;
 wire force_done_shake;
 
+reg led1;
+assign lcd1 = led1;
 keccak_top shake_instance
            (
                .rst(rst),
@@ -159,16 +162,16 @@ end
 reg [31:0] ctr = 0;
 //reg loading_done = 0;
 
-integer SIZE_SEED = 16;
-integer SIZE_PK = k*l/col_width;
-integer SIZE_C0 = (l + (32-l%32)%32)/32;
-integer SIZE_C1 = 8;
-integer SIZE_K = 8;
+parameter SIZE_SEED = 16;
+parameter SIZE_PK = k*l/col_width;
+parameter SIZE_C0 = (l + (32-l%32)%32)/32;
+parameter SIZE_C1 = 8;
+parameter SIZE_K = 8;
 
-integer START_SEED = 0;
-integer STOP_SEED = START_SEED + SIZE_SEED;
-integer START_PK = STOP_SEED + 1;
-integer STOP_PK = START_PK + SIZE_PK;
+parameter START_SEED = 0;
+parameter STOP_SEED = START_SEED + SIZE_SEED;
+parameter START_PK = STOP_SEED + 1;
+parameter STOP_PK = START_PK + SIZE_PK;
 // integer START_C0 = STOP_PK;
 // integer STOP_C0 = START_C0 + SIZE_C0;
 // integer START_C1 = STOP_C0;
@@ -297,14 +300,15 @@ begin
     $sformat(prefix, "[mceliece%0d%0d]", DUT.n, DUT.t);
 end
 
-always @(posedge DUT.done)
-begin
-    $writememb(`FILE_K_OUT, DUT.hash_mem.mem,0,7);
-    $writememb(`FILE_CIPHER0_OUT, DUT.encryption_unit.encrypt_mem.mem);
-    $writememb(`FILE_CIPHER1_OUT, DUT.C1_mem.mem);
-    $writememb(`FILE_ERROR_OUT, DUT.error_vector_gen.onegen_instance.mem_dual_B.mem);
-    $fflush();
-end
+// always @(posedge DUT.done)
+// begin
+
+//     $writememb(`FILE_K_OUT, DUT.hash_mem.mem,0,7);
+//     $writememb(`FILE_CIPHER0_OUT, DUT.encryption_unit.encrypt_mem.mem);
+//     $writememb(`FILE_CIPHER1_OUT, DUT.C1_mem.mem);
+//     $writememb(`FILE_ERROR_OUT, DUT.error_vector_gen.onegen_instance.mem_dual_B.mem);
+//     $fflush();
+// end
 
 always @(posedge seed_valid)
 begin
@@ -315,6 +319,7 @@ end
 
 always @(posedge DUT.done)
 begin
+    led1 <= 1;
     time_encapsulation = ($time-time_encap_start)/2;
     $display("%s Encapsulation finished. (%0d cycles)", prefix, time_encapsulation);
     $fwrite(f_cycles_profile, "encapsulation %0d %0d\n", time_encap_start/2, time_encapsulation);
