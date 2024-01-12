@@ -1,0 +1,904 @@
+#-----------------------------------------------------------
+# Vivado v2019.2.1 (64-bit)
+# SW Build 2729669 on Thu Dec  5 04:48:12 MST 2019
+# IP Build 2729494 on Thu Dec  5 07:38:25 MST 2019
+# Start of session at: Fri Jan 12 14:53:53 2024
+# Process ID: 10748
+# Current directory: /home/james/Documents/IIS/FPGA/Cryto/ClassicMceliehw_FPGA/test/ClassicMceliehw_FPGA/modules
+# Command line: vivado -nojournal -log /home/james/Documents/IIS/FPGA/Cryto/ClassicMceliehw_FPGA/test/ClassicMceliehw_FPGA/build/results/synthesis_artix7_100t_Artycs324g_32.log -mode batch -source /home/james/Documents/IIS/FPGA/Cryto/ClassicMceliehw_FPGA/test/ClassicMceliehw_FPGA/modules/FPGA/Xilinx/resource_analysis.tcl -tclargs /home/james/Documents/IIS/FPGA/Cryto/ClassicMceliehw_FPGA/test/ClassicMceliehw_FPGA/build/Artycs324g/encap/src/+ /home/james/Documents/IIS/FPGA/Cryto/ClassicMceliehw_FPGA/test/ClassicMceliehw_FPGA/build/Artycs324g/encap/src/Receiver.v /home/james/Documents/IIS/FPGA/Cryto/ClassicMceliehw_FPGA/test/ClassicMceliehw_FPGA/build/Artycs324g/encap/src/Transmitter.v /home/james/Documents/IIS/FPGA/Cryto/ClassicMceliehw_FPGA/test/ClassicMceliehw_FPGA/build/Artycs324g/encap/src/baud_rate_generator.v /home/james/Documents/IIS/FPGA/Cryto/ClassicMceliehw_FPGA/test/ClassicMceliehw_FPGA/build/Artycs324g/encap/src/clog2.v /home/james/Documents/IIS/FPGA/Cryto/ClassicMceliehw_FPGA/test/ClassicMceliehw_FPGA/build/Artycs324g/encap/src/control_path.v /home/james/Documents/IIS/FPGA/Cryto/ClassicMceliehw_FPGA/test/ClassicMceliehw_FPGA/build/Artycs324g/encap/src/data_path.v /home/james/Documents/IIS/FPGA/Cryto/ClassicMceliehw_FPGA/test/ClassicMceliehw_FPGA/build/Artycs324g/encap/src/encap.v /home/james/Documents/IIS/FPGA/Cryto/ClassicMceliehw_FPGA/test/ClassicMceliehw_FPGA/build/Artycs324g/encap/src/encap_tb.v /home/james/Documents/IIS/FPGA/Cryto/ClassicMceliehw_FPGA/test/ClassicMceliehw_FPGA/build/Artycs324g/encap/src/encryption.v /home/james/Documents/IIS/FPGA/Cryto/ClassicMceliehw_FPGA/test/ClassicMceliehw_FPGA/build/Artycs324g/encap/src/fixed_weight.v /home/james/Documents/IIS/FPGA/Cryto/ClassicMceliehw_FPGA/test/ClassicMceliehw_FPGA/build/Artycs324g/encap/src/keccak_math.v /home/james/Documents/IIS/FPGA/Cryto/ClassicMceliehw_FPGA/test/ClassicMceliehw_FPGA/build/Artycs324g/encap/src/keccak_pkg.v /home/james/Documents/IIS/FPGA/Cryto/ClassicMceliehw_FPGA/test/ClassicMceliehw_FPGA/build/Artycs324g/encap/src/keccak_top.v /home/james/Documents/IIS/FPGA/Cryto/ClassicMceliehw_FPGA/test/ClassicMceliehw_FPGA/build/Artycs324g/encap/src/mem_dual.v /home/james/Documents/IIS/FPGA/Cryto/ClassicMceliehw_FPGA/test/ClassicMceliehw_FPGA/build/Artycs324g/encap/src/mem_single.v /home/james/Documents/IIS/FPGA/Cryto/ClassicMceliehw_FPGA/test/ClassicMceliehw_FPGA/build/Artycs324g/encap/src/onegen.v /home/james/Documents/IIS/FPGA/Cryto/ClassicMceliehw_FPGA/test/ClassicMceliehw_FPGA/build/Artycs324g/encap/src/rc.v /home/james/Documents/IIS/FPGA/Cryto/ClassicMceliehw_FPGA/test/ClassicMceliehw_FPGA/build/Artycs324g/encap/src/rearrange_vector.v /home/james/Documents/IIS/FPGA/Cryto/ClassicMceliehw_FPGA/test/ClassicMceliehw_FPGA/build/Artycs324g/encap/src/state_ram.v /home/james/Documents/IIS/FPGA/Cryto/ClassicMceliehw_FPGA/test/ClassicMceliehw_FPGA/build/Artycs324g/encap/src/stateram_inference.v /home/james/Documents/IIS/FPGA/Cryto/ClassicMceliehw_FPGA/test/ClassicMceliehw_FPGA/build/Artycs324g/encap/src/transform.v /home/james/Documents/IIS/FPGA/Cryto/ClassicMceliehw_FPGA/test/ClassicMceliehw_FPGA/modules/FPGA/Xilinx/timing_artix7_100t.xdc /home/james/Documents/IIS/FPGA/Cryto/ClassicMceliehw_FPGA/test/ClassicMceliehw_FPGA/modules/FPGA/Xilinx/pin_artix7_100t.xdc encap_tb xc7a100tcsg324-1 /home/james/Documents/IIS/FPGA/Cryto/ClassicMceliehw_FPGA/test/ClassicMceliehw_FPGA/build/results/encap_utilization_artix7_100t_Artycs324g_32.txt /home/james/Documents/IIS/FPGA/Cryto/ClassicMceliehw_FPGA/test/ClassicMceliehw_FPGA/build/results/encap_utilization_hierarchical_artix7_100t_Artycs324g_32.txt /home/james/Documents/IIS/FPGA/Cryto/ClassicMceliehw_FPGA/test/ClassicMceliehw_FPGA/build/results/encap_timing_artix7_100t_Artycs324g_32.txt /home/james/Documents/IIS/FPGA/Cryto/ClassicMceliehw_FPGA/test/ClassicMceliehw_FPGA/build/results/encap_timing_summary_artix7_100t_Artycs324g_32.txt /home/james/Documents/IIS/FPGA/Cryto/ClassicMceliehw_FPGA/test/ClassicMceliehw_FPGA/build/results/encap_clocks_artix7_100t_Artycs324g_32.txt parameter_set=1 col_width=32 e_width=32 KEY_START_ADDR=0 BAUD_RATE=9600 CLOCK_FPGA=100000000
+# Log file: /home/james/Documents/IIS/FPGA/Cryto/ClassicMceliehw_FPGA/test/ClassicMceliehw_FPGA/build/results/synthesis_artix7_100t_Artycs324g_32.log
+# Journal file: 
+#-----------------------------------------------------------
+source /home/james/Documents/IIS/FPGA/Cryto/ClassicMceliehw_FPGA/test/ClassicMceliehw_FPGA/modules/FPGA/Xilinx/resource_analysis.tcl
+# set sources [lindex $argv 0]
+# set constraints_timing [lindex $argv 1]
+# set constraints_pin [lindex $argv 2]
+# set top_module [lindex $argv 3]
+# set partname [lindex $argv 4]
+# set file_utilization [lindex $argv 5]
+# set file_utilization_hierarchical [lindex $argv 6]
+# set file_timing [lindex $argv 7]
+# set file_timing_summary [lindex $argv 8]
+# set file_clocks [lindex $argv 9]
+# set parameters [lindex $argv 10]
+# set macros [lindex $argv 11]
+# puts $sources
+/home/james/Documents/IIS/FPGA/Cryto/ClassicMceliehw_FPGA/test/ClassicMceliehw_FPGA/build/Artycs324g/encap/src/+ /home/james/Documents/IIS/FPGA/Cryto/ClassicMceliehw_FPGA/test/ClassicMceliehw_FPGA/build/Artycs324g/encap/src/Receiver.v /home/james/Documents/IIS/FPGA/Cryto/ClassicMceliehw_FPGA/test/ClassicMceliehw_FPGA/build/Artycs324g/encap/src/Transmitter.v /home/james/Documents/IIS/FPGA/Cryto/ClassicMceliehw_FPGA/test/ClassicMceliehw_FPGA/build/Artycs324g/encap/src/baud_rate_generator.v /home/james/Documents/IIS/FPGA/Cryto/ClassicMceliehw_FPGA/test/ClassicMceliehw_FPGA/build/Artycs324g/encap/src/clog2.v /home/james/Documents/IIS/FPGA/Cryto/ClassicMceliehw_FPGA/test/ClassicMceliehw_FPGA/build/Artycs324g/encap/src/control_path.v /home/james/Documents/IIS/FPGA/Cryto/ClassicMceliehw_FPGA/test/ClassicMceliehw_FPGA/build/Artycs324g/encap/src/data_path.v /home/james/Documents/IIS/FPGA/Cryto/ClassicMceliehw_FPGA/test/ClassicMceliehw_FPGA/build/Artycs324g/encap/src/encap.v /home/james/Documents/IIS/FPGA/Cryto/ClassicMceliehw_FPGA/test/ClassicMceliehw_FPGA/build/Artycs324g/encap/src/encap_tb.v /home/james/Documents/IIS/FPGA/Cryto/ClassicMceliehw_FPGA/test/ClassicMceliehw_FPGA/build/Artycs324g/encap/src/encryption.v /home/james/Documents/IIS/FPGA/Cryto/ClassicMceliehw_FPGA/test/ClassicMceliehw_FPGA/build/Artycs324g/encap/src/fixed_weight.v /home/james/Documents/IIS/FPGA/Cryto/ClassicMceliehw_FPGA/test/ClassicMceliehw_FPGA/build/Artycs324g/encap/src/keccak_math.v /home/james/Documents/IIS/FPGA/Cryto/ClassicMceliehw_FPGA/test/ClassicMceliehw_FPGA/build/Artycs324g/encap/src/keccak_pkg.v /home/james/Documents/IIS/FPGA/Cryto/ClassicMceliehw_FPGA/test/ClassicMceliehw_FPGA/build/Artycs324g/encap/src/keccak_top.v /home/james/Documents/IIS/FPGA/Cryto/ClassicMceliehw_FPGA/test/ClassicMceliehw_FPGA/build/Artycs324g/encap/src/mem_dual.v /home/james/Documents/IIS/FPGA/Cryto/ClassicMceliehw_FPGA/test/ClassicMceliehw_FPGA/build/Artycs324g/encap/src/mem_single.v /home/james/Documents/IIS/FPGA/Cryto/ClassicMceliehw_FPGA/test/ClassicMceliehw_FPGA/build/Artycs324g/encap/src/onegen.v /home/james/Documents/IIS/FPGA/Cryto/ClassicMceliehw_FPGA/test/ClassicMceliehw_FPGA/build/Artycs324g/encap/src/rc.v /home/james/Documents/IIS/FPGA/Cryto/ClassicMceliehw_FPGA/test/ClassicMceliehw_FPGA/build/Artycs324g/encap/src/rearrange_vector.v /home/james/Documents/IIS/FPGA/Cryto/ClassicMceliehw_FPGA/test/ClassicMceliehw_FPGA/build/Artycs324g/encap/src/state_ram.v /home/james/Documents/IIS/FPGA/Cryto/ClassicMceliehw_FPGA/test/ClassicMceliehw_FPGA/build/Artycs324g/encap/src/stateram_inference.v /home/james/Documents/IIS/FPGA/Cryto/ClassicMceliehw_FPGA/test/ClassicMceliehw_FPGA/build/Artycs324g/encap/src/transform.v
+# set splitCont [split $sources " "] ;
+# puts $splitCont
+/home/james/Documents/IIS/FPGA/Cryto/ClassicMceliehw_FPGA/test/ClassicMceliehw_FPGA/build/Artycs324g/encap/src/+ /home/james/Documents/IIS/FPGA/Cryto/ClassicMceliehw_FPGA/test/ClassicMceliehw_FPGA/build/Artycs324g/encap/src/Receiver.v /home/james/Documents/IIS/FPGA/Cryto/ClassicMceliehw_FPGA/test/ClassicMceliehw_FPGA/build/Artycs324g/encap/src/Transmitter.v /home/james/Documents/IIS/FPGA/Cryto/ClassicMceliehw_FPGA/test/ClassicMceliehw_FPGA/build/Artycs324g/encap/src/baud_rate_generator.v /home/james/Documents/IIS/FPGA/Cryto/ClassicMceliehw_FPGA/test/ClassicMceliehw_FPGA/build/Artycs324g/encap/src/clog2.v /home/james/Documents/IIS/FPGA/Cryto/ClassicMceliehw_FPGA/test/ClassicMceliehw_FPGA/build/Artycs324g/encap/src/control_path.v /home/james/Documents/IIS/FPGA/Cryto/ClassicMceliehw_FPGA/test/ClassicMceliehw_FPGA/build/Artycs324g/encap/src/data_path.v /home/james/Documents/IIS/FPGA/Cryto/ClassicMceliehw_FPGA/test/ClassicMceliehw_FPGA/build/Artycs324g/encap/src/encap.v /home/james/Documents/IIS/FPGA/Cryto/ClassicMceliehw_FPGA/test/ClassicMceliehw_FPGA/build/Artycs324g/encap/src/encap_tb.v /home/james/Documents/IIS/FPGA/Cryto/ClassicMceliehw_FPGA/test/ClassicMceliehw_FPGA/build/Artycs324g/encap/src/encryption.v /home/james/Documents/IIS/FPGA/Cryto/ClassicMceliehw_FPGA/test/ClassicMceliehw_FPGA/build/Artycs324g/encap/src/fixed_weight.v /home/james/Documents/IIS/FPGA/Cryto/ClassicMceliehw_FPGA/test/ClassicMceliehw_FPGA/build/Artycs324g/encap/src/keccak_math.v /home/james/Documents/IIS/FPGA/Cryto/ClassicMceliehw_FPGA/test/ClassicMceliehw_FPGA/build/Artycs324g/encap/src/keccak_pkg.v /home/james/Documents/IIS/FPGA/Cryto/ClassicMceliehw_FPGA/test/ClassicMceliehw_FPGA/build/Artycs324g/encap/src/keccak_top.v /home/james/Documents/IIS/FPGA/Cryto/ClassicMceliehw_FPGA/test/ClassicMceliehw_FPGA/build/Artycs324g/encap/src/mem_dual.v /home/james/Documents/IIS/FPGA/Cryto/ClassicMceliehw_FPGA/test/ClassicMceliehw_FPGA/build/Artycs324g/encap/src/mem_single.v /home/james/Documents/IIS/FPGA/Cryto/ClassicMceliehw_FPGA/test/ClassicMceliehw_FPGA/build/Artycs324g/encap/src/onegen.v /home/james/Documents/IIS/FPGA/Cryto/ClassicMceliehw_FPGA/test/ClassicMceliehw_FPGA/build/Artycs324g/encap/src/rc.v /home/james/Documents/IIS/FPGA/Cryto/ClassicMceliehw_FPGA/test/ClassicMceliehw_FPGA/build/Artycs324g/encap/src/rearrange_vector.v /home/james/Documents/IIS/FPGA/Cryto/ClassicMceliehw_FPGA/test/ClassicMceliehw_FPGA/build/Artycs324g/encap/src/state_ram.v /home/james/Documents/IIS/FPGA/Cryto/ClassicMceliehw_FPGA/test/ClassicMceliehw_FPGA/build/Artycs324g/encap/src/stateram_inference.v /home/james/Documents/IIS/FPGA/Cryto/ClassicMceliehw_FPGA/test/ClassicMceliehw_FPGA/build/Artycs324g/encap/src/transform.v
+# foreach f $splitCont {
+#     puts $f
+#     set pat ".vhd"
+#     set patv ".v"
+#     if [string match *$pat $f] {
+#         read_vhdl $f
+#     } elseif [string match *$patv $f] {
+#         read_verilog $f
+#     } else {
+#         # do nothing
+#     }
+# }
+/home/james/Documents/IIS/FPGA/Cryto/ClassicMceliehw_FPGA/test/ClassicMceliehw_FPGA/build/Artycs324g/encap/src/+
+/home/james/Documents/IIS/FPGA/Cryto/ClassicMceliehw_FPGA/test/ClassicMceliehw_FPGA/build/Artycs324g/encap/src/Receiver.v
+/home/james/Documents/IIS/FPGA/Cryto/ClassicMceliehw_FPGA/test/ClassicMceliehw_FPGA/build/Artycs324g/encap/src/Transmitter.v
+/home/james/Documents/IIS/FPGA/Cryto/ClassicMceliehw_FPGA/test/ClassicMceliehw_FPGA/build/Artycs324g/encap/src/baud_rate_generator.v
+/home/james/Documents/IIS/FPGA/Cryto/ClassicMceliehw_FPGA/test/ClassicMceliehw_FPGA/build/Artycs324g/encap/src/clog2.v
+/home/james/Documents/IIS/FPGA/Cryto/ClassicMceliehw_FPGA/test/ClassicMceliehw_FPGA/build/Artycs324g/encap/src/control_path.v
+/home/james/Documents/IIS/FPGA/Cryto/ClassicMceliehw_FPGA/test/ClassicMceliehw_FPGA/build/Artycs324g/encap/src/data_path.v
+/home/james/Documents/IIS/FPGA/Cryto/ClassicMceliehw_FPGA/test/ClassicMceliehw_FPGA/build/Artycs324g/encap/src/encap.v
+/home/james/Documents/IIS/FPGA/Cryto/ClassicMceliehw_FPGA/test/ClassicMceliehw_FPGA/build/Artycs324g/encap/src/encap_tb.v
+/home/james/Documents/IIS/FPGA/Cryto/ClassicMceliehw_FPGA/test/ClassicMceliehw_FPGA/build/Artycs324g/encap/src/encryption.v
+/home/james/Documents/IIS/FPGA/Cryto/ClassicMceliehw_FPGA/test/ClassicMceliehw_FPGA/build/Artycs324g/encap/src/fixed_weight.v
+/home/james/Documents/IIS/FPGA/Cryto/ClassicMceliehw_FPGA/test/ClassicMceliehw_FPGA/build/Artycs324g/encap/src/keccak_math.v
+/home/james/Documents/IIS/FPGA/Cryto/ClassicMceliehw_FPGA/test/ClassicMceliehw_FPGA/build/Artycs324g/encap/src/keccak_pkg.v
+/home/james/Documents/IIS/FPGA/Cryto/ClassicMceliehw_FPGA/test/ClassicMceliehw_FPGA/build/Artycs324g/encap/src/keccak_top.v
+/home/james/Documents/IIS/FPGA/Cryto/ClassicMceliehw_FPGA/test/ClassicMceliehw_FPGA/build/Artycs324g/encap/src/mem_dual.v
+/home/james/Documents/IIS/FPGA/Cryto/ClassicMceliehw_FPGA/test/ClassicMceliehw_FPGA/build/Artycs324g/encap/src/mem_single.v
+/home/james/Documents/IIS/FPGA/Cryto/ClassicMceliehw_FPGA/test/ClassicMceliehw_FPGA/build/Artycs324g/encap/src/onegen.v
+/home/james/Documents/IIS/FPGA/Cryto/ClassicMceliehw_FPGA/test/ClassicMceliehw_FPGA/build/Artycs324g/encap/src/rc.v
+/home/james/Documents/IIS/FPGA/Cryto/ClassicMceliehw_FPGA/test/ClassicMceliehw_FPGA/build/Artycs324g/encap/src/rearrange_vector.v
+/home/james/Documents/IIS/FPGA/Cryto/ClassicMceliehw_FPGA/test/ClassicMceliehw_FPGA/build/Artycs324g/encap/src/state_ram.v
+/home/james/Documents/IIS/FPGA/Cryto/ClassicMceliehw_FPGA/test/ClassicMceliehw_FPGA/build/Artycs324g/encap/src/stateram_inference.v
+/home/james/Documents/IIS/FPGA/Cryto/ClassicMceliehw_FPGA/test/ClassicMceliehw_FPGA/build/Artycs324g/encap/src/transform.v
+# puts $parameters
+parameter_set=1 col_width=32 e_width=32 KEY_START_ADDR=0 BAUD_RATE=9600 CLOCK_FPGA=100000000
+# set splitPar [split $parameters " "] ;
+# puts $splitPar
+parameter_set=1 col_width=32 e_width=32 KEY_START_ADDR=0 BAUD_RATE=9600 CLOCK_FPGA=100000000
+# foreach f $splitPar {
+#     puts $f
+#     set_property generic "$f" [current_fileset]
+# }
+parameter_set=1
+col_width=32
+e_width=32
+KEY_START_ADDR=0
+BAUD_RATE=9600
+CLOCK_FPGA=100000000
+# set_property generic "$splitPar" [current_fileset]
+# puts $macros
+
+# read_xdc $constraints_timing
+# synth_design \
+#     -part $partname \
+#     -top $top_module \
+#     -mode default \
+#     -verilog_define $macros
+Command: synth_design -part xc7a100tcsg324-1 -top encap_tb -mode default -verilog_define {}
+Starting synth_design
+Attempting to get a license for feature 'Synthesis' and/or device 'xc7a100t'
+INFO: [Common 17-349] Got license for feature 'Synthesis' and/or device 'xc7a100t'
+INFO: [Device 21-403] Loading part xc7a100tcsg324-1
+INFO: Launching helper process for spawning children vivado processes
+INFO: Helper process launched with PID 10942 
+WARNING: [Synth 8-2507] parameter declaration becomes local in encap_seq_gen with formal parameter declaration list [/home/james/Documents/IIS/FPGA/Cryto/ClassicMceliehw_FPGA/test/ClassicMceliehw_FPGA/build/Artycs324g/encap/src/encap.v:174]
+WARNING: [Synth 8-2507] parameter declaration becomes local in encap_seq_gen with formal parameter declaration list [/home/james/Documents/IIS/FPGA/Cryto/ClassicMceliehw_FPGA/test/ClassicMceliehw_FPGA/build/Artycs324g/encap/src/encap.v:175]
+WARNING: [Synth 8-2507] parameter declaration becomes local in encap_seq_gen with formal parameter declaration list [/home/james/Documents/IIS/FPGA/Cryto/ClassicMceliehw_FPGA/test/ClassicMceliehw_FPGA/build/Artycs324g/encap/src/encap.v:337]
+WARNING: [Synth 8-2507] parameter declaration becomes local in encap_seq_gen with formal parameter declaration list [/home/james/Documents/IIS/FPGA/Cryto/ClassicMceliehw_FPGA/test/ClassicMceliehw_FPGA/build/Artycs324g/encap/src/encap.v:338]
+WARNING: [Synth 8-2507] parameter declaration becomes local in encap_seq_gen with formal parameter declaration list [/home/james/Documents/IIS/FPGA/Cryto/ClassicMceliehw_FPGA/test/ClassicMceliehw_FPGA/build/Artycs324g/encap/src/encap.v:339]
+WARNING: [Synth 8-2507] parameter declaration becomes local in encap_seq_gen with formal parameter declaration list [/home/james/Documents/IIS/FPGA/Cryto/ClassicMceliehw_FPGA/test/ClassicMceliehw_FPGA/build/Artycs324g/encap/src/encap.v:340]
+WARNING: [Synth 8-2507] parameter declaration becomes local in encap_seq_gen with formal parameter declaration list [/home/james/Documents/IIS/FPGA/Cryto/ClassicMceliehw_FPGA/test/ClassicMceliehw_FPGA/build/Artycs324g/encap/src/encap.v:341]
+WARNING: [Synth 8-2507] parameter declaration becomes local in encap_seq_gen with formal parameter declaration list [/home/james/Documents/IIS/FPGA/Cryto/ClassicMceliehw_FPGA/test/ClassicMceliehw_FPGA/build/Artycs324g/encap/src/encap.v:342]
+WARNING: [Synth 8-2507] parameter declaration becomes local in encap_seq_gen with formal parameter declaration list [/home/james/Documents/IIS/FPGA/Cryto/ClassicMceliehw_FPGA/test/ClassicMceliehw_FPGA/build/Artycs324g/encap/src/encap.v:343]
+WARNING: [Synth 8-2507] parameter declaration becomes local in encap_seq_gen with formal parameter declaration list [/home/james/Documents/IIS/FPGA/Cryto/ClassicMceliehw_FPGA/test/ClassicMceliehw_FPGA/build/Artycs324g/encap/src/encap.v:344]
+WARNING: [Synth 8-2507] parameter declaration becomes local in encap_seq_gen with formal parameter declaration list [/home/james/Documents/IIS/FPGA/Cryto/ClassicMceliehw_FPGA/test/ClassicMceliehw_FPGA/build/Artycs324g/encap/src/encap.v:345]
+WARNING: [Synth 8-2507] parameter declaration becomes local in encap_seq_gen with formal parameter declaration list [/home/james/Documents/IIS/FPGA/Cryto/ClassicMceliehw_FPGA/test/ClassicMceliehw_FPGA/build/Artycs324g/encap/src/encap.v:346]
+WARNING: [Synth 8-2507] parameter declaration becomes local in encap_seq_gen with formal parameter declaration list [/home/james/Documents/IIS/FPGA/Cryto/ClassicMceliehw_FPGA/test/ClassicMceliehw_FPGA/build/Artycs324g/encap/src/encap.v:347]
+WARNING: [Synth 8-2507] parameter declaration becomes local in encap_seq_gen with formal parameter declaration list [/home/james/Documents/IIS/FPGA/Cryto/ClassicMceliehw_FPGA/test/ClassicMceliehw_FPGA/build/Artycs324g/encap/src/encap.v:348]
+WARNING: [Synth 8-2507] parameter declaration becomes local in encap_seq_gen with formal parameter declaration list [/home/james/Documents/IIS/FPGA/Cryto/ClassicMceliehw_FPGA/test/ClassicMceliehw_FPGA/build/Artycs324g/encap/src/encap.v:349]
+WARNING: [Synth 8-2507] parameter declaration becomes local in encap_seq_gen with formal parameter declaration list [/home/james/Documents/IIS/FPGA/Cryto/ClassicMceliehw_FPGA/test/ClassicMceliehw_FPGA/build/Artycs324g/encap/src/encap.v:350]
+WARNING: [Synth 8-2507] parameter declaration becomes local in encap_seq_gen with formal parameter declaration list [/home/james/Documents/IIS/FPGA/Cryto/ClassicMceliehw_FPGA/test/ClassicMceliehw_FPGA/build/Artycs324g/encap/src/encap.v:351]
+WARNING: [Synth 8-2507] parameter declaration becomes local in encap_seq_gen with formal parameter declaration list [/home/james/Documents/IIS/FPGA/Cryto/ClassicMceliehw_FPGA/test/ClassicMceliehw_FPGA/build/Artycs324g/encap/src/encap.v:352]
+WARNING: [Synth 8-2507] parameter declaration becomes local in encap_seq_gen with formal parameter declaration list [/home/james/Documents/IIS/FPGA/Cryto/ClassicMceliehw_FPGA/test/ClassicMceliehw_FPGA/build/Artycs324g/encap/src/encap.v:353]
+WARNING: [Synth 8-2507] parameter declaration becomes local in encap_seq_gen with formal parameter declaration list [/home/james/Documents/IIS/FPGA/Cryto/ClassicMceliehw_FPGA/test/ClassicMceliehw_FPGA/build/Artycs324g/encap/src/encap.v:354]
+WARNING: [Synth 8-2507] parameter declaration becomes local in encap_seq_gen with formal parameter declaration list [/home/james/Documents/IIS/FPGA/Cryto/ClassicMceliehw_FPGA/test/ClassicMceliehw_FPGA/build/Artycs324g/encap/src/encap.v:355]
+WARNING: [Synth 8-2507] parameter declaration becomes local in encap_seq_gen with formal parameter declaration list [/home/james/Documents/IIS/FPGA/Cryto/ClassicMceliehw_FPGA/test/ClassicMceliehw_FPGA/build/Artycs324g/encap/src/encap.v:356]
+WARNING: [Synth 8-2507] parameter declaration becomes local in encap_seq_gen with formal parameter declaration list [/home/james/Documents/IIS/FPGA/Cryto/ClassicMceliehw_FPGA/test/ClassicMceliehw_FPGA/build/Artycs324g/encap/src/encap.v:357]
+WARNING: [Synth 8-2507] parameter declaration becomes local in encap_seq_gen with formal parameter declaration list [/home/james/Documents/IIS/FPGA/Cryto/ClassicMceliehw_FPGA/test/ClassicMceliehw_FPGA/build/Artycs324g/encap/src/encap.v:863]
+WARNING: [Synth 8-2507] parameter declaration becomes local in encap_seq_gen with formal parameter declaration list [/home/james/Documents/IIS/FPGA/Cryto/ClassicMceliehw_FPGA/test/ClassicMceliehw_FPGA/build/Artycs324g/encap/src/encap.v:864]
+WARNING: [Synth 8-2507] parameter declaration becomes local in encap_seq_gen with formal parameter declaration list [/home/james/Documents/IIS/FPGA/Cryto/ClassicMceliehw_FPGA/test/ClassicMceliehw_FPGA/build/Artycs324g/encap/src/encap.v:865]
+WARNING: [Synth 8-2507] parameter declaration becomes local in encap_seq_gen with formal parameter declaration list [/home/james/Documents/IIS/FPGA/Cryto/ClassicMceliehw_FPGA/test/ClassicMceliehw_FPGA/build/Artycs324g/encap/src/encap.v:866]
+WARNING: [Synth 8-2507] parameter declaration becomes local in encap_seq_gen with formal parameter declaration list [/home/james/Documents/IIS/FPGA/Cryto/ClassicMceliehw_FPGA/test/ClassicMceliehw_FPGA/build/Artycs324g/encap/src/encap.v:867]
+WARNING: [Synth 8-2507] parameter declaration becomes local in encap_seq_gen with formal parameter declaration list [/home/james/Documents/IIS/FPGA/Cryto/ClassicMceliehw_FPGA/test/ClassicMceliehw_FPGA/build/Artycs324g/encap/src/encap.v:868]
+WARNING: [Synth 8-2841] use of undefined macro FILE_VCD [/home/james/Documents/IIS/FPGA/Cryto/ClassicMceliehw_FPGA/test/ClassicMceliehw_FPGA/build/Artycs324g/encap/src/encap_tb.v:157]
+WARNING: [Synth 8-2841] use of undefined macro FILE_CYCLES_PROFILE [/home/james/Documents/IIS/FPGA/Cryto/ClassicMceliehw_FPGA/test/ClassicMceliehw_FPGA/build/Artycs324g/encap/src/encap_tb.v:299]
+WARNING: [Synth 8-2841] use of undefined macro FILE_PK_SLICED [/home/james/Documents/IIS/FPGA/Cryto/ClassicMceliehw_FPGA/test/ClassicMceliehw_FPGA/build/Artycs324g/encap/src/encap_tb.v:359]
+WARNING: [Synth 8-2841] use of undefined macro FILE_MEM_SEED [/home/james/Documents/IIS/FPGA/Cryto/ClassicMceliehw_FPGA/test/ClassicMceliehw_FPGA/build/Artycs324g/encap/src/encap_tb.v:368]
+WARNING: [Synth 8-2507] parameter declaration becomes local in encap_tb with formal parameter declaration list [/home/james/Documents/IIS/FPGA/Cryto/ClassicMceliehw_FPGA/test/ClassicMceliehw_FPGA/build/Artycs324g/encap/src/encap_tb.v:165]
+WARNING: [Synth 8-2507] parameter declaration becomes local in encap_tb with formal parameter declaration list [/home/james/Documents/IIS/FPGA/Cryto/ClassicMceliehw_FPGA/test/ClassicMceliehw_FPGA/build/Artycs324g/encap/src/encap_tb.v:166]
+WARNING: [Synth 8-2507] parameter declaration becomes local in encap_tb with formal parameter declaration list [/home/james/Documents/IIS/FPGA/Cryto/ClassicMceliehw_FPGA/test/ClassicMceliehw_FPGA/build/Artycs324g/encap/src/encap_tb.v:167]
+WARNING: [Synth 8-2507] parameter declaration becomes local in encap_tb with formal parameter declaration list [/home/james/Documents/IIS/FPGA/Cryto/ClassicMceliehw_FPGA/test/ClassicMceliehw_FPGA/build/Artycs324g/encap/src/encap_tb.v:168]
+WARNING: [Synth 8-2507] parameter declaration becomes local in encap_tb with formal parameter declaration list [/home/james/Documents/IIS/FPGA/Cryto/ClassicMceliehw_FPGA/test/ClassicMceliehw_FPGA/build/Artycs324g/encap/src/encap_tb.v:169]
+WARNING: [Synth 8-2507] parameter declaration becomes local in encap_tb with formal parameter declaration list [/home/james/Documents/IIS/FPGA/Cryto/ClassicMceliehw_FPGA/test/ClassicMceliehw_FPGA/build/Artycs324g/encap/src/encap_tb.v:171]
+WARNING: [Synth 8-2507] parameter declaration becomes local in encap_tb with formal parameter declaration list [/home/james/Documents/IIS/FPGA/Cryto/ClassicMceliehw_FPGA/test/ClassicMceliehw_FPGA/build/Artycs324g/encap/src/encap_tb.v:172]
+WARNING: [Synth 8-2507] parameter declaration becomes local in encap_tb with formal parameter declaration list [/home/james/Documents/IIS/FPGA/Cryto/ClassicMceliehw_FPGA/test/ClassicMceliehw_FPGA/build/Artycs324g/encap/src/encap_tb.v:173]
+WARNING: [Synth 8-2507] parameter declaration becomes local in encap_tb with formal parameter declaration list [/home/james/Documents/IIS/FPGA/Cryto/ClassicMceliehw_FPGA/test/ClassicMceliehw_FPGA/build/Artycs324g/encap/src/encap_tb.v:174]
+WARNING: [Synth 8-6901] identifier 'count_k' is used before its declaration [/home/james/Documents/IIS/FPGA/Cryto/ClassicMceliehw_FPGA/test/ClassicMceliehw_FPGA/build/Artycs324g/encap/src/encryption.v:123]
+WARNING: [Synth 8-2507] parameter declaration becomes local in encrypt_col_block with formal parameter declaration list [/home/james/Documents/IIS/FPGA/Cryto/ClassicMceliehw_FPGA/test/ClassicMceliehw_FPGA/build/Artycs324g/encap/src/encryption.v:195]
+WARNING: [Synth 8-2507] parameter declaration becomes local in encrypt_col_block with formal parameter declaration list [/home/james/Documents/IIS/FPGA/Cryto/ClassicMceliehw_FPGA/test/ClassicMceliehw_FPGA/build/Artycs324g/encap/src/encryption.v:196]
+WARNING: [Synth 8-2507] parameter declaration becomes local in encrypt_col_block with formal parameter declaration list [/home/james/Documents/IIS/FPGA/Cryto/ClassicMceliehw_FPGA/test/ClassicMceliehw_FPGA/build/Artycs324g/encap/src/encryption.v:197]
+WARNING: [Synth 8-2507] parameter declaration becomes local in encrypt_col_block with formal parameter declaration list [/home/james/Documents/IIS/FPGA/Cryto/ClassicMceliehw_FPGA/test/ClassicMceliehw_FPGA/build/Artycs324g/encap/src/encryption.v:198]
+WARNING: [Synth 8-2507] parameter declaration becomes local in encrypt_col_block with formal parameter declaration list [/home/james/Documents/IIS/FPGA/Cryto/ClassicMceliehw_FPGA/test/ClassicMceliehw_FPGA/build/Artycs324g/encap/src/encryption.v:199]
+WARNING: [Synth 8-2507] parameter declaration becomes local in encrypt_col_block with formal parameter declaration list [/home/james/Documents/IIS/FPGA/Cryto/ClassicMceliehw_FPGA/test/ClassicMceliehw_FPGA/build/Artycs324g/encap/src/encryption.v:200]
+WARNING: [Synth 8-2507] parameter declaration becomes local in encrypt_col_block with formal parameter declaration list [/home/james/Documents/IIS/FPGA/Cryto/ClassicMceliehw_FPGA/test/ClassicMceliehw_FPGA/build/Artycs324g/encap/src/encryption.v:201]
+WARNING: [Synth 8-2507] parameter declaration becomes local in encrypt_col_block with formal parameter declaration list [/home/james/Documents/IIS/FPGA/Cryto/ClassicMceliehw_FPGA/test/ClassicMceliehw_FPGA/build/Artycs324g/encap/src/encryption.v:202]
+WARNING: [Synth 8-2507] parameter declaration becomes local in fixed_weight_no_shake_mw with formal parameter declaration list [/home/james/Documents/IIS/FPGA/Cryto/ClassicMceliehw_FPGA/test/ClassicMceliehw_FPGA/build/Artycs324g/encap/src/fixed_weight.v:106]
+WARNING: [Synth 8-2507] parameter declaration becomes local in fixed_weight_no_shake_mw with formal parameter declaration list [/home/james/Documents/IIS/FPGA/Cryto/ClassicMceliehw_FPGA/test/ClassicMceliehw_FPGA/build/Artycs324g/encap/src/fixed_weight.v:107]
+WARNING: [Synth 8-2507] parameter declaration becomes local in fixed_weight_no_shake_mw with formal parameter declaration list [/home/james/Documents/IIS/FPGA/Cryto/ClassicMceliehw_FPGA/test/ClassicMceliehw_FPGA/build/Artycs324g/encap/src/fixed_weight.v:108]
+WARNING: [Synth 8-2507] parameter declaration becomes local in fixed_weight_no_shake_mw with formal parameter declaration list [/home/james/Documents/IIS/FPGA/Cryto/ClassicMceliehw_FPGA/test/ClassicMceliehw_FPGA/build/Artycs324g/encap/src/fixed_weight.v:109]
+WARNING: [Synth 8-2507] parameter declaration becomes local in fixed_weight_no_shake_mw with formal parameter declaration list [/home/james/Documents/IIS/FPGA/Cryto/ClassicMceliehw_FPGA/test/ClassicMceliehw_FPGA/build/Artycs324g/encap/src/fixed_weight.v:110]
+WARNING: [Synth 8-2507] parameter declaration becomes local in fixed_weight_no_shake_mw with formal parameter declaration list [/home/james/Documents/IIS/FPGA/Cryto/ClassicMceliehw_FPGA/test/ClassicMceliehw_FPGA/build/Artycs324g/encap/src/fixed_weight.v:111]
+WARNING: [Synth 8-6901] identifier 'l_seed_addr' is used before its declaration [/home/james/Documents/IIS/FPGA/Cryto/ClassicMceliehw_FPGA/test/ClassicMceliehw_FPGA/build/Artycs324g/encap/src/fixed_weight.v:146]
+WARNING: [Synth 8-6901] identifier 'seed_is_loaded_in_shake_off' is used before its declaration [/home/james/Documents/IIS/FPGA/Cryto/ClassicMceliehw_FPGA/test/ClassicMceliehw_FPGA/build/Artycs324g/encap/src/fixed_weight.v:268]
+WARNING: [Synth 8-6901] identifier 'seed_is_loaded_in_shake' is used before its declaration [/home/james/Documents/IIS/FPGA/Cryto/ClassicMceliehw_FPGA/test/ClassicMceliehw_FPGA/build/Artycs324g/encap/src/fixed_weight.v:278]
+WARNING: [Synth 8-6901] identifier 'seed_is_loaded_in_shake_off' is used before its declaration [/home/james/Documents/IIS/FPGA/Cryto/ClassicMceliehw_FPGA/test/ClassicMceliehw_FPGA/build/Artycs324g/encap/src/fixed_weight.v:280]
+WARNING: [Synth 8-6901] identifier 'seed_is_loaded_in_shake_off' is used before its declaration [/home/james/Documents/IIS/FPGA/Cryto/ClassicMceliehw_FPGA/test/ClassicMceliehw_FPGA/build/Artycs324g/encap/src/fixed_weight.v:291]
+WARNING: [Synth 8-6901] identifier 'seed_is_loaded_in_shake_off' is used before its declaration [/home/james/Documents/IIS/FPGA/Cryto/ClassicMceliehw_FPGA/test/ClassicMceliehw_FPGA/build/Artycs324g/encap/src/fixed_weight.v:300]
+WARNING: [Synth 8-6901] identifier 'l_seed_addr' is used before its declaration [/home/james/Documents/IIS/FPGA/Cryto/ClassicMceliehw_FPGA/test/ClassicMceliehw_FPGA/build/Artycs324g/encap/src/fixed_weight.v:357]
+WARNING: [Synth 8-6901] identifier 'l_seed_addr' is used before its declaration [/home/james/Documents/IIS/FPGA/Cryto/ClassicMceliehw_FPGA/test/ClassicMceliehw_FPGA/build/Artycs324g/encap/src/fixed_weight.v:432]
+WARNING: [Synth 8-2507] parameter declaration becomes local in fixed_weight_no_shake_mw with formal parameter declaration list [/home/james/Documents/IIS/FPGA/Cryto/ClassicMceliehw_FPGA/test/ClassicMceliehw_FPGA/build/Artycs324g/encap/src/fixed_weight.v:445]
+WARNING: [Synth 8-2507] parameter declaration becomes local in fixed_weight_no_shake_mw with formal parameter declaration list [/home/james/Documents/IIS/FPGA/Cryto/ClassicMceliehw_FPGA/test/ClassicMceliehw_FPGA/build/Artycs324g/encap/src/fixed_weight.v:446]
+WARNING: [Synth 8-2507] parameter declaration becomes local in fixed_weight_no_shake_mw with formal parameter declaration list [/home/james/Documents/IIS/FPGA/Cryto/ClassicMceliehw_FPGA/test/ClassicMceliehw_FPGA/build/Artycs324g/encap/src/fixed_weight.v:447]
+WARNING: [Synth 8-2507] parameter declaration becomes local in fixed_weight_no_shake_mw with formal parameter declaration list [/home/james/Documents/IIS/FPGA/Cryto/ClassicMceliehw_FPGA/test/ClassicMceliehw_FPGA/build/Artycs324g/encap/src/fixed_weight.v:448]
+WARNING: [Synth 8-2507] parameter declaration becomes local in fixed_weight_no_shake_mw with formal parameter declaration list [/home/james/Documents/IIS/FPGA/Cryto/ClassicMceliehw_FPGA/test/ClassicMceliehw_FPGA/build/Artycs324g/encap/src/fixed_weight.v:449]
+WARNING: [Synth 8-2507] parameter declaration becomes local in fixed_weight_no_shake_mw with formal parameter declaration list [/home/james/Documents/IIS/FPGA/Cryto/ClassicMceliehw_FPGA/test/ClassicMceliehw_FPGA/build/Artycs324g/encap/src/fixed_weight.v:581]
+WARNING: [Synth 8-2507] parameter declaration becomes local in fixed_weight_no_shake_mw with formal parameter declaration list [/home/james/Documents/IIS/FPGA/Cryto/ClassicMceliehw_FPGA/test/ClassicMceliehw_FPGA/build/Artycs324g/encap/src/fixed_weight.v:582]
+WARNING: [Synth 8-2507] parameter declaration becomes local in fixed_weight_no_shake_mw with formal parameter declaration list [/home/james/Documents/IIS/FPGA/Cryto/ClassicMceliehw_FPGA/test/ClassicMceliehw_FPGA/build/Artycs324g/encap/src/fixed_weight.v:583]
+WARNING: [Synth 8-2507] parameter declaration becomes local in fixed_weight_no_shake_mw with formal parameter declaration list [/home/james/Documents/IIS/FPGA/Cryto/ClassicMceliehw_FPGA/test/ClassicMceliehw_FPGA/build/Artycs324g/encap/src/fixed_weight.v:584]
+WARNING: [Synth 8-2507] parameter declaration becomes local in fixed_weight_no_shake_mw with formal parameter declaration list [/home/james/Documents/IIS/FPGA/Cryto/ClassicMceliehw_FPGA/test/ClassicMceliehw_FPGA/build/Artycs324g/encap/src/fixed_weight.v:585]
+WARNING: [Synth 8-2507] parameter declaration becomes local in fixed_weight_no_shake_mw with formal parameter declaration list [/home/james/Documents/IIS/FPGA/Cryto/ClassicMceliehw_FPGA/test/ClassicMceliehw_FPGA/build/Artycs324g/encap/src/fixed_weight.v:586]
+WARNING: [Synth 8-2507] parameter declaration becomes local in onegen_mw_op with formal parameter declaration list [/home/james/Documents/IIS/FPGA/Cryto/ClassicMceliehw_FPGA/test/ClassicMceliehw_FPGA/build/Artycs324g/encap/src/onegen.v:106]
+WARNING: [Synth 8-2507] parameter declaration becomes local in onegen_mw_op with formal parameter declaration list [/home/james/Documents/IIS/FPGA/Cryto/ClassicMceliehw_FPGA/test/ClassicMceliehw_FPGA/build/Artycs324g/encap/src/onegen.v:107]
+WARNING: [Synth 8-2507] parameter declaration becomes local in onegen_mw_op with formal parameter declaration list [/home/james/Documents/IIS/FPGA/Cryto/ClassicMceliehw_FPGA/test/ClassicMceliehw_FPGA/build/Artycs324g/encap/src/onegen.v:108]
+WARNING: [Synth 8-2507] parameter declaration becomes local in onegen_mw_op with formal parameter declaration list [/home/james/Documents/IIS/FPGA/Cryto/ClassicMceliehw_FPGA/test/ClassicMceliehw_FPGA/build/Artycs324g/encap/src/onegen.v:109]
+WARNING: [Synth 8-2507] parameter declaration becomes local in onegen_mw_op with formal parameter declaration list [/home/james/Documents/IIS/FPGA/Cryto/ClassicMceliehw_FPGA/test/ClassicMceliehw_FPGA/build/Artycs324g/encap/src/onegen.v:110]
+WARNING: [Synth 8-2507] parameter declaration becomes local in onegen_mw_op with formal parameter declaration list [/home/james/Documents/IIS/FPGA/Cryto/ClassicMceliehw_FPGA/test/ClassicMceliehw_FPGA/build/Artycs324g/encap/src/onegen.v:111]
+WARNING: [Synth 8-2507] parameter declaration becomes local in onegen_mw_op with formal parameter declaration list [/home/james/Documents/IIS/FPGA/Cryto/ClassicMceliehw_FPGA/test/ClassicMceliehw_FPGA/build/Artycs324g/encap/src/onegen.v:112]
+WARNING: [Synth 8-2507] parameter declaration becomes local in onegen_mw_op with formal parameter declaration list [/home/james/Documents/IIS/FPGA/Cryto/ClassicMceliehw_FPGA/test/ClassicMceliehw_FPGA/build/Artycs324g/encap/src/onegen.v:113]
+WARNING: [Synth 8-2507] parameter declaration becomes local in onegen_mw_op with formal parameter declaration list [/home/james/Documents/IIS/FPGA/Cryto/ClassicMceliehw_FPGA/test/ClassicMceliehw_FPGA/build/Artycs324g/encap/src/onegen.v:114]
+WARNING: [Synth 8-2507] parameter declaration becomes local in onegen_mw_op with formal parameter declaration list [/home/james/Documents/IIS/FPGA/Cryto/ClassicMceliehw_FPGA/test/ClassicMceliehw_FPGA/build/Artycs324g/encap/src/onegen.v:115]
+WARNING: [Synth 8-1958] event expressions must result in a singular type [/home/james/Documents/IIS/FPGA/Cryto/ClassicMceliehw_FPGA/test/ClassicMceliehw_FPGA/build/Artycs324g/encap/src/state_ram.v:121]
+WARNING: [Synth 8-1958] event expressions must result in a singular type [/home/james/Documents/IIS/FPGA/Cryto/ClassicMceliehw_FPGA/test/ClassicMceliehw_FPGA/build/Artycs324g/encap/src/state_ram.v:121]
+WARNING: [Synth 8-1958] event expressions must result in a singular type [/home/james/Documents/IIS/FPGA/Cryto/ClassicMceliehw_FPGA/test/ClassicMceliehw_FPGA/build/Artycs324g/encap/src/state_ram.v:227]
+WARNING: [Synth 8-1958] event expressions must result in a singular type [/home/james/Documents/IIS/FPGA/Cryto/ClassicMceliehw_FPGA/test/ClassicMceliehw_FPGA/build/Artycs324g/encap/src/state_ram.v:277]
+WARNING: [Synth 8-1958] event expressions must result in a singular type [/home/james/Documents/IIS/FPGA/Cryto/ClassicMceliehw_FPGA/test/ClassicMceliehw_FPGA/build/Artycs324g/encap/src/state_ram.v:277]
+WARNING: [Synth 8-1958] event expressions must result in a singular type [/home/james/Documents/IIS/FPGA/Cryto/ClassicMceliehw_FPGA/test/ClassicMceliehw_FPGA/build/Artycs324g/encap/src/state_ram.v:378]
+WARNING: [Synth 8-1958] event expressions must result in a singular type [/home/james/Documents/IIS/FPGA/Cryto/ClassicMceliehw_FPGA/test/ClassicMceliehw_FPGA/build/Artycs324g/encap/src/state_ram.v:378]
+---------------------------------------------------------------------------------
+Starting RTL Elaboration : Time (s): cpu = 00:00:03 ; elapsed = 00:00:07 . Memory (MB): peak = 1901.887 ; gain = 208.656 ; free physical = 130 ; free virtual = 7013
+---------------------------------------------------------------------------------
+INFO: [Synth 8-6157] synthesizing module 'encap_tb' [/home/james/Documents/IIS/FPGA/Cryto/ClassicMceliehw_FPGA/test/ClassicMceliehw_FPGA/build/Artycs324g/encap/src/encap_tb.v:25]
+	Parameter parameter_set bound to: 1 - type: integer 
+	Parameter n bound to: 3488 - type: integer 
+	Parameter m bound to: 12 - type: integer 
+	Parameter t bound to: 64 - type: integer 
+	Parameter k bound to: 2720 - type: integer 
+	Parameter l bound to: 768 - type: integer 
+	Parameter col_width bound to: 32 - type: integer 
+	Parameter e_width bound to: 32 - type: integer 
+	Parameter n_elim bound to: 3488 - type: integer 
+	Parameter l_n_elim bound to: 2678784 - type: integer 
+	Parameter KEY_START_ADDR bound to: 0 - type: integer 
+	Parameter BAUD_RATE bound to: 9600 - type: integer 
+	Parameter CLOCK_FPGA bound to: 100000000 - type: integer 
+	Parameter SIZE_SEED bound to: 16 - type: integer 
+	Parameter SIZE_PK bound to: 65280 - type: integer 
+	Parameter SIZE_C0 bound to: 24 - type: integer 
+	Parameter SIZE_C1 bound to: 8 - type: integer 
+	Parameter SIZE_K bound to: 8 - type: integer 
+	Parameter START_SEED bound to: 0 - type: integer 
+	Parameter STOP_SEED bound to: 16 - type: integer 
+	Parameter START_PK bound to: 17 - type: integer 
+	Parameter STOP_PK bound to: 65297 - type: integer 
+WARNING: [Synth 8-639] system function call 'fopen' not supported [/home/james/Documents/IIS/FPGA/Cryto/ClassicMceliehw_FPGA/test/ClassicMceliehw_FPGA/build/Artycs324g/encap/src/encap_tb.v:299]
+INFO: [Synth 8-6157] synthesizing module 'keccak_top' [/home/james/Documents/IIS/FPGA/Cryto/ClassicMceliehw_FPGA/test/ClassicMceliehw_FPGA/build/Artycs324g/encap/src/keccak_top.v:36]
+INFO: [Synth 8-6157] synthesizing module 'control_path' [/home/james/Documents/IIS/FPGA/Cryto/ClassicMceliehw_FPGA/test/ClassicMceliehw_FPGA/build/Artycs324g/encap/src/control_path.v:33]
+	Parameter cshake_prefix_128 bound to: 48'b000100000000000100000000000000011010100000000001 
+	Parameter cshake_prefix_256 bound to: 48'b000100000000000100000000000000011000100000000001 
+	Parameter PARALLEL_SLICES_div_48 bound to: 32'b00000000000000000000000000000011 
+	Parameter s_command_header bound to: 3'b000 
+	Parameter s_read_length bound to: 3'b001 
+	Parameter s_absorb_data bound to: 3'b011 
+	Parameter s_absorb_pad_block bound to: 3'b100 
+	Parameter s_process bound to: 3'b101 
+	Parameter s_squeeze bound to: 3'b110 
+INFO: [Synth 8-6155] done synthesizing module 'control_path' (1#1) [/home/james/Documents/IIS/FPGA/Cryto/ClassicMceliehw_FPGA/test/ClassicMceliehw_FPGA/build/Artycs324g/encap/src/control_path.v:33]
+INFO: [Synth 8-6157] synthesizing module 'data_path' [/home/james/Documents/IIS/FPGA/Cryto/ClassicMceliehw_FPGA/test/ClassicMceliehw_FPGA/build/Artycs324g/encap/src/data_path.v:33]
+	Parameter WOUT_DIV_PARALLEL_SLICES bound to: 2 - type: integer 
+	Parameter PARALLEL_SLICES_DIV_WOUT bound to: 0 - type: integer 
+	Parameter DOUT_IDX_MAX bound to: 1 - type: integer 
+INFO: [Synth 8-6157] synthesizing module 'rc' [/home/james/Documents/IIS/FPGA/Cryto/ClassicMceliehw_FPGA/test/ClassicMceliehw_FPGA/build/Artycs324g/encap/src/rc.v:31]
+INFO: [Synth 8-5534] Detected attribute (* ram_style = "block" *) [/home/james/Documents/IIS/FPGA/Cryto/ClassicMceliehw_FPGA/test/ClassicMceliehw_FPGA/build/Artycs324g/encap/src/rc.v:38]
+INFO: [Synth 8-6155] done synthesizing module 'rc' (2#1) [/home/james/Documents/IIS/FPGA/Cryto/ClassicMceliehw_FPGA/test/ClassicMceliehw_FPGA/build/Artycs324g/encap/src/rc.v:31]
+INFO: [Synth 8-6157] synthesizing module 'transform' [/home/james/Documents/IIS/FPGA/Cryto/ClassicMceliehw_FPGA/test/ClassicMceliehw_FPGA/build/Artycs324g/encap/src/transform.v:32]
+INFO: [Synth 8-6155] done synthesizing module 'transform' (3#1) [/home/james/Documents/IIS/FPGA/Cryto/ClassicMceliehw_FPGA/test/ClassicMceliehw_FPGA/build/Artycs324g/encap/src/transform.v:32]
+INFO: [Synth 8-6157] synthesizing module 'state_ram' [/home/james/Documents/IIS/FPGA/Cryto/ClassicMceliehw_FPGA/test/ClassicMceliehw_FPGA/build/Artycs324g/encap/src/state_ram.v:56]
+INFO: [Synth 8-6157] synthesizing module 'stateram_inference' [/home/james/Documents/IIS/FPGA/Cryto/ClassicMceliehw_FPGA/test/ClassicMceliehw_FPGA/build/Artycs324g/encap/src/stateram_inference.v:39]
+	Parameter i bound to: 0 - type: integer 
+INFO: [Synth 8-6155] done synthesizing module 'stateram_inference' (4#1) [/home/james/Documents/IIS/FPGA/Cryto/ClassicMceliehw_FPGA/test/ClassicMceliehw_FPGA/build/Artycs324g/encap/src/stateram_inference.v:39]
+INFO: [Synth 8-6157] synthesizing module 'stateram_inference__parameterized0' [/home/james/Documents/IIS/FPGA/Cryto/ClassicMceliehw_FPGA/test/ClassicMceliehw_FPGA/build/Artycs324g/encap/src/stateram_inference.v:39]
+	Parameter i bound to: 1 - type: integer 
+INFO: [Synth 8-6155] done synthesizing module 'stateram_inference__parameterized0' (4#1) [/home/james/Documents/IIS/FPGA/Cryto/ClassicMceliehw_FPGA/test/ClassicMceliehw_FPGA/build/Artycs324g/encap/src/stateram_inference.v:39]
+INFO: [Synth 8-6157] synthesizing module 'stateram_inference__parameterized1' [/home/james/Documents/IIS/FPGA/Cryto/ClassicMceliehw_FPGA/test/ClassicMceliehw_FPGA/build/Artycs324g/encap/src/stateram_inference.v:39]
+	Parameter i bound to: 2 - type: integer 
+INFO: [Synth 8-6155] done synthesizing module 'stateram_inference__parameterized1' (4#1) [/home/james/Documents/IIS/FPGA/Cryto/ClassicMceliehw_FPGA/test/ClassicMceliehw_FPGA/build/Artycs324g/encap/src/stateram_inference.v:39]
+INFO: [Synth 8-6157] synthesizing module 'stateram_inference__parameterized2' [/home/james/Documents/IIS/FPGA/Cryto/ClassicMceliehw_FPGA/test/ClassicMceliehw_FPGA/build/Artycs324g/encap/src/stateram_inference.v:39]
+	Parameter i bound to: 3 - type: integer 
+INFO: [Synth 8-6155] done synthesizing module 'stateram_inference__parameterized2' (4#1) [/home/james/Documents/IIS/FPGA/Cryto/ClassicMceliehw_FPGA/test/ClassicMceliehw_FPGA/build/Artycs324g/encap/src/stateram_inference.v:39]
+INFO: [Synth 8-6157] synthesizing module 'stateram_inference__parameterized3' [/home/james/Documents/IIS/FPGA/Cryto/ClassicMceliehw_FPGA/test/ClassicMceliehw_FPGA/build/Artycs324g/encap/src/stateram_inference.v:39]
+	Parameter i bound to: 4 - type: integer 
+INFO: [Synth 8-6155] done synthesizing module 'stateram_inference__parameterized3' (4#1) [/home/james/Documents/IIS/FPGA/Cryto/ClassicMceliehw_FPGA/test/ClassicMceliehw_FPGA/build/Artycs324g/encap/src/stateram_inference.v:39]
+INFO: [Synth 8-6157] synthesizing module 'stateram_inference__parameterized4' [/home/james/Documents/IIS/FPGA/Cryto/ClassicMceliehw_FPGA/test/ClassicMceliehw_FPGA/build/Artycs324g/encap/src/stateram_inference.v:39]
+	Parameter i bound to: 5 - type: integer 
+INFO: [Synth 8-6155] done synthesizing module 'stateram_inference__parameterized4' (4#1) [/home/james/Documents/IIS/FPGA/Cryto/ClassicMceliehw_FPGA/test/ClassicMceliehw_FPGA/build/Artycs324g/encap/src/stateram_inference.v:39]
+INFO: [Synth 8-6157] synthesizing module 'stateram_inference__parameterized5' [/home/james/Documents/IIS/FPGA/Cryto/ClassicMceliehw_FPGA/test/ClassicMceliehw_FPGA/build/Artycs324g/encap/src/stateram_inference.v:39]
+	Parameter i bound to: 6 - type: integer 
+INFO: [Synth 8-6155] done synthesizing module 'stateram_inference__parameterized5' (4#1) [/home/james/Documents/IIS/FPGA/Cryto/ClassicMceliehw_FPGA/test/ClassicMceliehw_FPGA/build/Artycs324g/encap/src/stateram_inference.v:39]
+INFO: [Synth 8-6157] synthesizing module 'stateram_inference__parameterized6' [/home/james/Documents/IIS/FPGA/Cryto/ClassicMceliehw_FPGA/test/ClassicMceliehw_FPGA/build/Artycs324g/encap/src/stateram_inference.v:39]
+	Parameter i bound to: 7 - type: integer 
+INFO: [Synth 8-6155] done synthesizing module 'stateram_inference__parameterized6' (4#1) [/home/james/Documents/IIS/FPGA/Cryto/ClassicMceliehw_FPGA/test/ClassicMceliehw_FPGA/build/Artycs324g/encap/src/stateram_inference.v:39]
+INFO: [Synth 8-6157] synthesizing module 'stateram_inference__parameterized7' [/home/james/Documents/IIS/FPGA/Cryto/ClassicMceliehw_FPGA/test/ClassicMceliehw_FPGA/build/Artycs324g/encap/src/stateram_inference.v:39]
+	Parameter i bound to: 8 - type: integer 
+INFO: [Synth 8-6155] done synthesizing module 'stateram_inference__parameterized7' (4#1) [/home/james/Documents/IIS/FPGA/Cryto/ClassicMceliehw_FPGA/test/ClassicMceliehw_FPGA/build/Artycs324g/encap/src/stateram_inference.v:39]
+INFO: [Synth 8-6157] synthesizing module 'stateram_inference__parameterized8' [/home/james/Documents/IIS/FPGA/Cryto/ClassicMceliehw_FPGA/test/ClassicMceliehw_FPGA/build/Artycs324g/encap/src/stateram_inference.v:39]
+	Parameter i bound to: 9 - type: integer 
+INFO: [Synth 8-6155] done synthesizing module 'stateram_inference__parameterized8' (4#1) [/home/james/Documents/IIS/FPGA/Cryto/ClassicMceliehw_FPGA/test/ClassicMceliehw_FPGA/build/Artycs324g/encap/src/stateram_inference.v:39]
+INFO: [Synth 8-6157] synthesizing module 'stateram_inference__parameterized9' [/home/james/Documents/IIS/FPGA/Cryto/ClassicMceliehw_FPGA/test/ClassicMceliehw_FPGA/build/Artycs324g/encap/src/stateram_inference.v:39]
+	Parameter i bound to: 10 - type: integer 
+INFO: [Synth 8-6155] done synthesizing module 'stateram_inference__parameterized9' (4#1) [/home/james/Documents/IIS/FPGA/Cryto/ClassicMceliehw_FPGA/test/ClassicMceliehw_FPGA/build/Artycs324g/encap/src/stateram_inference.v:39]
+INFO: [Synth 8-6157] synthesizing module 'stateram_inference__parameterized10' [/home/james/Documents/IIS/FPGA/Cryto/ClassicMceliehw_FPGA/test/ClassicMceliehw_FPGA/build/Artycs324g/encap/src/stateram_inference.v:39]
+	Parameter i bound to: 11 - type: integer 
+INFO: [Synth 8-6155] done synthesizing module 'stateram_inference__parameterized10' (4#1) [/home/james/Documents/IIS/FPGA/Cryto/ClassicMceliehw_FPGA/test/ClassicMceliehw_FPGA/build/Artycs324g/encap/src/stateram_inference.v:39]
+INFO: [Synth 8-6157] synthesizing module 'stateram_inference__parameterized11' [/home/james/Documents/IIS/FPGA/Cryto/ClassicMceliehw_FPGA/test/ClassicMceliehw_FPGA/build/Artycs324g/encap/src/stateram_inference.v:39]
+	Parameter i bound to: 12 - type: integer 
+INFO: [Synth 8-6155] done synthesizing module 'stateram_inference__parameterized11' (4#1) [/home/james/Documents/IIS/FPGA/Cryto/ClassicMceliehw_FPGA/test/ClassicMceliehw_FPGA/build/Artycs324g/encap/src/stateram_inference.v:39]
+INFO: [Synth 8-6157] synthesizing module 'stateram_inference__parameterized12' [/home/james/Documents/IIS/FPGA/Cryto/ClassicMceliehw_FPGA/test/ClassicMceliehw_FPGA/build/Artycs324g/encap/src/stateram_inference.v:39]
+	Parameter i bound to: 13 - type: integer 
+INFO: [Synth 8-6155] done synthesizing module 'stateram_inference__parameterized12' (4#1) [/home/james/Documents/IIS/FPGA/Cryto/ClassicMceliehw_FPGA/test/ClassicMceliehw_FPGA/build/Artycs324g/encap/src/stateram_inference.v:39]
+INFO: [Synth 8-6157] synthesizing module 'stateram_inference__parameterized13' [/home/james/Documents/IIS/FPGA/Cryto/ClassicMceliehw_FPGA/test/ClassicMceliehw_FPGA/build/Artycs324g/encap/src/stateram_inference.v:39]
+	Parameter i bound to: 14 - type: integer 
+INFO: [Synth 8-6155] done synthesizing module 'stateram_inference__parameterized13' (4#1) [/home/james/Documents/IIS/FPGA/Cryto/ClassicMceliehw_FPGA/test/ClassicMceliehw_FPGA/build/Artycs324g/encap/src/stateram_inference.v:39]
+INFO: [Synth 8-6157] synthesizing module 'stateram_inference__parameterized14' [/home/james/Documents/IIS/FPGA/Cryto/ClassicMceliehw_FPGA/test/ClassicMceliehw_FPGA/build/Artycs324g/encap/src/stateram_inference.v:39]
+	Parameter i bound to: 15 - type: integer 
+INFO: [Synth 8-6155] done synthesizing module 'stateram_inference__parameterized14' (4#1) [/home/james/Documents/IIS/FPGA/Cryto/ClassicMceliehw_FPGA/test/ClassicMceliehw_FPGA/build/Artycs324g/encap/src/stateram_inference.v:39]
+INFO: [Synth 8-6157] synthesizing module 'stateram_inference__parameterized15' [/home/james/Documents/IIS/FPGA/Cryto/ClassicMceliehw_FPGA/test/ClassicMceliehw_FPGA/build/Artycs324g/encap/src/stateram_inference.v:39]
+	Parameter i bound to: 16 - type: integer 
+INFO: [Synth 8-6155] done synthesizing module 'stateram_inference__parameterized15' (4#1) [/home/james/Documents/IIS/FPGA/Cryto/ClassicMceliehw_FPGA/test/ClassicMceliehw_FPGA/build/Artycs324g/encap/src/stateram_inference.v:39]
+INFO: [Synth 8-6157] synthesizing module 'stateram_inference__parameterized16' [/home/james/Documents/IIS/FPGA/Cryto/ClassicMceliehw_FPGA/test/ClassicMceliehw_FPGA/build/Artycs324g/encap/src/stateram_inference.v:39]
+	Parameter i bound to: 17 - type: integer 
+INFO: [Synth 8-6155] done synthesizing module 'stateram_inference__parameterized16' (4#1) [/home/james/Documents/IIS/FPGA/Cryto/ClassicMceliehw_FPGA/test/ClassicMceliehw_FPGA/build/Artycs324g/encap/src/stateram_inference.v:39]
+INFO: [Synth 8-6157] synthesizing module 'stateram_inference__parameterized17' [/home/james/Documents/IIS/FPGA/Cryto/ClassicMceliehw_FPGA/test/ClassicMceliehw_FPGA/build/Artycs324g/encap/src/stateram_inference.v:39]
+	Parameter i bound to: 18 - type: integer 
+INFO: [Synth 8-6155] done synthesizing module 'stateram_inference__parameterized17' (4#1) [/home/james/Documents/IIS/FPGA/Cryto/ClassicMceliehw_FPGA/test/ClassicMceliehw_FPGA/build/Artycs324g/encap/src/stateram_inference.v:39]
+INFO: [Synth 8-6157] synthesizing module 'stateram_inference__parameterized18' [/home/james/Documents/IIS/FPGA/Cryto/ClassicMceliehw_FPGA/test/ClassicMceliehw_FPGA/build/Artycs324g/encap/src/stateram_inference.v:39]
+	Parameter i bound to: 19 - type: integer 
+INFO: [Synth 8-6155] done synthesizing module 'stateram_inference__parameterized18' (4#1) [/home/james/Documents/IIS/FPGA/Cryto/ClassicMceliehw_FPGA/test/ClassicMceliehw_FPGA/build/Artycs324g/encap/src/stateram_inference.v:39]
+INFO: [Synth 8-6157] synthesizing module 'stateram_inference__parameterized19' [/home/james/Documents/IIS/FPGA/Cryto/ClassicMceliehw_FPGA/test/ClassicMceliehw_FPGA/build/Artycs324g/encap/src/stateram_inference.v:39]
+	Parameter i bound to: 20 - type: integer 
+INFO: [Synth 8-6155] done synthesizing module 'stateram_inference__parameterized19' (4#1) [/home/james/Documents/IIS/FPGA/Cryto/ClassicMceliehw_FPGA/test/ClassicMceliehw_FPGA/build/Artycs324g/encap/src/stateram_inference.v:39]
+INFO: [Synth 8-6157] synthesizing module 'stateram_inference__parameterized20' [/home/james/Documents/IIS/FPGA/Cryto/ClassicMceliehw_FPGA/test/ClassicMceliehw_FPGA/build/Artycs324g/encap/src/stateram_inference.v:39]
+	Parameter i bound to: 21 - type: integer 
+INFO: [Synth 8-6155] done synthesizing module 'stateram_inference__parameterized20' (4#1) [/home/james/Documents/IIS/FPGA/Cryto/ClassicMceliehw_FPGA/test/ClassicMceliehw_FPGA/build/Artycs324g/encap/src/stateram_inference.v:39]
+INFO: [Synth 8-6157] synthesizing module 'stateram_inference__parameterized21' [/home/james/Documents/IIS/FPGA/Cryto/ClassicMceliehw_FPGA/test/ClassicMceliehw_FPGA/build/Artycs324g/encap/src/stateram_inference.v:39]
+	Parameter i bound to: 22 - type: integer 
+INFO: [Synth 8-6155] done synthesizing module 'stateram_inference__parameterized21' (4#1) [/home/james/Documents/IIS/FPGA/Cryto/ClassicMceliehw_FPGA/test/ClassicMceliehw_FPGA/build/Artycs324g/encap/src/stateram_inference.v:39]
+INFO: [Synth 8-6157] synthesizing module 'stateram_inference__parameterized22' [/home/james/Documents/IIS/FPGA/Cryto/ClassicMceliehw_FPGA/test/ClassicMceliehw_FPGA/build/Artycs324g/encap/src/stateram_inference.v:39]
+	Parameter i bound to: 23 - type: integer 
+INFO: [Synth 8-6155] done synthesizing module 'stateram_inference__parameterized22' (4#1) [/home/james/Documents/IIS/FPGA/Cryto/ClassicMceliehw_FPGA/test/ClassicMceliehw_FPGA/build/Artycs324g/encap/src/stateram_inference.v:39]
+INFO: [Synth 8-6157] synthesizing module 'stateram_inference__parameterized23' [/home/james/Documents/IIS/FPGA/Cryto/ClassicMceliehw_FPGA/test/ClassicMceliehw_FPGA/build/Artycs324g/encap/src/stateram_inference.v:39]
+	Parameter i bound to: 24 - type: integer 
+INFO: [Synth 8-6155] done synthesizing module 'stateram_inference__parameterized23' (4#1) [/home/james/Documents/IIS/FPGA/Cryto/ClassicMceliehw_FPGA/test/ClassicMceliehw_FPGA/build/Artycs324g/encap/src/stateram_inference.v:39]
+INFO: [Synth 8-6155] done synthesizing module 'state_ram' (5#1) [/home/james/Documents/IIS/FPGA/Cryto/ClassicMceliehw_FPGA/test/ClassicMceliehw_FPGA/build/Artycs324g/encap/src/state_ram.v:56]
+INFO: [Synth 8-6155] done synthesizing module 'data_path' (6#1) [/home/james/Documents/IIS/FPGA/Cryto/ClassicMceliehw_FPGA/test/ClassicMceliehw_FPGA/build/Artycs324g/encap/src/data_path.v:33]
+INFO: [Synth 8-6155] done synthesizing module 'keccak_top' (7#1) [/home/james/Documents/IIS/FPGA/Cryto/ClassicMceliehw_FPGA/test/ClassicMceliehw_FPGA/build/Artycs324g/encap/src/keccak_top.v:36]
+INFO: [Synth 8-6157] synthesizing module 'encap_seq_gen' [/home/james/Documents/IIS/FPGA/Cryto/ClassicMceliehw_FPGA/test/ClassicMceliehw_FPGA/build/Artycs324g/encap/src/encap.v:24]
+	Parameter parameter_set bound to: 1 - type: integer 
+	Parameter n bound to: 3488 - type: integer 
+	Parameter m bound to: 12 - type: integer 
+	Parameter t bound to: 64 - type: integer 
+	Parameter k bound to: 2720 - type: integer 
+	Parameter l bound to: 768 - type: integer 
+	Parameter col_width bound to: 32 - type: integer 
+	Parameter e_width bound to: 32 - type: integer 
+	Parameter SHAKE_FIRST_IN bound to: 1073742080 - type: integer 
+	Parameter SHAKE_SECOND_IN bound to: 1088 - type: integer 
+	Parameter E_SHAKE_LAST_IN bound to: -2147483416 - type: integer 
+	Parameter SHAKE_LAST_IN bound to: -2147483480 - type: integer 
+	Parameter hash_bits bound to: 4520 - type: integer 
+	Parameter hb_by_32 bound to: 142 - type: integer 
+	Parameter SH_DOM_SEP bound to: 5 - type: integer 
+	Parameter HASH_RAM_DEPTH bound to: 148 - type: integer 
+	Parameter e_hash_bits bound to: 3496 - type: integer 
+	Parameter e_hb_by_32 bound to: 110 - type: integer 
+	Parameter E_SH_DOM_SEP bound to: 4 - type: integer 
+	Parameter E_HASH_DEPTH bound to: 115 - type: integer 
+	Parameter C0_w bound to: 8 - type: integer 
+	Parameter C1_w_h bound to: 32 - type: integer 
+	Parameter C1_w_l bound to: 24 - type: integer 
+	Parameter n_elim bound to: 3488 - type: integer 
+	Parameter l_n_elim bound to: 2678784 - type: integer 
+	Parameter KEY_START_ADDR bound to: 0 - type: integer 
+	Parameter byte_2 bound to: 8'b00000010 
+	Parameter byte_1 bound to: 8'b00000001 
+	Parameter s_first_block bound to: 0 - type: integer 
+	Parameter s_second_block bound to: 1 - type: integer 
+	Parameter s_wait_for_error_done bound to: 2 - type: integer 
+	Parameter s_stall_for_ram bound to: 3 - type: integer 
+	Parameter s_load_data_to_ram bound to: 4 - type: integer 
+	Parameter s_load_domain_seperator bound to: 5 - type: integer 
+	Parameter s_done_loading bound to: 6 - type: integer 
+	Parameter s_update_01 bound to: 7 - type: integer 
+	Parameter s_update_e_domain bound to: 8 - type: integer 
+	Parameter s_wait_encrypt_done bound to: 9 - type: integer 
+	Parameter s_load_enc_to_ram bound to: 10 - type: integer 
+	Parameter s_load_last_C0 bound to: 11 - type: integer 
+	Parameter s_load_domain_sep_3 bound to: 12 - type: integer 
+	Parameter s_first_load_C1 bound to: 13 - type: integer 
+	Parameter s_load_C1 bound to: 14 - type: integer 
+	Parameter s_load_domain_sep_2 bound to: 15 - type: integer 
+	Parameter s_load_last_C1 bound to: 16 - type: integer 
+	Parameter s_calculate_K bound to: 17 - type: integer 
+	Parameter s_wait_K_done bound to: 18 - type: integer 
+	Parameter s_save_K bound to: 19 - type: integer 
+	Parameter s_done bound to: 20 - type: integer 
+	Parameter s_wait_error_done bound to: 0 - type: integer 
+	Parameter s_wait_shake_ready bound to: 1 - type: integer 
+	Parameter s_shake_fir bound to: 2 - type: integer 
+	Parameter s_shake_sec bound to: 3 - type: integer 
+	Parameter s_shake_proc bound to: 4 - type: integer 
+	Parameter s_stall_0 bound to: 5 - type: integer 
+INFO: [Synth 8-6157] synthesizing module 'rearrange_vector' [/home/james/Documents/IIS/FPGA/Cryto/ClassicMceliehw_FPGA/test/ClassicMceliehw_FPGA/build/Artycs324g/encap/src/rearrange_vector.v:20]
+INFO: [Synth 8-6155] done synthesizing module 'rearrange_vector' (8#1) [/home/james/Documents/IIS/FPGA/Cryto/ClassicMceliehw_FPGA/test/ClassicMceliehw_FPGA/build/Artycs324g/encap/src/rearrange_vector.v:20]
+INFO: [Synth 8-6157] synthesizing module 'mem_single' [/home/james/Documents/IIS/FPGA/Cryto/ClassicMceliehw_FPGA/test/ClassicMceliehw_FPGA/build/Artycs324g/encap/src/mem_single.v:1]
+	Parameter WIDTH bound to: 32 - type: integer 
+	Parameter DEPTH bound to: 8 - type: integer 
+	Parameter FILE bound to: (null) - type: string 
+	Parameter INIT bound to: 32'sb00000000000000000000000000000000 
+INFO: [Synth 8-5534] Detected attribute (* ram_style = "block" *) [/home/james/Documents/IIS/FPGA/Cryto/ClassicMceliehw_FPGA/test/ClassicMceliehw_FPGA/build/Artycs324g/encap/src/mem_single.v:18]
+INFO: [Synth 8-5534] Detected attribute (* ram_style = "block" *) [/home/james/Documents/IIS/FPGA/Cryto/ClassicMceliehw_FPGA/test/ClassicMceliehw_FPGA/build/Artycs324g/encap/src/mem_single.v:19]
+INFO: [Synth 8-5534] Detected attribute (* ram_style = "block" *) [/home/james/Documents/IIS/FPGA/Cryto/ClassicMceliehw_FPGA/test/ClassicMceliehw_FPGA/build/Artycs324g/encap/src/mem_single.v:20]
+INFO: [Synth 8-5534] Detected attribute (* ram_style = "block" *) [/home/james/Documents/IIS/FPGA/Cryto/ClassicMceliehw_FPGA/test/ClassicMceliehw_FPGA/build/Artycs324g/encap/src/mem_single.v:21]
+INFO: [Synth 8-5534] Detected attribute (* ram_style = "block" *) [/home/james/Documents/IIS/FPGA/Cryto/ClassicMceliehw_FPGA/test/ClassicMceliehw_FPGA/build/Artycs324g/encap/src/mem_single.v:23]
+INFO: [Synth 8-5534] Detected attribute (* ram_style = "block" *) [/home/james/Documents/IIS/FPGA/Cryto/ClassicMceliehw_FPGA/test/ClassicMceliehw_FPGA/build/Artycs324g/encap/src/mem_single.v:24]
+INFO: [Synth 8-5534] Detected attribute (* ram_style = "block" *) [/home/james/Documents/IIS/FPGA/Cryto/ClassicMceliehw_FPGA/test/ClassicMceliehw_FPGA/build/Artycs324g/encap/src/mem_single.v:25]
+INFO: [Synth 8-5534] Detected attribute (* ram_style = "block" *) [/home/james/Documents/IIS/FPGA/Cryto/ClassicMceliehw_FPGA/test/ClassicMceliehw_FPGA/build/Artycs324g/encap/src/mem_single.v:26]
+INFO: [Synth 8-5534] Detected attribute (* ram_style = "block" *) [/home/james/Documents/IIS/FPGA/Cryto/ClassicMceliehw_FPGA/test/ClassicMceliehw_FPGA/build/Artycs324g/encap/src/mem_single.v:28]
+INFO: [Synth 8-5534] Detected attribute (* ram_style = "block" *) [/home/james/Documents/IIS/FPGA/Cryto/ClassicMceliehw_FPGA/test/ClassicMceliehw_FPGA/build/Artycs324g/encap/src/mem_single.v:29]
+INFO: [Synth 8-5534] Detected attribute (* ram_style = "block" *) [/home/james/Documents/IIS/FPGA/Cryto/ClassicMceliehw_FPGA/test/ClassicMceliehw_FPGA/build/Artycs324g/encap/src/mem_single.v:30]
+INFO: [Synth 8-5534] Detected attribute (* ram_style = "block" *) [/home/james/Documents/IIS/FPGA/Cryto/ClassicMceliehw_FPGA/test/ClassicMceliehw_FPGA/build/Artycs324g/encap/src/mem_single.v:31]
+INFO: [Synth 8-5534] Detected attribute (* ram_style = "block" *) [/home/james/Documents/IIS/FPGA/Cryto/ClassicMceliehw_FPGA/test/ClassicMceliehw_FPGA/build/Artycs324g/encap/src/mem_single.v:33]
+INFO: [Synth 8-5534] Detected attribute (* ram_style = "block" *) [/home/james/Documents/IIS/FPGA/Cryto/ClassicMceliehw_FPGA/test/ClassicMceliehw_FPGA/build/Artycs324g/encap/src/mem_single.v:34]
+INFO: [Synth 8-5534] Detected attribute (* ram_style = "block" *) [/home/james/Documents/IIS/FPGA/Cryto/ClassicMceliehw_FPGA/test/ClassicMceliehw_FPGA/build/Artycs324g/encap/src/mem_single.v:35]
+INFO: [Synth 8-5534] Detected attribute (* ram_style = "block" *) [/home/james/Documents/IIS/FPGA/Cryto/ClassicMceliehw_FPGA/test/ClassicMceliehw_FPGA/build/Artycs324g/encap/src/mem_single.v:36]
+INFO: [Synth 8-5534] Detected attribute (* ram_style = "block" *) [/home/james/Documents/IIS/FPGA/Cryto/ClassicMceliehw_FPGA/test/ClassicMceliehw_FPGA/build/Artycs324g/encap/src/mem_single.v:38]
+INFO: [Synth 8-5534] Detected attribute (* ram_style = "block" *) [/home/james/Documents/IIS/FPGA/Cryto/ClassicMceliehw_FPGA/test/ClassicMceliehw_FPGA/build/Artycs324g/encap/src/mem_single.v:39]
+INFO: [Synth 8-5534] Detected attribute (* ram_style = "block" *) [/home/james/Documents/IIS/FPGA/Cryto/ClassicMceliehw_FPGA/test/ClassicMceliehw_FPGA/build/Artycs324g/encap/src/mem_single.v:40]
+INFO: [Synth 8-5534] Detected attribute (* ram_style = "block" *) [/home/james/Documents/IIS/FPGA/Cryto/ClassicMceliehw_FPGA/test/ClassicMceliehw_FPGA/build/Artycs324g/encap/src/mem_single.v:41]
+INFO: [Synth 8-5534] Detected attribute (* ram_style = "block" *) [/home/james/Documents/IIS/FPGA/Cryto/ClassicMceliehw_FPGA/test/ClassicMceliehw_FPGA/build/Artycs324g/encap/src/mem_single.v:43]
+INFO: [Synth 8-5534] Detected attribute (* ram_style = "block" *) [/home/james/Documents/IIS/FPGA/Cryto/ClassicMceliehw_FPGA/test/ClassicMceliehw_FPGA/build/Artycs324g/encap/src/mem_single.v:44]
+INFO: [Synth 8-5534] Detected attribute (* ram_style = "block" *) [/home/james/Documents/IIS/FPGA/Cryto/ClassicMceliehw_FPGA/test/ClassicMceliehw_FPGA/build/Artycs324g/encap/src/mem_single.v:45]
+INFO: [Synth 8-5534] Detected attribute (* ram_style = "block" *) [/home/james/Documents/IIS/FPGA/Cryto/ClassicMceliehw_FPGA/test/ClassicMceliehw_FPGA/build/Artycs324g/encap/src/mem_single.v:46]
+INFO: [Synth 8-5534] Detected attribute (* ram_style = "block" *) [/home/james/Documents/IIS/FPGA/Cryto/ClassicMceliehw_FPGA/test/ClassicMceliehw_FPGA/build/Artycs324g/encap/src/mem_single.v:48]
+INFO: [Synth 8-5534] Detected attribute (* ram_style = "block" *) [/home/james/Documents/IIS/FPGA/Cryto/ClassicMceliehw_FPGA/test/ClassicMceliehw_FPGA/build/Artycs324g/encap/src/mem_single.v:49]
+INFO: [Synth 8-5534] Detected attribute (* ram_style = "block" *) [/home/james/Documents/IIS/FPGA/Cryto/ClassicMceliehw_FPGA/test/ClassicMceliehw_FPGA/build/Artycs324g/encap/src/mem_single.v:50]
+INFO: [Synth 8-5534] Detected attribute (* ram_style = "block" *) [/home/james/Documents/IIS/FPGA/Cryto/ClassicMceliehw_FPGA/test/ClassicMceliehw_FPGA/build/Artycs324g/encap/src/mem_single.v:51]
+INFO: [Synth 8-5534] Detected attribute (* ram_style = "block" *) [/home/james/Documents/IIS/FPGA/Cryto/ClassicMceliehw_FPGA/test/ClassicMceliehw_FPGA/build/Artycs324g/encap/src/mem_single.v:53]
+INFO: [Synth 8-5534] Detected attribute (* ram_style = "block" *) [/home/james/Documents/IIS/FPGA/Cryto/ClassicMceliehw_FPGA/test/ClassicMceliehw_FPGA/build/Artycs324g/encap/src/mem_single.v:54]
+INFO: [Synth 8-5534] Detected attribute (* ram_style = "block" *) [/home/james/Documents/IIS/FPGA/Cryto/ClassicMceliehw_FPGA/test/ClassicMceliehw_FPGA/build/Artycs324g/encap/src/mem_single.v:55]
+INFO: [Synth 8-5534] Detected attribute (* ram_style = "block" *) [/home/james/Documents/IIS/FPGA/Cryto/ClassicMceliehw_FPGA/test/ClassicMceliehw_FPGA/build/Artycs324g/encap/src/mem_single.v:56]
+INFO: [Synth 8-5534] Detected attribute (* ram_style = "block" *) [/home/james/Documents/IIS/FPGA/Cryto/ClassicMceliehw_FPGA/test/ClassicMceliehw_FPGA/build/Artycs324g/encap/src/mem_single.v:58]
+INFO: [Synth 8-5534] Detected attribute (* ram_style = "block" *) [/home/james/Documents/IIS/FPGA/Cryto/ClassicMceliehw_FPGA/test/ClassicMceliehw_FPGA/build/Artycs324g/encap/src/mem_single.v:59]
+INFO: [Synth 8-5534] Detected attribute (* ram_style = "block" *) [/home/james/Documents/IIS/FPGA/Cryto/ClassicMceliehw_FPGA/test/ClassicMceliehw_FPGA/build/Artycs324g/encap/src/mem_single.v:60]
+INFO: [Synth 8-5534] Detected attribute (* ram_style = "block" *) [/home/james/Documents/IIS/FPGA/Cryto/ClassicMceliehw_FPGA/test/ClassicMceliehw_FPGA/build/Artycs324g/encap/src/mem_single.v:61]
+INFO: [Synth 8-5534] Detected attribute (* ram_style = "block" *) [/home/james/Documents/IIS/FPGA/Cryto/ClassicMceliehw_FPGA/test/ClassicMceliehw_FPGA/build/Artycs324g/encap/src/mem_single.v:63]
+INFO: [Synth 8-5534] Detected attribute (* ram_style = "block" *) [/home/james/Documents/IIS/FPGA/Cryto/ClassicMceliehw_FPGA/test/ClassicMceliehw_FPGA/build/Artycs324g/encap/src/mem_single.v:64]
+INFO: [Synth 8-5534] Detected attribute (* ram_style = "block" *) [/home/james/Documents/IIS/FPGA/Cryto/ClassicMceliehw_FPGA/test/ClassicMceliehw_FPGA/build/Artycs324g/encap/src/mem_single.v:65]
+INFO: [Synth 8-5534] Detected attribute (* ram_style = "block" *) [/home/james/Documents/IIS/FPGA/Cryto/ClassicMceliehw_FPGA/test/ClassicMceliehw_FPGA/build/Artycs324g/encap/src/mem_single.v:66]
+INFO: [Synth 8-5534] Detected attribute (* ram_style = "block" *) [/home/james/Documents/IIS/FPGA/Cryto/ClassicMceliehw_FPGA/test/ClassicMceliehw_FPGA/build/Artycs324g/encap/src/mem_single.v:68]
+INFO: [Synth 8-5534] Detected attribute (* ram_style = "block" *) [/home/james/Documents/IIS/FPGA/Cryto/ClassicMceliehw_FPGA/test/ClassicMceliehw_FPGA/build/Artycs324g/encap/src/mem_single.v:69]
+INFO: [Synth 8-5534] Detected attribute (* ram_style = "block" *) [/home/james/Documents/IIS/FPGA/Cryto/ClassicMceliehw_FPGA/test/ClassicMceliehw_FPGA/build/Artycs324g/encap/src/mem_single.v:70]
+INFO: [Synth 8-5534] Detected attribute (* ram_style = "block" *) [/home/james/Documents/IIS/FPGA/Cryto/ClassicMceliehw_FPGA/test/ClassicMceliehw_FPGA/build/Artycs324g/encap/src/mem_single.v:71]
+INFO: [Synth 8-6155] done synthesizing module 'mem_single' (9#1) [/home/james/Documents/IIS/FPGA/Cryto/ClassicMceliehw_FPGA/test/ClassicMceliehw_FPGA/build/Artycs324g/encap/src/mem_single.v:1]
+INFO: [Synth 8-6157] synthesizing module 'fixed_weight_no_shake_mw' [/home/james/Documents/IIS/FPGA/Cryto/ClassicMceliehw_FPGA/test/ClassicMceliehw_FPGA/build/Artycs324g/encap/src/fixed_weight.v:30]
+	Parameter parameter_set bound to: 1 - type: integer 
+	Parameter n bound to: 3488 - type: integer 
+	Parameter m bound to: 12 - type: integer 
+	Parameter t bound to: 64 - type: integer 
+	Parameter q bound to: 4096 - type: integer 
+	Parameter tau bound to: 128 - type: integer 
+	Parameter sigma1 bound to: 16 - type: integer 
+	Parameter rb_chunks bound to: 64 - type: integer 
+	Parameter logrb bound to: 6 - type: integer 
+	Parameter logt bound to: 6 - type: integer 
+	Parameter logtau bound to: 7 - type: integer 
+	Parameter E0_WIDTH bound to: 32 - type: integer 
+	Parameter E1_WIDTH bound to: 32 - type: integer 
+	Parameter SEED_SIZE bound to: 512 - type: integer 
+	Parameter s_initialize bound to: 0 - type: integer 
+	Parameter s_wait_start bound to: 1 - type: integer 
+	Parameter s_load_shake bound to: 2 - type: integer 
+	Parameter s_stall_1 bound to: 3 - type: integer 
+	Parameter s_wait_sort bound to: 4 - type: integer 
+	Parameter s_wait_onegen bound to: 5 - type: integer 
+	Parameter s_wait_new_load bound to: 0 - type: integer 
+	Parameter s_loading_seed bound to: 1 - type: integer 
+	Parameter s_wait_for_internal_seed bound to: 2 - type: integer 
+	Parameter s_load_seed_shake bound to: 3 - type: integer 
+	Parameter s_stall_load bound to: 4 - type: integer 
+	Parameter s_init_shake bound to: 0 - type: integer 
+	Parameter s_wait_for_shake_out_ready bound to: 1 - type: integer 
+	Parameter s_shake_out_w bound to: 2 - type: integer 
+	Parameter s_shake_in_w bound to: 3 - type: integer 
+	Parameter s_load_new_seed bound to: 4 - type: integer 
+	Parameter s_stall_0 bound to: 5 - type: integer 
+INFO: [Synth 8-6157] synthesizing module 'mem_single__parameterized0' [/home/james/Documents/IIS/FPGA/Cryto/ClassicMceliehw_FPGA/test/ClassicMceliehw_FPGA/build/Artycs324g/encap/src/mem_single.v:1]
+	Parameter WIDTH bound to: 32 - type: integer 
+	Parameter DEPTH bound to: 16 - type: integer 
+	Parameter FILE bound to: (null) - type: string 
+	Parameter INIT bound to: 32'sb00000000000000000000000000000000 
+INFO: [Synth 8-6155] done synthesizing module 'mem_single__parameterized0' (9#1) [/home/james/Documents/IIS/FPGA/Cryto/ClassicMceliehw_FPGA/test/ClassicMceliehw_FPGA/build/Artycs324g/encap/src/mem_single.v:1]
+INFO: [Synth 8-6157] synthesizing module 'mem_single__parameterized1' [/home/james/Documents/IIS/FPGA/Cryto/ClassicMceliehw_FPGA/test/ClassicMceliehw_FPGA/build/Artycs324g/encap/src/mem_single.v:1]
+	Parameter WIDTH bound to: 12 - type: integer 
+	Parameter DEPTH bound to: 64 - type: integer 
+	Parameter FILE bound to: (null) - type: string 
+	Parameter INIT bound to: 32'sb00000000000000000000000000000000 
+INFO: [Synth 8-6155] done synthesizing module 'mem_single__parameterized1' (9#1) [/home/james/Documents/IIS/FPGA/Cryto/ClassicMceliehw_FPGA/test/ClassicMceliehw_FPGA/build/Artycs324g/encap/src/mem_single.v:1]
+INFO: [Synth 8-6157] synthesizing module 'onegen_mw_op' [/home/james/Documents/IIS/FPGA/Cryto/ClassicMceliehw_FPGA/test/ClassicMceliehw_FPGA/build/Artycs324g/encap/src/onegen.v:25]
+	Parameter m bound to: 12 - type: integer 
+	Parameter E0_WIDTH bound to: 32 - type: integer 
+	Parameter E0_DEPTH bound to: 109 - type: integer 
+	Parameter LOGE0W bound to: 7 - type: integer 
+	Parameter E0_FILE bound to: (null) - type: string 
+	Parameter WIDTH bound to: 32 - type: integer 
+	Parameter DEPTH bound to: 109 - type: integer 
+	Parameter LOGW bound to: 7 - type: integer 
+	Parameter FILE bound to: (null) - type: string 
+	Parameter TAU bound to: 64 - type: integer 
+	Parameter LOGTAU bound to: 6 - type: integer 
+	Parameter s_wait_for_init_mem bound to: 0 - type: integer 
+	Parameter s_initialize bound to: 1 - type: integer 
+	Parameter s_init_done bound to: 2 - type: integer 
+	Parameter s_wait_start bound to: 3 - type: integer 
+	Parameter s_load_loc bound to: 4 - type: integer 
+	Parameter s_wait_last_2 bound to: 5 - type: integer 
+	Parameter s_read_out bound to: 6 - type: integer 
+	Parameter s_done bound to: 7 - type: integer 
+	Parameter s_stall_for_ram bound to: 8 - type: integer 
+	Parameter s_stall_for_ram_2 bound to: 9 - type: integer 
+INFO: [Synth 8-6157] synthesizing module 'mem_dual' [/home/james/Documents/IIS/FPGA/Cryto/ClassicMceliehw_FPGA/test/ClassicMceliehw_FPGA/build/Artycs324g/encap/src/mem_dual.v:8]
+	Parameter WIDTH bound to: 32 - type: integer 
+	Parameter DEPTH bound to: 109 - type: integer 
+	Parameter FILE bound to: (null) - type: string 
+	Parameter INIT bound to: 32'sb00000000000000000000000000000000 
+INFO: [Synth 8-5534] Detected attribute (* ram_style = "block" *) [/home/james/Documents/IIS/FPGA/Cryto/ClassicMceliehw_FPGA/test/ClassicMceliehw_FPGA/build/Artycs324g/encap/src/mem_dual.v:27]
+INFO: [Synth 8-6155] done synthesizing module 'mem_dual' (10#1) [/home/james/Documents/IIS/FPGA/Cryto/ClassicMceliehw_FPGA/test/ClassicMceliehw_FPGA/build/Artycs324g/encap/src/mem_dual.v:8]
+WARNING: [Synth 8-6014] Unused sequential element gen_one_reg_reg was removed.  [/home/james/Documents/IIS/FPGA/Cryto/ClassicMceliehw_FPGA/test/ClassicMceliehw_FPGA/build/Artycs324g/encap/src/onegen.v:135]
+INFO: [Synth 8-6155] done synthesizing module 'onegen_mw_op' (11#1) [/home/james/Documents/IIS/FPGA/Cryto/ClassicMceliehw_FPGA/test/ClassicMceliehw_FPGA/build/Artycs324g/encap/src/onegen.v:25]
+WARNING: [Synth 8-6014] Unused sequential element shake_result_ready_reg was removed.  [/home/james/Documents/IIS/FPGA/Cryto/ClassicMceliehw_FPGA/test/ClassicMceliehw_FPGA/build/Artycs324g/encap/src/fixed_weight.v:602]
+INFO: [Synth 8-6155] done synthesizing module 'fixed_weight_no_shake_mw' (12#1) [/home/james/Documents/IIS/FPGA/Cryto/ClassicMceliehw_FPGA/test/ClassicMceliehw_FPGA/build/Artycs324g/encap/src/fixed_weight.v:30]
+WARNING: [Synth 8-7023] instance 'error_vector_gen' of module 'fixed_weight_no_shake_mw' has 19 connections declared, but only 18 given [/home/james/Documents/IIS/FPGA/Cryto/ClassicMceliehw_FPGA/test/ClassicMceliehw_FPGA/build/Artycs324g/encap/src/encap.v:241]
+INFO: [Synth 8-6157] synthesizing module 'encrypt_col_block' [/home/james/Documents/IIS/FPGA/Cryto/ClassicMceliehw_FPGA/test/ClassicMceliehw_FPGA/build/Artycs324g/encap/src/encryption.v:23]
+	Parameter parameter_set bound to: 1 - type: integer 
+	Parameter n bound to: 3488 - type: integer 
+	Parameter m bound to: 12 - type: integer 
+	Parameter t bound to: 64 - type: integer 
+	Parameter col_width bound to: 32 - type: integer 
+	Parameter e_width bound to: 32 - type: integer 
+	Parameter k bound to: 2720 - type: integer 
+	Parameter l bound to: 768 - type: integer 
+	Parameter ram_depth bound to: 24 - type: integer 
+	Parameter lm32 bound to: 0 - type: integer 
+	Parameter lme bound to: 0 - type: integer 
+	Parameter n_elim bound to: 3488 - type: integer 
+	Parameter l_n_elim bound to: 2678784 - type: integer 
+	Parameter KEY_START_ADDR bound to: 0 - type: integer 
+	Parameter s_wait_e_ready bound to: 0 - type: integer 
+	Parameter s_stall_0 bound to: 1 - type: integer 
+	Parameter s_load_e_to_reg bound to: 2 - type: integer 
+	Parameter s_load_e_to_ram bound to: 3 - type: integer 
+	Parameter s_k_and_e bound to: 4 - type: integer 
+	Parameter s_stall_1 bound to: 5 - type: integer 
+	Parameter s_stall_2 bound to: 6 - type: integer 
+	Parameter s_done bound to: 7 - type: integer 
+INFO: [Synth 8-6157] synthesizing module 'mem_dual__parameterized0' [/home/james/Documents/IIS/FPGA/Cryto/ClassicMceliehw_FPGA/test/ClassicMceliehw_FPGA/build/Artycs324g/encap/src/mem_dual.v:8]
+	Parameter WIDTH bound to: 32 - type: integer 
+	Parameter DEPTH bound to: 24 - type: integer 
+	Parameter FILE bound to: (null) - type: string 
+	Parameter INIT bound to: 32'sb00000000000000000000000000000000 
+INFO: [Synth 8-6155] done synthesizing module 'mem_dual__parameterized0' (12#1) [/home/james/Documents/IIS/FPGA/Cryto/ClassicMceliehw_FPGA/test/ClassicMceliehw_FPGA/build/Artycs324g/encap/src/mem_dual.v:8]
+INFO: [Synth 8-226] default block is never used [/home/james/Documents/IIS/FPGA/Cryto/ClassicMceliehw_FPGA/test/ClassicMceliehw_FPGA/build/Artycs324g/encap/src/encryption.v:354]
+WARNING: [Synth 8-6014] Unused sequential element error_carry_over_reg was removed.  [/home/james/Documents/IIS/FPGA/Cryto/ClassicMceliehw_FPGA/test/ClassicMceliehw_FPGA/build/Artycs324g/encap/src/encryption.v:133]
+WARNING: [Synth 8-6014] Unused sequential element e_addr_reg_reg was removed.  [/home/james/Documents/IIS/FPGA/Cryto/ClassicMceliehw_FPGA/test/ClassicMceliehw_FPGA/build/Artycs324g/encap/src/encryption.v:139]
+INFO: [Synth 8-6155] done synthesizing module 'encrypt_col_block' (13#1) [/home/james/Documents/IIS/FPGA/Cryto/ClassicMceliehw_FPGA/test/ClassicMceliehw_FPGA/build/Artycs324g/encap/src/encryption.v:23]
+WARNING: [Synth 8-689] width (7) of port connection 'e_addr' does not match port width (8) of module 'encrypt_col_block' [/home/james/Documents/IIS/FPGA/Cryto/ClassicMceliehw_FPGA/test/ClassicMceliehw_FPGA/build/Artycs324g/encap/src/encap.v:284]
+INFO: [Synth 8-6157] synthesizing module 'mem_dual__parameterized1' [/home/james/Documents/IIS/FPGA/Cryto/ClassicMceliehw_FPGA/test/ClassicMceliehw_FPGA/build/Artycs324g/encap/src/mem_dual.v:8]
+	Parameter WIDTH bound to: 32 - type: integer 
+	Parameter DEPTH bound to: 148 - type: integer 
+	Parameter FILE bound to: (null) - type: string 
+	Parameter INIT bound to: 32'sb00000000000000000000000000000000 
+INFO: [Synth 8-6155] done synthesizing module 'mem_dual__parameterized1' (13#1) [/home/james/Documents/IIS/FPGA/Cryto/ClassicMceliehw_FPGA/test/ClassicMceliehw_FPGA/build/Artycs324g/encap/src/mem_dual.v:8]
+WARNING: [Synth 8-689] width (9) of port connection 'address_0' does not match port width (8) of module 'mem_dual__parameterized1' [/home/james/Documents/IIS/FPGA/Cryto/ClassicMceliehw_FPGA/test/ClassicMceliehw_FPGA/build/Artycs324g/encap/src/encap.v:854]
+WARNING: [Synth 8-689] width (9) of port connection 'address_1' does not match port width (8) of module 'mem_dual__parameterized1' [/home/james/Documents/IIS/FPGA/Cryto/ClassicMceliehw_FPGA/test/ClassicMceliehw_FPGA/build/Artycs324g/encap/src/encap.v:855]
+WARNING: [Synth 8-3848] Net seed_ready_internal_fw in module/entity encap_seq_gen does not have driver. [/home/james/Documents/IIS/FPGA/Cryto/ClassicMceliehw_FPGA/test/ClassicMceliehw_FPGA/build/Artycs324g/encap/src/encap.v:157]
+WARNING: [Synth 8-3848] Net h_data_0 in module/entity encap_seq_gen does not have driver. [/home/james/Documents/IIS/FPGA/Cryto/ClassicMceliehw_FPGA/test/ClassicMceliehw_FPGA/build/Artycs324g/encap/src/encap.v:192]
+INFO: [Synth 8-6155] done synthesizing module 'encap_seq_gen' (14#1) [/home/james/Documents/IIS/FPGA/Cryto/ClassicMceliehw_FPGA/test/ClassicMceliehw_FPGA/build/Artycs324g/encap/src/encap.v:24]
+WARNING: [Synth 8-639] system function call 'time' not supported [/home/james/Documents/IIS/FPGA/Cryto/ClassicMceliehw_FPGA/test/ClassicMceliehw_FPGA/build/Artycs324g/encap/src/encap_tb.v:315]
+INFO: [Synth 8-251]  Start Encapsulation. (0 cycles) [/home/james/Documents/IIS/FPGA/Cryto/ClassicMceliehw_FPGA/test/ClassicMceliehw_FPGA/build/Artycs324g/encap/src/encap_tb.v:316]
+WARNING: [Synth 8-639] system function call 'time' not supported [/home/james/Documents/IIS/FPGA/Cryto/ClassicMceliehw_FPGA/test/ClassicMceliehw_FPGA/build/Artycs324g/encap/src/encap_tb.v:323]
+INFO: [Synth 8-251]  Encapsulation finished. (x cycles) [/home/james/Documents/IIS/FPGA/Cryto/ClassicMceliehw_FPGA/test/ClassicMceliehw_FPGA/build/Artycs324g/encap/src/encap_tb.v:324]
+WARNING: [Synth 8-639] system function call 'time' not supported [/home/james/Documents/IIS/FPGA/Cryto/ClassicMceliehw_FPGA/test/ClassicMceliehw_FPGA/build/Artycs324g/encap/src/encap_tb.v:331]
+INFO: [Synth 8-251]  Start FixedWeight. (0 cycles) [/home/james/Documents/IIS/FPGA/Cryto/ClassicMceliehw_FPGA/test/ClassicMceliehw_FPGA/build/Artycs324g/encap/src/encap_tb.v:332]
+WARNING: [Synth 8-639] system function call 'time' not supported [/home/james/Documents/IIS/FPGA/Cryto/ClassicMceliehw_FPGA/test/ClassicMceliehw_FPGA/build/Artycs324g/encap/src/encap_tb.v:338]
+INFO: [Synth 8-251]  FixedWeight finished. (x cycles) [/home/james/Documents/IIS/FPGA/Cryto/ClassicMceliehw_FPGA/test/ClassicMceliehw_FPGA/build/Artycs324g/encap/src/encap_tb.v:339]
+WARNING: [Synth 8-639] system function call 'time' not supported [/home/james/Documents/IIS/FPGA/Cryto/ClassicMceliehw_FPGA/test/ClassicMceliehw_FPGA/build/Artycs324g/encap/src/encap_tb.v:346]
+INFO: [Synth 8-251]  Start Encode. (0 cycles) [/home/james/Documents/IIS/FPGA/Cryto/ClassicMceliehw_FPGA/test/ClassicMceliehw_FPGA/build/Artycs324g/encap/src/encap_tb.v:347]
+WARNING: [Synth 8-639] system function call 'time' not supported [/home/james/Documents/IIS/FPGA/Cryto/ClassicMceliehw_FPGA/test/ClassicMceliehw_FPGA/build/Artycs324g/encap/src/encap_tb.v:353]
+INFO: [Synth 8-251]  Encode finished. (x cycles) [/home/james/Documents/IIS/FPGA/Cryto/ClassicMceliehw_FPGA/test/ClassicMceliehw_FPGA/build/Artycs324g/encap/src/encap_tb.v:354]
+INFO: [Synth 8-6157] synthesizing module 'mem_single__parameterized2' [/home/james/Documents/IIS/FPGA/Cryto/ClassicMceliehw_FPGA/test/ClassicMceliehw_FPGA/build/Artycs324g/encap/src/mem_single.v:1]
+	Parameter WIDTH bound to: 32 - type: integer 
+	Parameter DEPTH bound to: 83712 - type: integer 
+	Parameter FILE bound to: (null) - type: string 
+	Parameter INIT bound to: 32'sb00000000000000000000000000000000 
+INFO: [Synth 8-6155] done synthesizing module 'mem_single__parameterized2' (14#1) [/home/james/Documents/IIS/FPGA/Cryto/ClassicMceliehw_FPGA/test/ClassicMceliehw_FPGA/build/Artycs324g/encap/src/mem_single.v:1]
+WARNING: [Synth 8-6014] Unused sequential element addr_h_reg was removed.  [/home/james/Documents/IIS/FPGA/Cryto/ClassicMceliehw_FPGA/test/ClassicMceliehw_FPGA/build/Artycs324g/encap/src/encap_tb.v:187]
+WARNING: [Synth 8-6014] Unused sequential element K_col_valid_reg was removed.  [/home/james/Documents/IIS/FPGA/Cryto/ClassicMceliehw_FPGA/test/ClassicMceliehw_FPGA/build/Artycs324g/encap/src/encap_tb.v:195]
+WARNING: [Synth 8-6014] Unused sequential element time_encap_start_reg was removed.  [/home/james/Documents/IIS/FPGA/Cryto/ClassicMceliehw_FPGA/test/ClassicMceliehw_FPGA/build/Artycs324g/encap/src/encap_tb.v:315]
+WARNING: [Synth 8-6014] Unused sequential element time_encapsulation_reg was removed.  [/home/james/Documents/IIS/FPGA/Cryto/ClassicMceliehw_FPGA/test/ClassicMceliehw_FPGA/build/Artycs324g/encap/src/encap_tb.v:323]
+WARNING: [Synth 8-6014] Unused sequential element time_fixedweight_start_reg was removed.  [/home/james/Documents/IIS/FPGA/Cryto/ClassicMceliehw_FPGA/test/ClassicMceliehw_FPGA/build/Artycs324g/encap/src/encap_tb.v:331]
+WARNING: [Synth 8-6014] Unused sequential element time_fixedweight_reg was removed.  [/home/james/Documents/IIS/FPGA/Cryto/ClassicMceliehw_FPGA/test/ClassicMceliehw_FPGA/build/Artycs324g/encap/src/encap_tb.v:338]
+WARNING: [Synth 8-6014] Unused sequential element time_encrypt_start_reg was removed.  [/home/james/Documents/IIS/FPGA/Cryto/ClassicMceliehw_FPGA/test/ClassicMceliehw_FPGA/build/Artycs324g/encap/src/encap_tb.v:346]
+WARNING: [Synth 8-6014] Unused sequential element time_encrypt_reg was removed.  [/home/james/Documents/IIS/FPGA/Cryto/ClassicMceliehw_FPGA/test/ClassicMceliehw_FPGA/build/Artycs324g/encap/src/encap_tb.v:353]
+WARNING: [Synth 8-3848] Net C0_addr in module/entity encap_tb does not have driver. [/home/james/Documents/IIS/FPGA/Cryto/ClassicMceliehw_FPGA/test/ClassicMceliehw_FPGA/build/Artycs324g/encap/src/encap_tb.v:83]
+WARNING: [Synth 8-3848] Net C1_addr in module/entity encap_tb does not have driver. [/home/james/Documents/IIS/FPGA/Cryto/ClassicMceliehw_FPGA/test/ClassicMceliehw_FPGA/build/Artycs324g/encap/src/encap_tb.v:87]
+WARNING: [Synth 8-3848] Net K_addr in module/entity encap_tb does not have driver. [/home/james/Documents/IIS/FPGA/Cryto/ClassicMceliehw_FPGA/test/ClassicMceliehw_FPGA/build/Artycs324g/encap/src/encap_tb.v:91]
+INFO: [Synth 8-6155] done synthesizing module 'encap_tb' (15#1) [/home/james/Documents/IIS/FPGA/Cryto/ClassicMceliehw_FPGA/test/ClassicMceliehw_FPGA/build/Artycs324g/encap/src/encap_tb.v:25]
+WARNING: [Synth 8-3331] design fixed_weight_no_shake_mw has unconnected port seed_ready_internal
+WARNING: [Synth 8-3331] design stateram_inference__parameterized23 has unconnected port raddr[31]
+WARNING: [Synth 8-3331] design stateram_inference__parameterized23 has unconnected port raddr[30]
+WARNING: [Synth 8-3331] design stateram_inference__parameterized23 has unconnected port raddr[29]
+WARNING: [Synth 8-3331] design stateram_inference__parameterized23 has unconnected port raddr[28]
+WARNING: [Synth 8-3331] design stateram_inference__parameterized23 has unconnected port raddr[27]
+WARNING: [Synth 8-3331] design stateram_inference__parameterized23 has unconnected port raddr[26]
+WARNING: [Synth 8-3331] design stateram_inference__parameterized23 has unconnected port raddr[25]
+WARNING: [Synth 8-3331] design stateram_inference__parameterized23 has unconnected port raddr[24]
+WARNING: [Synth 8-3331] design stateram_inference__parameterized23 has unconnected port raddr[23]
+WARNING: [Synth 8-3331] design stateram_inference__parameterized23 has unconnected port raddr[22]
+WARNING: [Synth 8-3331] design stateram_inference__parameterized23 has unconnected port raddr[21]
+WARNING: [Synth 8-3331] design stateram_inference__parameterized23 has unconnected port raddr[20]
+WARNING: [Synth 8-3331] design stateram_inference__parameterized23 has unconnected port raddr[19]
+WARNING: [Synth 8-3331] design stateram_inference__parameterized23 has unconnected port raddr[18]
+WARNING: [Synth 8-3331] design stateram_inference__parameterized23 has unconnected port raddr[17]
+WARNING: [Synth 8-3331] design stateram_inference__parameterized23 has unconnected port raddr[16]
+WARNING: [Synth 8-3331] design stateram_inference__parameterized23 has unconnected port raddr[15]
+WARNING: [Synth 8-3331] design stateram_inference__parameterized23 has unconnected port raddr[14]
+WARNING: [Synth 8-3331] design stateram_inference__parameterized23 has unconnected port raddr[13]
+WARNING: [Synth 8-3331] design stateram_inference__parameterized23 has unconnected port raddr[12]
+WARNING: [Synth 8-3331] design stateram_inference__parameterized23 has unconnected port raddr[11]
+WARNING: [Synth 8-3331] design stateram_inference__parameterized23 has unconnected port raddr[10]
+WARNING: [Synth 8-3331] design stateram_inference__parameterized23 has unconnected port raddr[9]
+WARNING: [Synth 8-3331] design stateram_inference__parameterized23 has unconnected port raddr[8]
+WARNING: [Synth 8-3331] design stateram_inference__parameterized23 has unconnected port raddr[7]
+WARNING: [Synth 8-3331] design stateram_inference__parameterized23 has unconnected port raddr[6]
+WARNING: [Synth 8-3331] design stateram_inference__parameterized23 has unconnected port raddr[5]
+WARNING: [Synth 8-3331] design stateram_inference__parameterized23 has unconnected port raddr[4]
+WARNING: [Synth 8-3331] design stateram_inference__parameterized23 has unconnected port raddr[3]
+WARNING: [Synth 8-3331] design stateram_inference__parameterized23 has unconnected port raddr[2]
+WARNING: [Synth 8-3331] design stateram_inference__parameterized23 has unconnected port raddr_high_offset[31]
+WARNING: [Synth 8-3331] design stateram_inference__parameterized23 has unconnected port raddr_high_offset[30]
+WARNING: [Synth 8-3331] design stateram_inference__parameterized23 has unconnected port raddr_high_offset[29]
+WARNING: [Synth 8-3331] design stateram_inference__parameterized23 has unconnected port raddr_high_offset[28]
+WARNING: [Synth 8-3331] design stateram_inference__parameterized23 has unconnected port raddr_high_offset[27]
+WARNING: [Synth 8-3331] design stateram_inference__parameterized23 has unconnected port raddr_high_offset[26]
+WARNING: [Synth 8-3331] design stateram_inference__parameterized23 has unconnected port raddr_high_offset[25]
+WARNING: [Synth 8-3331] design stateram_inference__parameterized23 has unconnected port raddr_high_offset[24]
+WARNING: [Synth 8-3331] design stateram_inference__parameterized23 has unconnected port raddr_high_offset[23]
+WARNING: [Synth 8-3331] design stateram_inference__parameterized23 has unconnected port raddr_high_offset[22]
+WARNING: [Synth 8-3331] design stateram_inference__parameterized23 has unconnected port raddr_high_offset[21]
+WARNING: [Synth 8-3331] design stateram_inference__parameterized23 has unconnected port raddr_high_offset[20]
+WARNING: [Synth 8-3331] design stateram_inference__parameterized23 has unconnected port raddr_high_offset[19]
+WARNING: [Synth 8-3331] design stateram_inference__parameterized23 has unconnected port raddr_high_offset[18]
+WARNING: [Synth 8-3331] design stateram_inference__parameterized23 has unconnected port raddr_high_offset[17]
+WARNING: [Synth 8-3331] design stateram_inference__parameterized23 has unconnected port raddr_high_offset[16]
+WARNING: [Synth 8-3331] design stateram_inference__parameterized23 has unconnected port raddr_high_offset[15]
+WARNING: [Synth 8-3331] design stateram_inference__parameterized23 has unconnected port raddr_high_offset[14]
+WARNING: [Synth 8-3331] design stateram_inference__parameterized23 has unconnected port raddr_high_offset[13]
+WARNING: [Synth 8-3331] design stateram_inference__parameterized23 has unconnected port raddr_high_offset[12]
+WARNING: [Synth 8-3331] design stateram_inference__parameterized23 has unconnected port raddr_high_offset[11]
+WARNING: [Synth 8-3331] design stateram_inference__parameterized23 has unconnected port raddr_high_offset[10]
+WARNING: [Synth 8-3331] design stateram_inference__parameterized23 has unconnected port raddr_high_offset[9]
+WARNING: [Synth 8-3331] design stateram_inference__parameterized23 has unconnected port raddr_high_offset[8]
+WARNING: [Synth 8-3331] design stateram_inference__parameterized23 has unconnected port raddr_high_offset[7]
+WARNING: [Synth 8-3331] design stateram_inference__parameterized23 has unconnected port raddr_high_offset[6]
+WARNING: [Synth 8-3331] design stateram_inference__parameterized23 has unconnected port raddr_high_offset[5]
+WARNING: [Synth 8-3331] design stateram_inference__parameterized23 has unconnected port raddr_high_offset[4]
+WARNING: [Synth 8-3331] design stateram_inference__parameterized23 has unconnected port raddr_high_offset[3]
+WARNING: [Synth 8-3331] design stateram_inference__parameterized23 has unconnected port raddr_high_offset[2]
+WARNING: [Synth 8-3331] design stateram_inference__parameterized23 has unconnected port waddr[31]
+WARNING: [Synth 8-3331] design stateram_inference__parameterized23 has unconnected port waddr[30]
+WARNING: [Synth 8-3331] design stateram_inference__parameterized23 has unconnected port waddr[29]
+WARNING: [Synth 8-3331] design stateram_inference__parameterized23 has unconnected port waddr[28]
+WARNING: [Synth 8-3331] design stateram_inference__parameterized23 has unconnected port waddr[27]
+WARNING: [Synth 8-3331] design stateram_inference__parameterized23 has unconnected port waddr[26]
+WARNING: [Synth 8-3331] design stateram_inference__parameterized23 has unconnected port waddr[25]
+WARNING: [Synth 8-3331] design stateram_inference__parameterized23 has unconnected port waddr[24]
+WARNING: [Synth 8-3331] design stateram_inference__parameterized23 has unconnected port waddr[23]
+WARNING: [Synth 8-3331] design stateram_inference__parameterized23 has unconnected port waddr[22]
+WARNING: [Synth 8-3331] design stateram_inference__parameterized23 has unconnected port waddr[21]
+WARNING: [Synth 8-3331] design stateram_inference__parameterized23 has unconnected port waddr[20]
+WARNING: [Synth 8-3331] design stateram_inference__parameterized23 has unconnected port waddr[19]
+WARNING: [Synth 8-3331] design stateram_inference__parameterized23 has unconnected port waddr[18]
+WARNING: [Synth 8-3331] design stateram_inference__parameterized23 has unconnected port waddr[17]
+WARNING: [Synth 8-3331] design stateram_inference__parameterized23 has unconnected port waddr[16]
+WARNING: [Synth 8-3331] design stateram_inference__parameterized23 has unconnected port waddr[15]
+WARNING: [Synth 8-3331] design stateram_inference__parameterized23 has unconnected port waddr[14]
+WARNING: [Synth 8-3331] design stateram_inference__parameterized23 has unconnected port waddr[13]
+WARNING: [Synth 8-3331] design stateram_inference__parameterized23 has unconnected port waddr[12]
+WARNING: [Synth 8-3331] design stateram_inference__parameterized23 has unconnected port waddr[11]
+WARNING: [Synth 8-3331] design stateram_inference__parameterized23 has unconnected port waddr[10]
+WARNING: [Synth 8-3331] design stateram_inference__parameterized23 has unconnected port waddr[9]
+WARNING: [Synth 8-3331] design stateram_inference__parameterized23 has unconnected port waddr[8]
+WARNING: [Synth 8-3331] design stateram_inference__parameterized23 has unconnected port waddr[7]
+WARNING: [Synth 8-3331] design stateram_inference__parameterized23 has unconnected port waddr[6]
+WARNING: [Synth 8-3331] design stateram_inference__parameterized23 has unconnected port waddr[5]
+WARNING: [Synth 8-3331] design stateram_inference__parameterized23 has unconnected port waddr[4]
+WARNING: [Synth 8-3331] design stateram_inference__parameterized23 has unconnected port waddr[3]
+WARNING: [Synth 8-3331] design stateram_inference__parameterized23 has unconnected port waddr[2]
+WARNING: [Synth 8-3331] design stateram_inference__parameterized23 has unconnected port waddr[1]
+WARNING: [Synth 8-3331] design stateram_inference__parameterized23 has unconnected port waddr[0]
+WARNING: [Synth 8-3331] design stateram_inference__parameterized22 has unconnected port raddr[31]
+WARNING: [Synth 8-3331] design stateram_inference__parameterized22 has unconnected port raddr[30]
+WARNING: [Synth 8-3331] design stateram_inference__parameterized22 has unconnected port raddr[29]
+WARNING: [Synth 8-3331] design stateram_inference__parameterized22 has unconnected port raddr[28]
+WARNING: [Synth 8-3331] design stateram_inference__parameterized22 has unconnected port raddr[27]
+WARNING: [Synth 8-3331] design stateram_inference__parameterized22 has unconnected port raddr[26]
+WARNING: [Synth 8-3331] design stateram_inference__parameterized22 has unconnected port raddr[25]
+INFO: [Common 17-14] Message 'Synth 8-3331' appears 100 times and further instances of the messages will be disabled. Use the Tcl command set_msg_config to change the current settings.
+---------------------------------------------------------------------------------
+Finished RTL Elaboration : Time (s): cpu = 00:00:08 ; elapsed = 00:00:14 . Memory (MB): peak = 2095.887 ; gain = 402.656 ; free physical = 256 ; free virtual = 6935
+---------------------------------------------------------------------------------
+
+Report Check Netlist: 
++------+------------------+-------+---------+-------+------------------+
+|      |Item              |Errors |Warnings |Status |Description       |
++------+------------------+-------+---------+-------+------------------+
+|1     |multi_driven_nets |      0|        0|Passed |Multi driven nets |
++------+------------------+-------+---------+-------+------------------+
+---------------------------------------------------------------------------------
+Start Handling Custom Attributes
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Finished Handling Custom Attributes : Time (s): cpu = 00:00:09 ; elapsed = 00:00:16 . Memory (MB): peak = 2095.887 ; gain = 402.656 ; free physical = 280 ; free virtual = 6957
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Finished RTL Optimization Phase 1 : Time (s): cpu = 00:00:09 ; elapsed = 00:00:16 . Memory (MB): peak = 2095.887 ; gain = 402.656 ; free physical = 280 ; free virtual = 6957
+---------------------------------------------------------------------------------
+Netlist sorting complete. Time (s): cpu = 00:00:00.13 ; elapsed = 00:00:00.15 . Memory (MB): peak = 2095.887 ; gain = 0.000 ; free physical = 265 ; free virtual = 6943
+INFO: [Project 1-570] Preparing netlist for logic optimization
+
+Processing XDC Constraints
+Initializing timing engine
+Parsing XDC File [/home/james/Documents/IIS/FPGA/Cryto/ClassicMceliehw_FPGA/test/ClassicMceliehw_FPGA/modules/FPGA/Xilinx/timing_artix7_100t.xdc]
+Finished Parsing XDC File [/home/james/Documents/IIS/FPGA/Cryto/ClassicMceliehw_FPGA/test/ClassicMceliehw_FPGA/modules/FPGA/Xilinx/timing_artix7_100t.xdc]
+Completed Processing XDC Constraints
+
+Netlist sorting complete. Time (s): cpu = 00:00:00 ; elapsed = 00:00:00.01 . Memory (MB): peak = 2221.730 ; gain = 0.000 ; free physical = 133 ; free virtual = 6826
+INFO: [Project 1-111] Unisim Transformation Summary:
+No Unisim elements were transformed.
+
+Constraint Validation Runtime : Time (s): cpu = 00:00:00.15 ; elapsed = 00:00:00.08 . Memory (MB): peak = 2221.730 ; gain = 0.000 ; free physical = 125 ; free virtual = 6818
+---------------------------------------------------------------------------------
+Finished Constraint Validation : Time (s): cpu = 00:00:16 ; elapsed = 00:00:26 . Memory (MB): peak = 2221.730 ; gain = 528.500 ; free physical = 231 ; free virtual = 6934
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Loading Part and Timing Information
+---------------------------------------------------------------------------------
+Loading part: xc7a100tcsg324-1
+---------------------------------------------------------------------------------
+Finished Loading Part and Timing Information : Time (s): cpu = 00:00:16 ; elapsed = 00:00:26 . Memory (MB): peak = 2221.730 ; gain = 528.500 ; free physical = 224 ; free virtual = 6927
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Applying 'set_property' XDC Constraints
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Finished applying 'set_property' XDC Constraints : Time (s): cpu = 00:00:16 ; elapsed = 00:00:26 . Memory (MB): peak = 2221.730 ; gain = 528.500 ; free physical = 221 ; free virtual = 6924
+---------------------------------------------------------------------------------
+INFO: [Synth 8-802] inferred FSM for state register 'current_state_reg' in module 'control_path'
+INFO: [Common 17-41] Interrupt caught. Command should exit soon.
+INFO: [Synth 8-4471] merging register 'generate_z0_mux[2].z0_mux_reg[2:2]' into 'generate_z0_mux[1].z0_mux_reg[1:1]' [/home/james/Documents/IIS/FPGA/Cryto/ClassicMceliehw_FPGA/test/ClassicMceliehw_FPGA/build/Artycs324g/encap/src/state_ram.v:163]
+INFO: [Synth 8-4471] merging register 'generate_z0_mux[4].z0_mux_reg[4:4]' into 'generate_z0_mux[0].z0_mux_reg[0:0]' [/home/james/Documents/IIS/FPGA/Cryto/ClassicMceliehw_FPGA/test/ClassicMceliehw_FPGA/build/Artycs324g/encap/src/state_ram.v:163]
+INFO: [Synth 8-4471] merging register 'generate_z0_mux[5].z0_mux_reg[5:5]' into 'generate_z0_mux[3].z0_mux_reg[3:3]' [/home/james/Documents/IIS/FPGA/Cryto/ClassicMceliehw_FPGA/test/ClassicMceliehw_FPGA/build/Artycs324g/encap/src/state_ram.v:163]
+INFO: [Synth 8-4471] merging register 'generate_z0_mux[6].z0_mux_reg[6:6]' into 'generate_z0_mux[3].z0_mux_reg[3:3]' [/home/james/Documents/IIS/FPGA/Cryto/ClassicMceliehw_FPGA/test/ClassicMceliehw_FPGA/build/Artycs324g/encap/src/state_ram.v:163]
+INFO: [Synth 8-4471] merging register 'generate_z0_mux[7].z0_mux_reg[7:7]' into 'generate_z0_mux[0].z0_mux_reg[0:0]' [/home/james/Documents/IIS/FPGA/Cryto/ClassicMceliehw_FPGA/test/ClassicMceliehw_FPGA/build/Artycs324g/encap/src/state_ram.v:163]
+INFO: [Synth 8-4471] merging register 'generate_z0_mux[8].z0_mux_reg[8:8]' into 'generate_z0_mux[1].z0_mux_reg[1:1]' [/home/james/Documents/IIS/FPGA/Cryto/ClassicMceliehw_FPGA/test/ClassicMceliehw_FPGA/build/Artycs324g/encap/src/state_ram.v:163]
+INFO: [Synth 8-4471] merging register 'generate_z0_mux[10].z0_mux_reg[10:10]' into 'generate_z0_mux[0].z0_mux_reg[0:0]' [/home/james/Documents/IIS/FPGA/Cryto/ClassicMceliehw_FPGA/test/ClassicMceliehw_FPGA/build/Artycs324g/encap/src/state_ram.v:163]
+INFO: [Synth 8-4471] merging register 'generate_z0_mux[11].z0_mux_reg[11:11]' into 'generate_z0_mux[0].z0_mux_reg[0:0]' [/home/james/Documents/IIS/FPGA/Cryto/ClassicMceliehw_FPGA/test/ClassicMceliehw_FPGA/build/Artycs324g/encap/src/state_ram.v:163]
+INFO: [Synth 8-4471] merging register 'generate_z0_mux[12].z0_mux_reg[12:12]' into 'generate_z0_mux[3].z0_mux_reg[3:3]' [/home/james/Documents/IIS/FPGA/Cryto/ClassicMceliehw_FPGA/test/ClassicMceliehw_FPGA/build/Artycs324g/encap/src/state_ram.v:163]
+INFO: [Synth 8-4471] merging register 'generate_z0_mux[13].z0_mux_reg[13:13]' into 'generate_z0_mux[0].z0_mux_reg[0:0]' [/home/james/Documents/IIS/FPGA/Cryto/ClassicMceliehw_FPGA/test/ClassicMceliehw_FPGA/build/Artycs324g/encap/src/state_ram.v:163]
+INFO: [Synth 8-4471] merging register 'generate_z0_mux[14].z0_mux_reg[14:14]' into 'generate_z0_mux[3].z0_mux_reg[3:3]' [/home/james/Documents/IIS/FPGA/Cryto/ClassicMceliehw_FPGA/test/ClassicMceliehw_FPGA/build/Artycs324g/encap/src/state_ram.v:163]
+INFO: [Synth 8-4471] merging register 'generate_z0_mux[15].z0_mux_reg[15:15]' into 'generate_z0_mux[3].z0_mux_reg[3:3]' [/home/james/Documents/IIS/FPGA/Cryto/ClassicMceliehw_FPGA/test/ClassicMceliehw_FPGA/build/Artycs324g/encap/src/state_ram.v:163]
+INFO: [Synth 8-4471] merging register 'generate_z0_mux[16].z0_mux_reg[16:16]' into 'generate_z0_mux[1].z0_mux_reg[1:1]' [/home/james/Documents/IIS/FPGA/Cryto/ClassicMceliehw_FPGA/test/ClassicMceliehw_FPGA/build/Artycs324g/encap/src/state_ram.v:163]
+INFO: [Synth 8-4471] merging register 'generate_z0_mux[17].z0_mux_reg[17:17]' into 'generate_z0_mux[0].z0_mux_reg[0:0]' [/home/james/Documents/IIS/FPGA/Cryto/ClassicMceliehw_FPGA/test/ClassicMceliehw_FPGA/build/Artycs324g/encap/src/state_ram.v:163]
+INFO: [Synth 8-4471] merging register 'generate_z0_mux[18].z0_mux_reg[18:18]' into 'generate_z0_mux[0].z0_mux_reg[0:0]' [/home/james/Documents/IIS/FPGA/Cryto/ClassicMceliehw_FPGA/test/ClassicMceliehw_FPGA/build/Artycs324g/encap/src/state_ram.v:163]
+INFO: [Synth 8-4471] merging register 'generate_z0_mux[19].z0_mux_reg[19:19]' into 'generate_z0_mux[9].z0_mux_reg[9:9]' [/home/james/Documents/IIS/FPGA/Cryto/ClassicMceliehw_FPGA/test/ClassicMceliehw_FPGA/build/Artycs324g/encap/src/state_ram.v:163]
+INFO: [Synth 8-4471] merging register 'generate_z0_mux[20].z0_mux_reg[20:20]' into 'generate_z0_mux[9].z0_mux_reg[9:9]' [/home/james/Documents/IIS/FPGA/Cryto/ClassicMceliehw_FPGA/test/ClassicMceliehw_FPGA/build/Artycs324g/encap/src/state_ram.v:163]
+INFO: [Synth 8-4471] merging register 'generate_z0_mux[21].z0_mux_reg[21:21]' into 'generate_z0_mux[9].z0_mux_reg[9:9]' [/home/james/Documents/IIS/FPGA/Cryto/ClassicMceliehw_FPGA/test/ClassicMceliehw_FPGA/build/Artycs324g/encap/src/state_ram.v:163]
+INFO: [Synth 8-4471] merging register 'generate_z0_mux[22].z0_mux_reg[22:22]' into 'generate_z0_mux[1].z0_mux_reg[1:1]' [/home/james/Documents/IIS/FPGA/Cryto/ClassicMceliehw_FPGA/test/ClassicMceliehw_FPGA/build/Artycs324g/encap/src/state_ram.v:163]
+INFO: [Synth 8-4471] merging register 'generate_z0_mux[23].z0_mux_reg[23:23]' into 'generate_z0_mux[1].z0_mux_reg[1:1]' [/home/james/Documents/IIS/FPGA/Cryto/ClassicMceliehw_FPGA/test/ClassicMceliehw_FPGA/build/Artycs324g/encap/src/state_ram.v:163]
+INFO: [Synth 8-4471] merging register 'generate_z0_mux[24].z0_mux_reg[24:24]' into 'generate_z0_mux[0].z0_mux_reg[0:0]' [/home/james/Documents/IIS/FPGA/Cryto/ClassicMceliehw_FPGA/test/ClassicMceliehw_FPGA/build/Artycs324g/encap/src/state_ram.v:163]
+INFO: [Common 17-41] Interrupt caught. Command should exit soon.
+INFO: [Common 17-41] Interrupt caught. Command should exit soon.
+INFO: [Synth 8-4471] merging register 'E0_addr_1_reg[6:0]' into 'addr_1_reg[6:0]' [/home/james/Documents/IIS/FPGA/Cryto/ClassicMceliehw_FPGA/test/ClassicMceliehw_FPGA/build/Artycs324g/encap/src/onegen.v:238]
+INFO: [Synth 8-802] inferred FSM for state register 'state_reg' in module 'fixed_weight_no_shake_mw'
+INFO: [Synth 8-802] inferred FSM for state register 'state_loading_reg' in module 'fixed_weight_no_shake_mw'
+INFO: [Synth 8-802] inferred FSM for state register 'state_reg' in module 'encrypt_col_block'
+INFO: [Synth 8-802] inferred FSM for state register 'state_hr_reg' in module 'encap_seq_gen'
+INFO: [Synth 8-802] inferred FSM for state register 'state_reg' in module 'encap_seq_gen'
+INFO: [Synth 8-5546] ROM "sel_k" won't be mapped to RAM because it is too sparse
+INFO: [Synth 8-5546] ROM "wr_en_C1" won't be mapped to RAM because it is too sparse
+INFO: [Synth 8-5546] ROM "dont_capture_shake" won't be mapped to RAM because it is too sparse
+INFO: [Synth 8-5546] ROM "last_C1" won't be mapped to RAM because it is too sparse
+INFO: [Synth 8-5546] ROM "first_C1" won't be mapped to RAM because it is too sparse
+INFO: [Synth 8-5546] ROM "first_C0" won't be mapped to RAM because it is too sparse
+INFO: [Synth 8-5587] ROM size for "rd_en_c" is below threshold of ROM address width. It will be mapped to LUTs
+INFO: [Synth 8-5546] ROM "h_wren_1" won't be mapped to RAM because it is too sparse
+INFO: [Synth 8-5587] ROM size for "reg_en_er" is below threshold of ROM address width. It will be mapped to LUTs
+INFO: [Synth 8-5587] ROM size for "sel_hram" is below threshold of ROM address width. It will be mapped to LUTs
+INFO: [Synth 8-5587] ROM size for "dont_capture_C0" is below threshold of ROM address width. It will be mapped to LUTs
+---------------------------------------------------------------------------------------------------
+                   State |                     New Encoding |                Previous Encoding 
+---------------------------------------------------------------------------------------------------
+        s_command_header |                              000 |                              000
+           s_read_length |                              001 |                              001
+           s_absorb_data |                              010 |                              011
+               s_process |                              011 |                              101
+      s_absorb_pad_block |                              100 |                              100
+               s_squeeze |                              101 |                              110
+---------------------------------------------------------------------------------------------------
+INFO: [Synth 8-3354] encoded FSM with state register 'current_state_reg' using encoding 'sequential' in module 'control_path'
+INFO: [Common 17-41] Interrupt caught. Command should exit soon.
+INFO: [Common 17-41] Interrupt caught. Command should exit soon.
+INFO: [Synth 8-3971] The signal "mem_dual:/mem_reg" was recognized as a true dual port RAM template.
+INFO: [Common 17-41] Interrupt caught. Command should exit soon.
+INFO: [Common 17-41] Interrupt caught. Command should exit soon.
+WARNING: [Synth 8-327] inferring latch for variable 'wren_1_reg' [/home/james/Documents/IIS/FPGA/Cryto/ClassicMceliehw_FPGA/test/ClassicMceliehw_FPGA/build/Artycs324g/encap/src/onegen.v:178]
+WARNING: [Synth 8-327] inferring latch for variable 'init_reg' [/home/james/Documents/IIS/FPGA/Cryto/ClassicMceliehw_FPGA/test/ClassicMceliehw_FPGA/build/Artycs324g/encap/src/onegen.v:407]
+WARNING: [Synth 8-327] inferring latch for variable 'rd_en_reg' [/home/james/Documents/IIS/FPGA/Cryto/ClassicMceliehw_FPGA/test/ClassicMceliehw_FPGA/build/Artycs324g/encap/src/onegen.v:408]
+WARNING: [Synth 8-327] inferring latch for variable 'reading_out_reg' [/home/james/Documents/IIS/FPGA/Cryto/ClassicMceliehw_FPGA/test/ClassicMceliehw_FPGA/build/Artycs324g/encap/src/onegen.v:184]
+WARNING: [Synth 8-327] inferring latch for variable 'wren_0_reg' [/home/james/Documents/IIS/FPGA/Cryto/ClassicMceliehw_FPGA/test/ClassicMceliehw_FPGA/build/Artycs324g/encap/src/onegen.v:177]
+---------------------------------------------------------------------------------------------------
+                   State |                     New Encoding |                Previous Encoding 
+---------------------------------------------------------------------------------------------------
+                 iSTATE3 |                              000 |                              000
+                  iSTATE |                              001 |                              001
+                 iSTATE1 |                              010 |                              010
+                 iSTATE2 |                              011 |                              011
+                 iSTATE0 |                              100 |                              100
+*
+---------------------------------------------------------------------------------------------------
+INFO: [Synth 8-3354] encoded FSM with state register 'state_loading_reg' using encoding 'sequential' in module 'fixed_weight_no_shake_mw'
+---------------------------------------------------------------------------------------------------
+                   State |                     New Encoding |                Previous Encoding 
+---------------------------------------------------------------------------------------------------
+                 iSTATE4 |                              000 |                              000
+*
+                 iSTATE3 |                              001 |                              001
+                 iSTATE1 |                              010 |                              010
+                 iSTATE0 |                              011 |                              100
+                 iSTATE2 |                              100 |                              101
+                  iSTATE |                              101 |                              011
+---------------------------------------------------------------------------------------------------
+INFO: [Synth 8-3354] encoded FSM with state register 'state_reg' using encoding 'sequential' in module 'fixed_weight_no_shake_mw'
+WARNING: [Synth 8-327] inferring latch for variable 'shift_shake_op_reg' [/home/james/Documents/IIS/FPGA/Cryto/ClassicMceliehw_FPGA/test/ClassicMceliehw_FPGA/build/Artycs324g/encap/src/fixed_weight.v:204]
+WARNING: [Synth 8-327] inferring latch for variable 'wr_en_ms_reg' [/home/james/Documents/IIS/FPGA/Cryto/ClassicMceliehw_FPGA/test/ClassicMceliehw_FPGA/build/Artycs324g/encap/src/fixed_weight.v:363]
+WARNING: [Synth 8-327] inferring latch for variable 'weight_counter_init_reg' [/home/james/Documents/IIS/FPGA/Cryto/ClassicMceliehw_FPGA/test/ClassicMceliehw_FPGA/build/Artycs324g/encap/src/fixed_weight.v:365]
+WARNING: [Synth 8-327] inferring latch for variable 'shake_input_type_reg' [/home/james/Documents/IIS/FPGA/Cryto/ClassicMceliehw_FPGA/test/ClassicMceliehw_FPGA/build/Artycs324g/encap/src/fixed_weight.v:172]
+WARNING: [Synth 8-327] inferring latch for variable 'shake_out_capture_ready_reg' [/home/james/Documents/IIS/FPGA/Cryto/ClassicMceliehw_FPGA/test/ClassicMceliehw_FPGA/build/Artycs324g/encap/src/fixed_weight.v:373]
+WARNING: [Synth 8-327] inferring latch for variable 'init_mem_onegen_reg' [/home/james/Documents/IIS/FPGA/Cryto/ClassicMceliehw_FPGA/test/ClassicMceliehw_FPGA/build/Artycs324g/encap/src/fixed_weight.v:229]
+WARNING: [Synth 8-327] inferring latch for variable 'start_onegen_reg' [/home/james/Documents/IIS/FPGA/Cryto/ClassicMceliehw_FPGA/test/ClassicMceliehw_FPGA/build/Artycs324g/encap/src/fixed_weight.v:231]
+WARNING: [Synth 8-327] inferring latch for variable 'initial_loading_reg' [/home/james/Documents/IIS/FPGA/Cryto/ClassicMceliehw_FPGA/test/ClassicMceliehw_FPGA/build/Artycs324g/encap/src/fixed_weight.v:144]
+WARNING: [Synth 8-327] inferring latch for variable 'seed_wr_en_reg' [/home/james/Documents/IIS/FPGA/Cryto/ClassicMceliehw_FPGA/test/ClassicMceliehw_FPGA/build/Artycs324g/encap/src/fixed_weight.v:146]
+INFO: [Synth 8-3971] The signal "mem_dual__parameterized0:/mem_reg" was recognized as a true dual port RAM template.
+---------------------------------------------------------------------------------------------------
+                   State |                     New Encoding |                Previous Encoding 
+---------------------------------------------------------------------------------------------------
+                 iSTATE0 |                              000 |                              000
+                 iSTATE1 |                              001 |                              001
+                 iSTATE2 |                              010 |                              010
+                 iSTATE3 |                              011 |                              011
+                 iSTATE4 |                              100 |                              110
+                 iSTATE5 |                              101 |                              100
+                 iSTATE6 |                              110 |                              101
+                  iSTATE |                              111 |                              111
+*
+---------------------------------------------------------------------------------------------------
+INFO: [Synth 8-3354] encoded FSM with state register 'state_reg' using encoding 'sequential' in module 'encrypt_col_block'
+WARNING: [Synth 8-327] inferring latch for variable 'init_k_reg' [/home/james/Documents/IIS/FPGA/Cryto/ClassicMceliehw_FPGA/test/ClassicMceliehw_FPGA/build/Artycs324g/encap/src/encryption.v:365]
+WARNING: [Synth 8-327] inferring latch for variable 'shift_error_reg' [/home/james/Documents/IIS/FPGA/Cryto/ClassicMceliehw_FPGA/test/ClassicMceliehw_FPGA/build/Artycs324g/encap/src/encryption.v:362]
+WARNING: [Synth 8-327] inferring latch for variable 'init_e_col_reg' [/home/james/Documents/IIS/FPGA/Cryto/ClassicMceliehw_FPGA/test/ClassicMceliehw_FPGA/build/Artycs324g/encap/src/encryption.v:360]
+WARNING: [Synth 8-327] inferring latch for variable 'shift_e_bits_reg' [/home/james/Documents/IIS/FPGA/Cryto/ClassicMceliehw_FPGA/test/ClassicMceliehw_FPGA/build/Artycs324g/encap/src/encryption.v:363]
+WARNING: [Synth 8-327] inferring latch for variable 'en_er_reg_reg' [/home/james/Documents/IIS/FPGA/Cryto/ClassicMceliehw_FPGA/test/ClassicMceliehw_FPGA/build/Artycs324g/encap/src/encryption.v:361]
+WARNING: [Synth 8-327] inferring latch for variable 'wren_0_reg' [/home/james/Documents/IIS/FPGA/Cryto/ClassicMceliehw_FPGA/test/ClassicMceliehw_FPGA/build/Artycs324g/encap/src/encryption.v:163]
+WARNING: [Synth 8-327] inferring latch for variable 'wren_1_reg' [/home/james/Documents/IIS/FPGA/Cryto/ClassicMceliehw_FPGA/test/ClassicMceliehw_FPGA/build/Artycs324g/encap/src/encryption.v:164]
+INFO: [Synth 8-3971] The signal "mem_dual__parameterized1:/mem_reg" was recognized as a true dual port RAM template.
+---------------------------------------------------------------------------------------------------
+                   State |                     New Encoding |                Previous Encoding 
+---------------------------------------------------------------------------------------------------
+                iSTATE10 |                            00000 |                            00000
+                 iSTATE8 |                            00001 |                            00001
+                 iSTATE6 |                            00010 |                            00010
+                 iSTATE4 |                            00011 |                            00011
+                iSTATE18 |                            00100 |                            00100
+                iSTATE13 |                            00101 |                            00110
+                iSTATE12 |                            00110 |                            00111
+                iSTATE16 |                            00111 |                            01000
+                iSTATE15 |                            01000 |                            01001
+                iSTATE11 |                            01001 |                            01010
+                 iSTATE9 |                            01010 |                            01011
+                 iSTATE0 |                            01011 |                            01101
+                  iSTATE |                            01100 |                            01110
+                 iSTATE7 |                            01101 |                            10000
+                 iSTATE5 |                            01110 |                            10001
+                 iSTATE3 |                            01111 |                            10010
+                 iSTATE2 |                            10000 |                            10011
+                iSTATE14 |                            10001 |                            10100
+*
+                iSTATE19 |                            10010 |                            01111
+                 iSTATE1 |                            10011 |                            01100
+                iSTATE17 |                            10100 |                            00101
+---------------------------------------------------------------------------------------------------
+INFO: [Synth 8-3354] encoded FSM with state register 'state_hr_reg' using encoding 'sequential' in module 'encap_seq_gen'
+---------------------------------------------------------------------------------------------------
+                   State |                     New Encoding |                Previous Encoding 
+---------------------------------------------------------------------------------------------------
+                 iSTATE1 |                              000 |                              000
+*
+                 iSTATE3 |                              001 |                              001
+                 iSTATE4 |                              010 |                              010
+                  iSTATE |                              011 |                              011
+                 iSTATE0 |                              100 |                              100
+                 iSTATE2 |                              101 |                              101
+---------------------------------------------------------------------------------------------------
+INFO: [Synth 8-3354] encoded FSM with state register 'state_reg' using encoding 'sequential' in module 'encap_seq_gen'
+WARNING: [Synth 8-327] inferring latch for variable 'start_hash_reg' [/home/james/Documents/IIS/FPGA/Cryto/ClassicMceliehw_FPGA/test/ClassicMceliehw_FPGA/build/Artycs324g/encap/src/encap.v:592]
+WARNING: [Synth 8-327] inferring latch for variable 'total_contents_reg' [/home/james/Documents/IIS/FPGA/Cryto/ClassicMceliehw_FPGA/test/ClassicMceliehw_FPGA/build/Artycs324g/encap/src/encap.v:599]
+WARNING: [Synth 8-327] inferring latch for variable 'sel_in_shake_reg' [/home/james/Documents/IIS/FPGA/Cryto/ClassicMceliehw_FPGA/test/ClassicMceliehw_FPGA/build/Artycs324g/encap/src/encap.v:330]
+WARNING: [Synth 8-327] inferring latch for variable 'rd_en_c_reg' [/home/james/Documents/IIS/FPGA/Cryto/ClassicMceliehw_FPGA/test/ClassicMceliehw_FPGA/build/Artycs324g/encap/src/encap.v:288]
+WARNING: [Synth 8-327] inferring latch for variable 'rd_e_1_reg' [/home/james/Documents/IIS/FPGA/Cryto/ClassicMceliehw_FPGA/test/ClassicMceliehw_FPGA/build/Artycs324g/encap/src/encap.v:256]
+WARNING: [Synth 8-327] inferring latch for variable 'wr_en_C1_reg' [/home/james/Documents/IIS/FPGA/Cryto/ClassicMceliehw_FPGA/test/ClassicMceliehw_FPGA/build/Artycs324g/encap/src/encap.v:237]
+WARNING: [Synth 8-327] inferring latch for variable 'sel_ec_reg' [/home/james/Documents/IIS/FPGA/Cryto/ClassicMceliehw_FPGA/test/ClassicMceliehw_FPGA/build/Artycs324g/encap/src/encap.v:594]
+WARNING: [Synth 8-327] inferring latch for variable 'reg_en_er_reg' [/home/james/Documents/IIS/FPGA/Cryto/ClassicMceliehw_FPGA/test/ClassicMceliehw_FPGA/build/Artycs324g/encap/src/encap.v:590]
+WARNING: [Synth 8-327] inferring latch for variable 'sel_hram_reg' [/home/james/Documents/IIS/FPGA/Cryto/ClassicMceliehw_FPGA/test/ClassicMceliehw_FPGA/build/Artycs324g/encap/src/encap.v:589]
+WARNING: [Synth 8-327] inferring latch for variable 'dont_capture_shake_reg' [/home/james/Documents/IIS/FPGA/Cryto/ClassicMceliehw_FPGA/test/ClassicMceliehw_FPGA/build/Artycs324g/encap/src/encap.v:598]
+WARNING: [Synth 8-327] inferring latch for variable 'last_C1_reg' [/home/james/Documents/IIS/FPGA/Cryto/ClassicMceliehw_FPGA/test/ClassicMceliehw_FPGA/build/Artycs324g/encap/src/encap.v:597]
+WARNING: [Synth 8-327] inferring latch for variable 'dont_capture_C0_reg' [/home/james/Documents/IIS/FPGA/Cryto/ClassicMceliehw_FPGA/test/ClassicMceliehw_FPGA/build/Artycs324g/encap/src/encap.v:588]
+WARNING: [Synth 8-327] inferring latch for variable 'first_C1_reg' [/home/james/Documents/IIS/FPGA/Cryto/ClassicMceliehw_FPGA/test/ClassicMceliehw_FPGA/build/Artycs324g/encap/src/encap.v:596]
+WARNING: [Synth 8-327] inferring latch for variable 'first_C0_reg' [/home/james/Documents/IIS/FPGA/Cryto/ClassicMceliehw_FPGA/test/ClassicMceliehw_FPGA/build/Artycs324g/encap/src/encap.v:595]
+WARNING: [Synth 8-327] inferring latch for variable 'sel_k_reg' [/home/james/Documents/IIS/FPGA/Cryto/ClassicMceliehw_FPGA/test/ClassicMceliehw_FPGA/build/Artycs324g/encap/src/encap.v:601]
+WARNING: [Synth 8-327] inferring latch for variable 'h_wren_1_reg' [/home/james/Documents/IIS/FPGA/Cryto/ClassicMceliehw_FPGA/test/ClassicMceliehw_FPGA/build/Artycs324g/encap/src/encap.v:591]
+1
+INFO: [Common 17-83] Releasing license: Synthesis
+202 Infos, 258 Warnings, 0 Critical Warnings and 1 Errors encountered.
+synth_design failed
+INFO: [Common 17-344] 'source' was cancelled
+INFO: [Common 17-206] Exiting Vivado at Fri Jan 12 14:55:27 2024...

@@ -71,7 +71,7 @@ The purpose test is interfaces between serial IO and the encaps top module to re
 
   | TOP MODULE FILE          |      TEST PYTHON FILE                                      |
   | ---------------          |     -------------------------------------------------------|
-  |`./encap_sim`             | `python3 Test_encap_sim.py /dev/pts/4 set_seed`            |
+  |`./encap_sim`             | `python3 Test_encap_sim.py /dev/pts/4 9600 set_seed`       |
   | Slave device: /dev/pts/4 |    Send Data:  0x240000........00001000000                 |
   |                          |-------------------Read Data-------------------             |
   | [mceliece348864] Send Seed data completed| Send Seed data completed.                  |
@@ -80,7 +80,7 @@ The purpose test is interfaces between serial IO and the encaps top module to re
 
   | TOP MODULE FILE          |      TEST PYTHON FILE                                      |
   | ---------------          |     -------------------------------------------------------|
-  |`./encap_sim`             | `python3 Test_encap_sim.py /dev/pts/4 set_pk`              |
+  |`./encap_sim`             | `python3 Test_encap_sim.py /dev/pts/4 9600 set_pk`         |
   | Slave device: /dev/pts/4 |  Send Data:  0x18303fc00a74c0bdf......29ce66c80ae3d69e25799|
   |                          |-------------------Read Data-------------------             |
   | [mceliece348864] Send Public key data completed.| Send Public key data completed.     |
@@ -89,7 +89,7 @@ The purpose test is interfaces between serial IO and the encaps top module to re
 
   | TOP MODULE FILE          |      TEST PYTHON FILE                                      |
   | ---------------          |     -------------------------------------------------------|
-  |`./encap_sim`             | `python3 Test_encap_sim.py /dev/pts/4 set_pk`              |
+  |`./encap_sim`             | `python3 Test_encap_sim.py /dev/pts/4 9600 set_pk`         |
   | Slave device: /dev/pts/4 |  Send Data:  0x30101                                       |
   |                          |-------------------Read Data-------------------             |
   |[mceliece348864] Start Encapsulation. (5155211 cycles) |Start Encapsulation:  5155211 cycles  |

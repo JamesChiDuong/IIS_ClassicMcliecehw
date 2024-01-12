@@ -1,0 +1,94 @@
+Copyright 1986-2019 Xilinx, Inc. All Rights Reserved.
+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+| Tool Version : Vivado v.2019.2.1 (lin64) Build 2729669 Thu Dec  5 04:48:12 MST 2019
+| Date         : Fri Jan 12 15:14:30 2024
+| Host         : james-HP-245-G8-Notebook-PC running 64-bit Ubuntu 23.04
+| Command      : report_timing -file /home/james/Documents/IIS/FPGA/Cryto/ClassicMceliehw_FPGA/test/ClassicMceliehw_FPGA/build/results/encap_timing_artix7_100t_Artycs324g_32.txt
+| Design       : encap_tb
+| Device       : 7a100t-csg324
+| Speed File   : -1  PRODUCTION 1.23 2018-06-13
+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+Timing Report
+
+Slack (VIOLATED) :        -7.139ns  (required time - arrival time)
+  Source:                 shake_instance/control_path_instance/FSM_sequential_current_state_reg[0]_replica/C
+                            (rising edge-triggered cell FDRE clocked by clk  {rise@0.000ns fall@1.250ns period=2.500ns})
+  Destination:            shake_instance/data_path_instance/state_ram_instance/ram_generator[22].ram/ram_low_reg_0_3_2_2/SP/I
+                            (rising edge-triggered cell RAMS32 clocked by sys_clk_pin  {rise@0.000ns fall@5.000ns period=10.000ns})
+  Path Group:             sys_clk_pin
+  Path Type:              Setup (Max at Slow Process Corner)
+  Requirement:            2.500ns  (sys_clk_pin rise@10.000ns - clk rise@7.500ns)
+  Data Path Delay:        9.423ns  (logic 1.958ns (20.779%)  route 7.465ns (79.221%))
+  Logic Levels:           11  (LUT3=2 LUT4=2 LUT5=2 LUT6=5)
+  Clock Path Skew:        0.047ns (DCD - SCD + CPR)
+    Destination Clock Delay (DCD):    4.998ns = ( 14.998 - 10.000 ) 
+    Source Clock Delay      (SCD):    5.210ns = ( 12.710 - 7.500 ) 
+    Clock Pessimism Removal (CPR):    0.259ns
+  Clock Uncertainty:      0.035ns  ((TSJ^2 + TIJ^2)^1/2 + DJ) / 2 + PE
+    Total System Jitter     (TSJ):    0.071ns
+    Total Input Jitter      (TIJ):    0.000ns
+    Discrete Jitter          (DJ):    0.000ns
+    Phase Error              (PE):    0.000ns
+  Clock Domain Crossing:  Inter clock paths are considered valid unless explicitly excluded by timing constraints such as set_clock_groups or set_false_path.
+
+    Location             Delay type                Incr(ns)  Path(ns)    Netlist Resource(s)
+  -------------------------------------------------------------------    -------------------
+                         (clock clk rise edge)        7.500     7.500 r  
+    E3                                                0.000     7.500 r  clk (IN)
+                         net (fo=0)                   0.000     7.500    clk
+    E3                   IBUF (Prop_ibuf_I_O)         1.482     8.982 r  clk_IBUF_inst/O
+                         net (fo=1, routed)           2.025    11.006    clk_IBUF
+    BUFGCTRL_X0Y16       BUFG (Prop_bufg_I_O)         0.096    11.102 r  clk_IBUF_BUFG_inst/O
+                         net (fo=1027, routed)        1.608    12.710    shake_instance/control_path_instance/clk_IBUF_BUFG
+    SLICE_X69Y132        FDRE                                         r  shake_instance/control_path_instance/FSM_sequential_current_state_reg[0]_replica/C
+  -------------------------------------------------------------------    -------------------
+    SLICE_X69Y132        FDRE (Prop_fdre_C_Q)         0.419    13.129 r  shake_instance/control_path_instance/FSM_sequential_current_state_reg[0]_replica/Q
+                         net (fo=1, routed)           0.433    13.563    shake_instance/control_path_instance/Q[0]_repN
+    SLICE_X69Y132        LUT3 (Prop_lut3_I0_O)        0.299    13.862 r  shake_instance/control_path_instance/din_save_reg[31]_i_7/O
+                         net (fo=1, routed)           0.799    14.661    shake_instance/control_path_instance/din_save_reg[31]_i_7_n_0
+    SLICE_X68Y131        LUT6 (Prop_lut6_I0_O)        0.124    14.785 f  shake_instance/control_path_instance/din_save_reg[31]_i_4/O
+                         net (fo=7, routed)           0.429    15.214    DUT/error_vector_gen/din_ready_shake
+    SLICE_X68Y130        LUT6 (Prop_lut6_I1_O)        0.124    15.338 f  DUT/error_vector_gen/to_be_read_reg[10]_i_3/O
+                         net (fo=6, routed)           0.335    15.673    shake_instance/control_path_instance/data_length_reg_reg[10]_0
+    SLICE_X68Y129        LUT5 (Prop_lut5_I1_O)        0.124    15.797 f  shake_instance/control_path_instance/generate_z0_mux[0].z0_mux[0]_i_2/O
+                         net (fo=506, routed)         0.751    16.548    shake_instance/control_path_instance/absorb_data
+    SLICE_X69Y129        LUT6 (Prop_lut6_I0_O)        0.124    16.672 r  shake_instance/control_path_instance/ram_low_reg_0_3_0_0_i_3__5/O
+                         net (fo=2, routed)           0.772    17.444    shake_instance/data_path_instance/state_ram_instance/ram_generator[19].ram/ram_low_reg_0_3_0_0_i_1__2
+    SLICE_X73Y123        LUT4 (Prop_lut4_I2_O)        0.124    17.568 r  shake_instance/data_path_instance/state_ram_instance/ram_generator[19].ram/ram_low_reg_0_3_0_0_i_2__20/O
+                         net (fo=5, routed)           0.883    18.451    shake_instance/data_path_instance/state_ram_instance/ram_generator[18].ram/ram_low_reg_0_3_8_8_i_3__2[24]
+    SLICE_X82Y123        LUT4 (Prop_lut4_I2_O)        0.124    18.575 r  shake_instance/data_path_instance/state_ram_instance/ram_generator[18].ram/ram_low_reg_0_3_8_8_i_6/O
+                         net (fo=2, routed)           0.409    18.984    shake_instance/data_path_instance/state_ram_instance/ram_generator[23].ram/ram_high_reg_0_3_4_4_i_3__9_2
+    SLICE_X85Y123        LUT5 (Prop_lut5_I4_O)        0.124    19.108 r  shake_instance/data_path_instance/state_ram_instance/ram_generator[23].ram/ram_high_reg_0_3_4_4_i_7__0/O
+                         net (fo=9, routed)           0.946    20.054    shake_instance/data_path_instance/state_ram_instance/ram_generator[11].ram/ram_high_reg_0_3_9_9_i_2__3_0
+    SLICE_X82Y118        LUT3 (Prop_lut3_I2_O)        0.124    20.178 r  shake_instance/data_path_instance/state_ram_instance/ram_generator[11].ram/ram_high_reg_0_3_6_6_i_3__7/O
+                         net (fo=3, routed)           0.515    20.693    shake_instance/data_path_instance/state_ram_instance/ram_generator[11].ram/counter_reg[4]
+    SLICE_X82Y116        LUT6 (Prop_lut6_I0_O)        0.124    20.817 r  shake_instance/data_path_instance/state_ram_instance/ram_generator[11].ram/ram_high_reg_0_3_6_6_i_2__5/O
+                         net (fo=2, routed)           0.456    21.273    shake_instance/control_path_instance/ram_low_reg_0_3_2_2_1
+    SLICE_X83Y112        LUT6 (Prop_lut6_I1_O)        0.124    21.397 r  shake_instance/control_path_instance/ram_low_reg_0_3_2_2_i_1__2_comp/O
+                         net (fo=1, routed)           0.736    22.133    shake_instance/data_path_instance/state_ram_instance/ram_generator[22].ram/ram_low_reg_0_3_2_2/D
+    SLICE_X76Y113        RAMS32                                       r  shake_instance/data_path_instance/state_ram_instance/ram_generator[22].ram/ram_low_reg_0_3_2_2/SP/I
+  -------------------------------------------------------------------    -------------------
+
+                         (clock sys_clk_pin rise edge)
+                                                     10.000    10.000 r  
+    E3                                                0.000    10.000 r  clk (IN)
+                         net (fo=0)                   0.000    10.000    clk
+    E3                   IBUF (Prop_ibuf_I_O)         1.411    11.411 r  clk_IBUF_inst/O
+                         net (fo=1, routed)           1.920    13.331    clk_IBUF
+    BUFGCTRL_X0Y16       BUFG (Prop_bufg_I_O)         0.091    13.422 r  clk_IBUF_BUFG_inst/O
+                         net (fo=1027, routed)        1.576    14.998    shake_instance/data_path_instance/state_ram_instance/ram_generator[22].ram/ram_low_reg_0_3_2_2/WCLK
+    SLICE_X76Y113        RAMS32                                       r  shake_instance/data_path_instance/state_ram_instance/ram_generator[22].ram/ram_low_reg_0_3_2_2/SP/CLK
+                         clock pessimism              0.259    15.257    
+                         clock uncertainty           -0.035    15.222    
+    SLICE_X76Y113        RAMS32 (Setup_rams32_CLK_I)
+                                                     -0.228    14.994    shake_instance/data_path_instance/state_ram_instance/ram_generator[22].ram/ram_low_reg_0_3_2_2/SP
+  -------------------------------------------------------------------
+                         required time                         14.994    
+                         arrival time                         -22.133    
+  -------------------------------------------------------------------
+                         slack                                 -7.139    
+
+
+
+
