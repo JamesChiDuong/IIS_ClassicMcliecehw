@@ -57,6 +57,7 @@ module encap_tb
            input wire 	clk,
            input wire 	rst,
            output lcd1,
+           output lcd2,
            output wire done
        );
 
@@ -102,7 +103,10 @@ wire [31:0]dout_shake;
 wire force_done_shake;
 
 reg led1;
+reg led2;
+
 assign lcd1 = led1;
+assign lcd2 = led2;
 keccak_top shake_instance
            (
                .rst(rst),
@@ -152,6 +156,23 @@ encap_seq_gen # (.parameter_set(parameter_set), .m(m), .t(t), .n(n), .e_width(e_
 
          );
 
+mem_single #(.WIDTH(col_width), .DEPTH(((l_n_elim+(col_width-l_n_elim%col_width)%col_width)/col_width)), .FILE(`FILE_PK_SLICED) ) publickey
+           (
+               .clock(clk),
+               .data(0),
+               .address(addr_PK),
+               .wr_en(0),
+               .q(PK_col)
+           );
+
+mem_single #(.WIDTH(32), .DEPTH(16), .FILE(`FILE_MEM_SEED) ) mem_init_seed
+           (
+               .clock(clk),
+               .data(0),
+               .address(addr_seed),
+               .wr_en(0),
+               .q(seed_from_ram)
+           );
 initial
 begin
     $dumpfile(`FILE_VCD);
@@ -198,6 +219,7 @@ parameter SIZE_TOTAL = 17 + k*l/col_width + 1855 - 16 + STOP_C0 + STOP_C1 + 5;
 
 initial begin
     led1 <= 0;
+    led2 <= 0;
 end
 always @(posedge clk)
 begin
@@ -231,72 +253,88 @@ begin
             begin
                 ctr <= ctr + 1;
             end
+            seed <= seed_from_ram;
+
+            // loading seed
+            if (ctr >= START_SEED && ctr < STOP_SEED)
+            begin
+                seed_valid <= 1'b1;
+                led2 <= 1;
+                if (ctr > START_SEED)
+                    addr_seed <= addr_seed + 1;
+            end
+            else
+            begin
+                addr_seed <= addr_seed;
+                seed_valid <= 1'b0;
+            end
     end
 end
 
 integer i;
 
-always @(posedge clk)
-begin
-    seed <= seed_from_ram;
+// always @(posedge clk)
+// begin
+//     seed <= seed_from_ram;
 
-    // loading seed
-    if (ctr >= START_SEED && ctr < STOP_SEED)
-    begin
-        seed_valid <= 1'b1;
-        if (ctr > START_SEED)
-            addr_seed <= addr_seed + 1;
-    end
-    else
-    begin
-        addr_seed <= addr_seed;
-        seed_valid <= 1'b0;
-    end
-    // // loading PK
-    // if (ctr >= START_PK && ctr < STOP_PK)
-    // begin
-    //     K_col_valid <= 1'b1;
-    //    if (ctr > START_PK)
-    //      addr_PK <= addr_PK + 1;
-    // end
-    // else
-    // begin
-    //     addr_PK <= addr_PK;
-    // end
-    // // reading C0
-    // if (ctr > START_C0 && ctr <= STOP_C0)
-    //   begin
-    //      addr_C0 <= addr_C0 + 1;
-    //      rd_C0 <= 1'b1;
-    //   end
-    // else
-    //   begin
-    //      addr_C0 <= addr_C0;
-    //      rd_C0 <= 1'b0;
-    //   end
-    // // reading C1
-    //  if (ctr > START_C1 && ctr <= STOP_C1)
-    //  begin
-    //      addr_C1 <= addr_C1 + 1;
-    //      rd_C1 <= 1'b1;
-    //  end
-    //  else
-    //  begin
-    //      addr_C1 <= addr_C1;
-    //      rd_C1 <= 1'b0;
-    //  end
-    //  // reading K
-    //  if (ctr > START_K && ctr < STOP_POLY)
-    //  begin
-    //      addr_K <= addr_K + 1;
-    //      rd_K <= 1'b1;
-    //  end
-    //  else
-    //  begin
-    //      addr_K <= addr_K;
-    //      rd_K <= 1'b0;
-    //  end
-end
+//     // loading seed
+//     if (ctr >= START_SEED && ctr < STOP_SEED)
+//     begin
+//         seed_valid <= 1'b1;
+//         led2 <= 1;
+//         if (ctr > START_SEED)
+//             addr_seed <= addr_seed + 1;
+//     end
+//     else
+//     begin
+//         addr_seed <= addr_seed;
+//         seed_valid <= 1'b0;
+//     end
+//     // // loading PK
+//     // if (ctr >= START_PK && ctr < STOP_PK)
+//     // begin
+//     //     K_col_valid <= 1'b1;
+//     //    if (ctr > START_PK)
+//     //      addr_PK <= addr_PK + 1;
+//     // end
+//     // else
+//     // begin
+//     //     addr_PK <= addr_PK;
+//     // end
+//     // // reading C0
+//     // if (ctr > START_C0 && ctr <= STOP_C0)
+//     //   begin
+//     //      addr_C0 <= addr_C0 + 1;
+//     //      rd_C0 <= 1'b1;
+//     //   end
+//     // else
+//     //   begin
+//     //      addr_C0 <= addr_C0;
+//     //      rd_C0 <= 1'b0;
+//     //   end
+//     // // reading C1
+//     //  if (ctr > START_C1 && ctr <= STOP_C1)
+//     //  begin
+//     //      addr_C1 <= addr_C1 + 1;
+//     //      rd_C1 <= 1'b1;
+//     //  end
+//     //  else
+//     //  begin
+//     //      addr_C1 <= addr_C1;
+//     //      rd_C1 <= 1'b0;
+//     //  end
+//     //  // reading K
+//     //  if (ctr > START_K && ctr < STOP_POLY)
+//     //  begin
+//     //      addr_K <= addr_K + 1;
+//     //      rd_K <= 1'b1;
+//     //  end
+//     //  else
+//     //  begin
+//     //      addr_K <= addr_K;
+//     //      rd_K <= 1'b0;
+//     //  end
+// end
 
 // always @(posedge DUT.done)
 // begin
@@ -376,22 +414,5 @@ begin
     $fflush();
 end
 
-mem_single #(.WIDTH(col_width), .DEPTH(((l_n_elim+(col_width-l_n_elim%col_width)%col_width)/col_width)), .FILE(`FILE_PK_SLICED) ) publickey
-           (
-               .clock(clk),
-               .data(0),
-               .address(addr_PK),
-               .wr_en(0),
-               .q(PK_col)
-           );
-
-mem_single #(.WIDTH(32), .DEPTH(16), .FILE(`FILE_MEM_SEED) ) mem_init_seed
-           (
-               .clock(clk),
-               .data(0),
-               .address(addr_seed),
-               .wr_en(0),
-               .q(seed_from_ram)
-           );
 
 endmodule

@@ -29,7 +29,7 @@ FILE_MEM_SEED    := -DFILE_MEM_SEED=\"$(ROOT_PATH)/host/kat/kat_generate/$(KAT_F
 FILE_PK_SLICED	 :=	-DFILE_PK_SLICED=\"$(ROOT_PATH)/host/kat/kat_generate/$(KAT_FILE_PUBKEY)\"
 BAUDRATE		 := -GBAUD_RATE=$(BAUD_RATE)
 CLOCKFPGA        := -GCLOCK_FPGA=$(CLOCK_FPGA)
-VFLAGS 		:= -Wall --MMD --trace --unroll-count 1024 --Wno-fatal --timescale-override 1ps/1ps -y $(RTLDR) --top-module $(MODULES) \-GKEY_START_ADDR=0 \$(BAUDRATE) \$(CLOCKFPGA) \$(FILE_VCD) \$(FILE_CYCLES_PROFILE) \$(FILE_K_OUT) \$(FILE_CIPHER0_OUT) \$(FILE_CIPHER1_OUT) \$(FILE_ERROR_OUT) \$(FILE_MEM_SEED) \$(FILE_PK_SLICED) --cc \clog2.v
+VFLAGS 		:= -Wall --MMD --trace --unroll-count 1024 --Wno-fatal --timescale-override 1ps/1ps -y $(RTLDR) --top-module $(MODULES) \-GKEY_START_ADDR=0 \-Gparameter_set=1 \-Gcol_width=32 \--Ge_width=32 \$(BAUDRATE) \$(CLOCKFPGA) \$(FILE_VCD) \$(FILE_CYCLES_PROFILE) \$(FILE_K_OUT) \$(FILE_CIPHER0_OUT) \$(FILE_CIPHER1_OUT) \$(FILE_ERROR_OUT) \$(FILE_MEM_SEED) \$(FILE_PK_SLICED) --cc \clog2.v
 
 #We need to change the name modules or delete the name. In the example, we have 2 moudles
 
