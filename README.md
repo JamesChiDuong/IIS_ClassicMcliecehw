@@ -120,8 +120,8 @@ The purpose test is interfaces between serial IO and the encaps top module to re
   ```
   When we run the command:
   
-  The program will generate the `build/Artycs324g/Top_moduleName/src` and `build/results`. The `build/Artycs324g/Top_moduleName/src` has all the Verilog files on your project. The `build/results` has the log file which stores the command line on the bash.
-
+  - The program will generate the `build/Artycs324g/Top_moduleName/src` and `build/results`. The `build/Artycs324g/Top_moduleName/src` has all the Verilog files on your project. The `build/results` has the log file which stores the command line on the bash.
+  - Changing the baud rate of UART or the FPGA clock at `target.mk`
 
   ## NOTE:
    - We need to use `make clean` before running the new target

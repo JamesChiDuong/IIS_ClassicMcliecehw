@@ -17,7 +17,6 @@ set file_timing_summary [lindex $argv 8]
 set file_clocks [lindex $argv 9]
 set parameters [lindex $argv 10]
 set macros [lindex $argv 11]
-
 #Read .v type file
 puts $sources
 set splitCont [split $sources " "] ;
@@ -40,22 +39,22 @@ set splitPar [split $parameters " "] ;
 puts $splitPar
 foreach f $splitPar {
     puts $f
-	set_property generic {$f} [current_fileset]
+    set_property generic "$f" [current_fileset]
 }
 
+set_property generic "$splitPar" [current_fileset]
 puts $macros
 #We need to create the clock before synthesis by read xdc timing
 
 #--STEP1: Synthesis design
 
 read_xdc $constraints_timing
-set_param synth.elaboration.rodinMoreOptions "rt::set_parameter var_size_limit 2678785"
+#set_param synth.elaboration.rodinMoreOptions "rt::set_parameter var_size_limit 2678785"
 synth_design \
     -part $partname \
     -top $top_module \
     -mode default \
-    -verilog_define $macros \
-    -directive runtimeoptimized
+    -verilog_define $macros
 
 #After synthesis and befor implement we will read xdc pin
 #Reference: https://docs.xilinx.com/v/u/2013.2-English/ug903-vivado-using-constraints

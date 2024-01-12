@@ -108,13 +108,13 @@ if __name__ == "__main__":
             print(f"Error: {e}")
 
     else:
-        dev = serial.Serial(sys.argv[1], 3000000)  #Open serial port
+        dev = serial.Serial(sys.argv[1], sys.argv[2])  #Open serial port
 
         file_exists = os.path.isfile(kat_generate_folder+"/"+FILE_SEED) | os.path.isfile(kat_generate_folder+"/"+FILE_PUBKEY)
         if(file_exists == False):
             exit("Doesn't exists")
         else:
-            if((sys.argv[2] == "set_pk")):
+            if((sys.argv[3] == "set_pk")):
                 file = open(kat_generate_folder + FILE_PUBKEY)
                 lines = file.read().replace('\n','')
                 file.close()
@@ -129,7 +129,7 @@ if __name__ == "__main__":
                 data = int.from_bytes(arr,'big')
                 print("Send Data: ",hex(data))
                 dev.write(arr)
-                dataRaw = dev.read(49)
+                dataRaw = dev.read(16)
                 for i in range(0, len(dataRaw),8):
                     chunk = dataRaw[i:i+8]
                     time_buffer[leng] = int.from_bytes(chunk, 'little')
@@ -138,8 +138,11 @@ if __name__ == "__main__":
                 if((time_buffer[0]) >> 8 == 1):
                     print("-------------------Read Data-------------------\r\n")
                     print("Send Public data completed.\r\n")
-
-            elif((sys.argv[2] == "set_seed")):
+                    print(dataRaw)
+                else:
+                    print("Read fail.\r\n",(time_buffer[0]) >> 8)
+                    print(dataRaw)
+            elif((sys.argv[3] == "set_seed")):
                 file = open(kat_generate_folder + FILE_SEED)
                 lines = file.read().replace('\n','')
                 file.close()
@@ -154,7 +157,7 @@ if __name__ == "__main__":
                 data = int.from_bytes(arr,'big')
                 print("Send Data: ",hex(data))
                 dev.write(arr)
-                dataRaw = dev.read(48)
+                dataRaw = dev.read(16)
                 for i in range(0, len(dataRaw),8):
                     chunk = dataRaw[i:i+8]
                     time_buffer[leng] = int.from_bytes(chunk, 'little')
@@ -162,8 +165,12 @@ if __name__ == "__main__":
                     leng += 1
                 if((time_buffer[0] >> 8) == 1):
                     print("-------------------Read Data-------------------\r\n")
-                    print("Send Seed data completed.\r\n")
-            elif((sys.argv[2] == "start_encap")):
+                    print("Send Seed data completed.\r\n",time_buffer[0])
+                    print(dataRaw)
+                else:
+                    print("Read fail.\r\n",(time_buffer[0]))
+                    print("Read fail.\r\n",dataRaw)
+            elif((sys.argv[3] == "start_encap")):
                 set_checkdata  = [0x01]
                 tlv_array['START_ENCAP'] = bytes(set_checkdata)
                 arr = tlv_array.to_byte_array()
@@ -171,6 +178,7 @@ if __name__ == "__main__":
                 print("Send Data: ",hex(data))
                 dev.write(arr)
                 dataRaw = dev.read(RAW_DATA_LENGTH+1)
+                #dataRaw = dev.read(1)
                 test = 0
                 #dataRaw = dev.readline() 
                 for i in range(1, DATA_LENGTH_TIME,8):

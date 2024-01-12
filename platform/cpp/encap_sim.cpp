@@ -24,8 +24,8 @@ int	main(int argc, char **argv)
    Verilated::commandArgs(argc, argv);
    UARTSIM		*uart;										// init uart pointer
                                                    //uart_PseudoTerminal Pseudo;							// Init Pseudo terminal
-   unsigned	setup = 33;								// init baudrate
-
+   unsigned	setup = CLOCK_FPGA/BAUD_RATE;								// init baudrate
+   printf("%d",setup);
    for(int argn=1; argn<argc; argn++)
    {
       if (argv[argn][0] == '-') for(int j=1; (j<1000)&&(argv[argn][j]); j++)

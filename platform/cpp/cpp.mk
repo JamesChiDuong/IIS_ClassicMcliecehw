@@ -10,6 +10,8 @@ VOBJDR	:= $(RTLD)/obj_dir
 SYSVDR	:= $(VROOT)/include
 #We need to change the name modules or delete the name. In the example, we have 2 moudles
 export TOPMODULES_SIMU
+export BAUD_RATE
+export CLOCK_FPGA
 MODULES := $(TOPMODULES_SIMU)
 
 SOURCES := $(MODULES).cpp uartsim.cpp uartsim.h #$(MODULES2).cpp 
@@ -26,7 +28,7 @@ $(OBJDIR)/uartsim.o: uartsim.cpp uartsim.h
 
 $(OBJDIR)/%.o: %.cpp
 	$(mk-objdir)
-	$(CXX) $(FLAGS) $(INCS) -c $< -o $@
+	$(CXX) $(FLAGS) $(INCS) -c $< -DCLOCK_FPGA=$(CLOCK_FPGA) -DBAUD_RATE=$(BAUD_RATE) -o $@
 
 $(OBJDIR)/%.o: $(SYSVDR)/%.cpp
 	$(mk-objdir)

@@ -5,7 +5,8 @@ all:	test
 
 export TOPMODULES_SIMU
 export ROOT_PATH
-
+export BAUD_RATE
+export CLOCK_FPGA
 PAR_FILE := $(ROOT_PATH)/modules/FPGA/parameters.mk
 include $(PAR_FILE)
 
@@ -26,11 +27,13 @@ FILE_CIPHER1_OUT := -DFILE_CIPHER1_OUT=\"cipher_1.out\"
 FILE_ERROR_OUT	 := -DFILE_ERROR_OUT=\"error.out\"
 FILE_MEM_SEED    := -DFILE_MEM_SEED=\"$(ROOT_PATH)/host/kat/kat_generate/$(KAT_FILE_SEED)\"
 FILE_PK_SLICED	 :=	-DFILE_PK_SLICED=\"$(ROOT_PATH)/host/kat/kat_generate/$(KAT_FILE_PUBKEY)\"
-VFLAGS 		:= -Wall --MMD --trace --unroll-count 1024 --Wno-fatal --timescale-override 1ps/1ps -y $(RTLDR) --top-module $(MODULES) \-GKEY_START_ADDR=0 \$(FILE_VCD) \$(FILE_CYCLES_PROFILE) \$(FILE_K_OUT) \$(FILE_CIPHER0_OUT) \$(FILE_CIPHER1_OUT) \$(FILE_ERROR_OUT) \$(FILE_MEM_SEED) \$(FILE_PK_SLICED) --cc \clog2.v
+BAUDRATE		 := -GBAUD_RATE=$(BAUD_RATE)
+CLOCKFPGA        := -GCLOCK_FPGA=$(CLOCK_FPGA)
+VFLAGS 		:= -Wall --MMD --trace --unroll-count 1024 --Wno-fatal --timescale-override 1ps/1ps -y $(RTLDR) --top-module $(MODULES) \-GKEY_START_ADDR=0 \$(BAUDRATE) \$(CLOCKFPGA) \$(FILE_VCD) \$(FILE_CYCLES_PROFILE) \$(FILE_K_OUT) \$(FILE_CIPHER0_OUT) \$(FILE_CIPHER1_OUT) \$(FILE_ERROR_OUT) \$(FILE_MEM_SEED) \$(FILE_PK_SLICED) --cc \clog2.v
 
 #We need to change the name modules or delete the name. In the example, we have 2 moudles
 
-
+#-Wno-BLKANDNBLK 
 
 .PHONY: test
 

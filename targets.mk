@@ -5,6 +5,9 @@ TARGET ?=
 
 export TOPMODULES := encap
 export TOPMODULES_SIMU := encap_sim
+export BAUD_RATE := 9600
+export CLOCK_FPGA := 100000000
+
 ifeq ($(TARGET),unix)
 DEVICE := x86_64
 endif

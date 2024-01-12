@@ -816,7 +816,7 @@ begin
                 last_C1 <= 1'b0;
               end
                          
-      default: din_valid <= 1'b0;
+      default: din_valid = 1'b0;
       
     endcase
 

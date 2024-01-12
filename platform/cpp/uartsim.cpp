@@ -285,8 +285,8 @@ void UARTSIM::PseudoTerminal_Init()
 	tty.c_cc[VMIN] = 2;						
     tty.c_cc[VTIME] = 1;
     
-	cfsetispeed(&tty, B3500000);				//Set baudrate
-  	cfsetospeed(&tty, B3500000);				//Set baudrate
+	cfsetispeed(&tty, B4000000);				//Set baudrate
+  	cfsetospeed(&tty, B4000000);				//Set baudrate
 
 	if (tcsetattr(fd, TCSANOW, &tty) != 0)
    {
