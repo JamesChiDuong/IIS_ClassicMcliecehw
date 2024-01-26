@@ -13,7 +13,7 @@ create_clock -period 10.000 -name sys_clk_pin -waveform {0.000 5.000} -add [get_
 #set_property -dict {PACKAGE_PIN C10 IOSTANDARD LVCMOS33} [get_ports {slideSwitch[2]}]
 #set_property -dict {PACKAGE_PIN A10 IOSTANDARD LVCMOS33} [get_ports {slideSwitch[3]}]
 
-## LEDs
+# ## LEDs
 set_property -dict {PACKAGE_PIN H5 IOSTANDARD LVCMOS33} [get_ports {lcd1}]
 set_property -dict {PACKAGE_PIN J5 IOSTANDARD LVCMOS33} [get_ports {lcd2}]
 set_property -dict {PACKAGE_PIN T9 IOSTANDARD LVCMOS33} [get_ports {lcd3}]
@@ -26,13 +26,13 @@ set_property -dict { PACKAGE_PIN G3    IOSTANDARD LVCMOS33 } [get_ports { lcd7 }
 set_property -dict { PACKAGE_PIN H4    IOSTANDARD LVCMOS33 } [get_ports { lcd8 }]; #IO_L21N_T3_DQS_35 Sch=led2_b
 set_property -dict { PACKAGE_PIN J2    IOSTANDARD LVCMOS33 } [get_ports { done }]; #IO_L22N_T3_35 Sch=led2_g
 ## Buttons
-set_property -dict {PACKAGE_PIN D9 IOSTANDARD LVCMOS33} [get_ports rst]
+set_property -dict {PACKAGE_PIN D9 IOSTANDARD LVCMOS33} [get_ports {rst}]
 # set_property -dict {PACKAGE_PIN C9 IOSTANDARD LVCMOS33} [get_ports done]
-set_property -dict { PACKAGE_PIN B9    IOSTANDARD LVCMOS33 } [get_ports { btn }]; #IO_L11N_T1_SRCC_16 Sch=btn[2]
+#set_property -dict { PACKAGE_PIN B9    IOSTANDARD LVCMOS33 } [get_ports { btn }]; #IO_L11N_T1_SRCC_16 Sch=btn[2]
 ## USB-UART Interface
 ## USB-UART Interface
-set_property -dict { PACKAGE_PIN D10   IOSTANDARD LVCMOS33 } [get_ports o_uart_tx]; #IO_L19N_T3_VREF_16 Sch=uart_rxd_out
-set_property -dict { PACKAGE_PIN A9 IOSTANDARD LVCMOS33} [get_ports i_uart_rx]
+set_property -dict { PACKAGE_PIN D10   IOSTANDARD LVCMOS33 } [get_ports {o_uart_tx}]; #IO_L19N_T3_VREF_16 Sch=uart_rxd_out
+set_property -dict { PACKAGE_PIN A9 IOSTANDARD LVCMOS33} [get_ports {i_uart_rx}]
 
 # ## Pmod Header JA
 # set_property -dict { PACKAGE_PIN G13   IOSTANDARD LVCMOS33 } [get_ports { data[0] }]; #IO_0_15 Sch=ja[1]

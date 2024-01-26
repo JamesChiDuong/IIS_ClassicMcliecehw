@@ -4,7 +4,7 @@ _TARGETS :=
 TARGET ?=
 
 export TOPMODULES := encap
-export TOPMODULES_SIMU := encap_sim
+export TOPMODULES_SIMU := encap_tb
 
 export CLOCK_FPGA := 100000000
 

@@ -37,10 +37,10 @@ puts $parameters
 
 set splitPar [split $parameters " "] ;
 puts $splitPar
-foreach f $splitPar {
-    puts $f
-    set_property generic "$f" [current_fileset]
-}
+# foreach f $splitPar {
+#     puts $f
+#     set_property generic "$f" [current_fileset]
+# }
 
 set_property generic "$splitPar" [current_fileset]
 puts $macros

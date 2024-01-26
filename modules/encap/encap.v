@@ -213,7 +213,7 @@ assign dout_shake_scrambled = dout_shake;
 
 assign C0_out = cipher;
 assign C1_out = C1_from_ram;
-assign K_out = q_1;
+assign K_out = q_0;
 
 //  keccak_top shake_instance
 // (
@@ -581,8 +581,10 @@ begin
 end 
  
  
-always@(state_hr or done_error or h_addr_1 or done_encrypt or addr_rd_c or dout_valid_sh_internal) 
+always@(negedge clk) 
 begin
+    // if(state_hr || done_error || h_addr_1 || done_encrypt || addr_rd_c || dout_valid_sh_internal)
+    // begin
     case (state_hr)
      s_first_block: begin
                       dont_capture_C0 <= 1'b0;
@@ -819,6 +821,8 @@ begin
       default: din_valid = 1'b0;
       
     endcase
+        
+  //  end
 
 end  
 
@@ -921,9 +925,11 @@ begin
 end 
  
  
-always@(state or dout_valid_sh_internal or done_error or seed_ready_internal) 
+always@(negedge clk)
 begin
-    case (state)
+    if(state || dout_valid_sh_internal || done_error || seed_ready_internal)
+    begin
+           case (state)
      s_wait_error_done: begin
                             sel_in_shake <= 3'b000;
                             din_valid_h <= 1'b0;
@@ -967,7 +973,8 @@ begin
     
       default: din_valid_h <= 1'b0;
       
-    endcase
+    endcase 
+    end
 
 end
 

@@ -191,23 +191,23 @@ reg [63:0] time_counter_start;
 reg [17*8-1:0] prefix;
 
 /***********************DEBUG***************************/
-reg led1;
-reg led2;
-reg led3;
-reg led4;
-reg led5;
-reg led6;
-reg led7;
-reg led8;
+// reg led1;
+// reg led2;
+// reg led3;
+// reg led4;
+// reg led5;
+// reg led6;
+// reg led7;
+// reg led8;
 
-assign lcd1 = led1;
-assign lcd2 = led2;
-assign lcd3 = led3;
-assign lcd4 = led4;
-assign lcd5 = led5;
-assign lcd6 = led6;
-assign lcd7 = led7;
-assign lcd8 = led8;
+// assign lcd1 = led1;
+// assign lcd2 = led2;
+// assign lcd3 = led3;
+// assign lcd4 = led4;
+// assign lcd5 = led5;
+// assign lcd6 = led6;
+// assign lcd7 = led7;
+// assign lcd8 = led8;
  /**************Main Program***************/
 
 
@@ -218,6 +218,7 @@ baud_rate_generator #(.N(BR_BITS),.M(BR_LIMIT))
                 .reset(rst),
                 .tick(tick)
             );
+
 Receiver #(.DBITS(DBITS),.SB_TICK(SB_TICK))
             UART_RX_UNIT
             (
@@ -227,7 +228,8 @@ Receiver #(.DBITS(DBITS),.SB_TICK(SB_TICK))
                 .sample_tick(tick),
                 .data_ready(rx_done),
                 .data_out(rx_data_out)
-            ); 
+            );
+
 keccak_top shake_instance
            (
                .rst(rst),
@@ -240,7 +242,7 @@ keccak_top shake_instance
                .dout(dout_shake),
                .force_done(force_done_shake)
            );
-
+           
 encap_seq_gen # (.parameter_set(parameter_set), .m(m), .t(t), .n(n), .e_width(e_width), .col_width(col_width), .KEY_START_ADDR(KEY_START_ADDR))
          DUT  (
              .clk(clk),
@@ -275,8 +277,16 @@ encap_seq_gen # (.parameter_set(parameter_set), .m(m), .t(t), .n(n), .e_width(e_
              .dout_shake(dout_shake),
              .force_done_shake(force_done_shake)
 
-         );
+            //  .lcd1(lcd1), 
+            //  .lcd2(lcd2),
+            //  .lcd3(lcd3),
+            //  .lcd4(lcd4),
+            //  .lcd5(lcd5),
+            //  .lcd6(lcd6),
+            //  .lcd7(lcd7),
+            //  .lcd8(lcd8)
 
+         );
 mem_single #(.WIDTH(col_width), .DEPTH(2048))
             publickey
            (
@@ -337,16 +347,16 @@ initial begin
         C0_addr <= 0;
         C1_addr <= 0;
 
-        // DATA_LENGTH_SEND <= 41'd0;
-        // /**************DEBUG*******************/
-        led1 <= 0;
-        led2 <= 0;
-        led3 <= 0;
-        led4 <= 0;
-        led5 <= 0;
-        led6 <= 0;
-        led7 <= 0;
-        led8 <= 0;
+        // // DATA_LENGTH_SEND <= 41'd0;
+        // // /**************DEBUG*******************/
+        // led1 <= 0;
+        // led2 <= 0;
+        // led3 <= 0;
+        // led4 <= 0;
+        // led5 <= 0;
+        // led6 <= 0;
+        // led7 <= 0;
+        // led8 <= 0;
 end
 // // /***********TLV decode*******************/
 always @(posedge clk)
@@ -359,63 +369,63 @@ begin
     begin
         case (state)
             STATE_IDLE : begin
-            if((rx_data_out != 8'b0) && (rx_done))
-            begin
-                state <= STATE_TYPE;
-                tlv_data_byte <= rx_data_out;
-            end
+                        if((rx_data_out != 8'b0) && (rx_done))
+                        begin
+                            state <= STATE_TYPE;
+                            tlv_data_byte <= rx_data_out;
+                        end
             end
             STATE_TYPE: begin
-            if(rx_done)
-            begin
-                tlv_type_reg <= tlv_data_byte;
-                tlv_data_byte <= rx_data_out;
-                tlv_length_reg_check <= rx_data_out;
-                state <= STATE_LENGTH;
-            end
+                        if(rx_done)
+                        begin
+                            tlv_type_reg <= tlv_data_byte;
+                            tlv_data_byte <= rx_data_out;
+                            tlv_length_reg_check <= rx_data_out;
+                            state <= STATE_LENGTH;
+                        end
             end
             STATE_LENGTH: begin
-            if((tlv_length_reg_check > 8'h7f) && (tlv_size_of_length_data == 0))
-            begin
-                tlv_size_of_length_data <= (tlv_length_reg_check & 8'b01111111) + 1;
+                        if((tlv_length_reg_check > 8'h7f) && (tlv_size_of_length_data == 0))
+                        begin
+                            tlv_size_of_length_data <= (tlv_length_reg_check & 8'b01111111) + 1;
 
-            end
-            if(tlv_size_of_length_data == 8'd1 || tlv_length_reg_check < 8'h7f)
-            begin
-                state <= STATE_VALUE;
+                        end
+                        if(tlv_size_of_length_data == 8'd1 || tlv_length_reg_check < 8'h7f)
+                        begin
+                            state <= STATE_VALUE;
 
-                if(tlv_length_reg_check < 8'h7f)
-                begin
-                    tlv_length_reg <= tlv_data_byte;
-                end
-            end
-            else
-            begin
-                if(rx_done)
-                begin
-                    tlv_data_byte <= rx_data_out;
-                    tlv_size_of_length_data <= tlv_size_of_length_data - 1;
-                    tlv_length_reg <= (tlv_length_reg | (rx_data_out << 8*(tlv_size_of_length_data-2)));  
-                end
-            end
+                            if(tlv_length_reg_check < 8'h7f)
+                            begin
+                                tlv_length_reg <= tlv_data_byte;
+                            end
+                        end
+                        else
+                        begin
+                            if(rx_done)
+                            begin
+                                tlv_data_byte <= rx_data_out;
+                                tlv_size_of_length_data <= tlv_size_of_length_data - 1;
+                                tlv_length_reg <= (tlv_length_reg | (rx_data_out << 8*(tlv_size_of_length_data-2)));  
+                            end
+                        end
             end
             STATE_VALUE: begin
-            if((tlv_length_reg == 8'b0))
-            begin
-                state <= STATE_IDLE;
-                tlv_size_of_length_data <= 4'd0;
-                data_tlv_length <= 24'd0;
+                        if((tlv_length_reg == 8'b0))
+                        begin
+                            state <= STATE_IDLE;
+                            tlv_size_of_length_data <= 4'd0;
+                            data_tlv_length <= 24'd0;
 
-            end
-            else
-            begin
-                if(rx_done)
-                begin
-                    
-                    tlv_length_reg <= tlv_length_reg - 1'b1;
-                    tlv_value_reg <= rx_data_out;
-                end
-            end
+                        end
+                        else
+                        begin
+                            if(rx_done)
+                            begin
+                                
+                                tlv_length_reg <= tlv_length_reg - 1'b1;
+                                tlv_value_reg <= rx_data_out;
+                            end
+                        end
             end
             default: tlv_data_byte <= rx_data_out;
         endcase 
@@ -427,150 +437,150 @@ always @(posedge clk ) begin
     begin
         state_mode <= STATE_START_MODE;
 
-        // /**************DEBUG*******************/
-        led1 <= 0;
-        led2 <= 0;
-        led3 <= 0;
-        led4 <= 0;
-        led5 <= 0;
+        // // /**************DEBUG*******************/
+        // led1 <= 0;
+        // led2 <= 0;
+        // led3 <= 0;
+        // led4 <= 0;
+        // led5 <= 0;
     end
     else
     begin
         case (state_mode)
         STATE_START_MODE : begin
-            if((tlv_type_reg == 8'd1)&& (state == STATE_VALUE))
-            begin
-                state_mode <= STATE_SET_PK;               
-            end
-            else if((tlv_type_reg == 8'd2) && (state == STATE_VALUE))
-            begin
-                state_mode <= STATE_SET_SEED;
-            end
-            else if((tlv_type_reg == 8'd3) && (state == STATE_VALUE))
-            begin
-                state_mode <= STATE_ENCAP_CHECKDATABACK;            
-            end
+                        if((tlv_type_reg == 8'd1)&& (state == STATE_VALUE))
+                        begin
+                            state_mode <= STATE_SET_PK;               
+                        end
+                        else if((tlv_type_reg == 8'd2) && (state == STATE_VALUE))
+                        begin
+                            state_mode <= STATE_SET_SEED;
+                        end
+                        else if((tlv_type_reg == 8'd3) && (state == STATE_VALUE))
+                        begin
+                            state_mode <= STATE_ENCAP_CHECKDATABACK;            
+                        end
         end
         STATE_SET_PK : begin
-            if(rx_done)
-            begin
-                data_index <= data_index + 1;
-                if(data_index == 0)
-                begin
-                    mem_data <= rx_data_out << 24;
-                    write_en_setpk <= 1'b0;                  
-                end
-                else
-                begin
-                    mem_data <= mem_data | (rx_data_out << 8*(3-data_index));
-                    if(data_index == 3)
-                    begin
-                        write_en_setpk <= 1'b1;
-                        ctr <= ctr + 1;
-                        if(ctr > 0)
+                        if(rx_done)
                         begin
-                            PK_addr <= PK_addr + 1;
+                            data_index <= data_index + 1;
+                            if(data_index == 0)
+                            begin
+                                mem_data <= rx_data_out << 24;
+                                write_en_setpk <= 1'b0;                  
+                            end
+                            else
+                            begin
+                                mem_data <= mem_data | (rx_data_out << 8*(3-data_index));
+                                if(data_index == 3)
+                                begin
+                                    write_en_setpk <= 1'b1;
+                                    ctr <= ctr + 1;
+                                    if(ctr > 0)
+                                    begin
+                                        PK_addr <= PK_addr + 1;
+                                    end
+                                end           
+                            end
                         end
-                    end           
-                end
-            end
-            if(tlv_length_reg == 0)
-            begin
-                // data_set_pk = 1'b1;
-                state_mode <= STATE_STOP;
+                        if(tlv_length_reg == 0)
+                        begin
+                            // data_set_pk = 1'b1;
+                            state_mode <= STATE_STOP;
 
-            end
+                        end
         end
         STATE_SET_SEED : begin  
-            if(rx_done)
-            begin                
-                data_index <= data_index + 1;         
-                if(data_index == 0)
-                begin
-                    mem_data <= rx_data_out << 24;
-                    write_en_setseed <= 1'b0;
-                end
-                else
-                begin
-                    mem_data <= mem_data | (rx_data_out << 8*(3-data_index));
-                    if(data_index == 3)
-                    begin     
-                        write_en_setseed <= 1'b1;
-                        ctr <= ctr + 1;
-                        if(ctr > 0)
-                        begin
-                            addr_seed <= addr_seed + 1;   
+                        if(rx_done)
+                        begin                
+                            data_index <= data_index + 1;         
+                            if(data_index == 0)
+                            begin
+                                mem_data <= rx_data_out << 24;
+                                write_en_setseed <= 1'b0;
+                            end
+                            else
+                            begin
+                                mem_data <= mem_data | (rx_data_out << 8*(3-data_index));
+                                if(data_index == 3)
+                                begin     
+                                    write_en_setseed <= 1'b1;
+                                    ctr <= ctr + 1;
+                                    if(ctr > 0)
+                                    begin
+                                        addr_seed <= addr_seed + 1;   
+                                    end
+                                end
+                            end
                         end
-                    end
-                end
-            end
-            if(tlv_length_reg == 0)
-            begin
-                
-                // data_set_seed = 1'b1;
-                state_mode <= STATE_STOP;
-            end
+                        if(tlv_length_reg == 0)
+                        begin
+                            
+                            // data_set_seed = 1'b1;
+                            state_mode <= STATE_STOP;
+                        end
         end
         STATE_ENCAP_CHECKDATABACK : begin   
-            seed <= seed_from_ram;       
-            if (ctr < SIZE_TOTAL)
-            begin
-                ctr <= ctr + 1;
-                if (ctr >= START_SEED && ctr < STOP_SEED+1)
-                begin
-                    seed_valid <= 1'b1;
-                end
-                else
-                begin
-                    seed_valid <= 1'b0;
-                end
-                if (ctr >= START_PK && ctr < STOP_PK)
-                begin   
-                    if (ctr > START_PK)
-                        PK_addr <= PK_addr + 1; //start add the PK_add follow ctr
-                        //addr_PK <= PK_addr; // addr_pk will be assign the PK_addr to synchronous
-                end
-                else
-                begin
-                    PK_addr <= 0;
-                end
-                if(ctr >= START_C0 && ctr <= STOP_C0)
-                begin
-                    
-                    if(DUT.encryption_unit.encrypt_mem.address_1 > 0)
-                    begin          
-                        C0_addr <= C0_addr + 1;
-                        C0_data_buffer[C0_addr] <= C0_out;                 
-                    end
-                end
-                if(ctr >= 68035 && ctr <= 68051)
-                begin         
-                    if(ctr > START_C1 && DUT.hash_mem.wren_1 == 0)
-                    begin
-                        K_addr <= K_addr + 1;
-                        K_data_buffer[K_addr] <= K_out;   
-                    end
-                end
-                
-            end
-            else if ((ctr >= SIZE_TOTAL) && tlv_length_reg == 0)
-            begin
-                state_mode <= STATE_STOP;
-            end
+                        seed <= seed_from_ram;       
+                        if (ctr < SIZE_TOTAL)
+                        begin
+                            ctr <= ctr + 1;
+                            if (ctr >= START_SEED && ctr < STOP_SEED+1)
+                            begin
+                                seed_valid <= 1'b1;
+                            end
+                            else
+                            begin
+                                seed_valid <= 1'b0;
+                            end
+                            if (ctr >= START_PK && ctr < STOP_PK)
+                            begin   
+                                if (ctr > START_PK)
+                                    PK_addr <= PK_addr + 1; //start add the PK_add follow ctr
+                                    //addr_PK <= PK_addr; // addr_pk will be assign the PK_addr to synchronous
+                            end
+                            else
+                            begin
+                                PK_addr <= 0;
+                            end
+                            if(ctr >= START_C0 && ctr <= STOP_C0)
+                            begin
+                                
+                                if(DUT.encryption_unit.encrypt_mem.address_1 > 0)
+                                begin          
+                                    C0_addr <= C0_addr + 1;
+                                    C0_data_buffer[C0_addr] <= C0_out;                 
+                                end
+                            end
+                            if(ctr >= 68035 && ctr <= 68051)
+                            begin         
+                                if(ctr > START_C1 && DUT.hash_mem.wren_1 == 0)
+                                begin
+                                    K_addr <= K_addr + 1;
+                                    K_data_buffer[K_addr] <= K_out;   
+                                end
+                            end
+                            
+                        end
+                        else if ((ctr >= SIZE_TOTAL) && tlv_length_reg == 0)
+                        begin
+                            state_mode <= STATE_STOP;
+                        end
         end
         STATE_STOP : begin
-            if((rx_data_out != 8'b0) && (rx_done))
-            begin
-                state_mode <= STATE_START_MODE;
-            end
-            ctr <= 31'd0;
-            seed_valid <= 1'b0;
-            addr_seed <= 0;
-            PK_addr <= 0;
-            write_en_setpk <= 1'b0;
-            write_en_setseed <= 1'b0;
-            C0_addr <= 0;
-            C1_addr <= 0;            
+                    if((rx_data_out != 8'b0) && (rx_done))
+                    begin
+                        state_mode <= STATE_START_MODE;
+                    end
+                    ctr <= 31'd0;
+                    seed_valid <= 1'b0;
+                    addr_seed <= 0;
+                    PK_addr <= 0;
+                    write_en_setpk <= 1'b0;
+                    write_en_setseed <= 1'b0;
+                    C0_addr <= 0;
+                    C1_addr <= 0;            
         end
         default: tlv_value_reg <= 8'd0;
         endcase 
@@ -600,7 +610,7 @@ always @(posedge clk) begin
         tx_data_in <= tx_Data_Buffer[tx_index];
             if((data_set_seed == 1) || (data_set_pk == 1))
             begin
-                tx_Data_Buffer[0] <= 8'd1;
+                 tx_Data_Buffer[0] = 8'd1;
                 if(data_set_seed == 1)
                 begin
                     $display("%s Send Seed data completed", prefix);
@@ -616,30 +626,30 @@ always @(posedge clk) begin
     end
     if(done)
     begin
-        led7 <=1;
+        //led7 <=1;
         for(i = 0; i < (DATA_LENGTH_TIME/6); i= i +1)
         begin
-            tx_Data_Buffer[i] <= (((time_encap_start)/2) >> 8*i) & 8'hff; // /2           
+            tx_Data_Buffer[i] = (((time_encap_start)/2) >> 8*i) & 8'hff; // /2           
         end
         for(i = 8; i < (DATA_LENGTH_TIME/3); i = i +1)
         begin
-            tx_Data_Buffer[i] <= ((time_encapsulation) >> 8*(i-8)) & 8'hff;
+             tx_Data_Buffer[i] = ((time_encapsulation) >> 8*(i-8)) & 8'hff;
         end
         for(i = 16; i <(DATA_LENGTH_TIME/2); i = i +1)
         begin
-            tx_Data_Buffer[i] <= ((time_fixedweight_start/2) >> 8*(i-16)) & 8'hff;
+             tx_Data_Buffer[i] = ((time_fixedweight_start/2) >> 8*(i-16)) & 8'hff;
         end
         for(i = 24; i < (DATA_LENGTH_TIME-16); i = i+1)
         begin
-            tx_Data_Buffer[i] <= (time_fixedweight >> 8*(i-24)) & 8'hff;
+             tx_Data_Buffer[i] = (time_fixedweight >> 8*(i-24)) & 8'hff;
         end
         for(i = 32; i < (DATA_LENGTH_TIME - 8); i = i+1)
         begin
-            tx_Data_Buffer[i] <= ((time_encrypt_start/2) >> 8*(i-32)) & 8'hff;
+             tx_Data_Buffer[i] = ((time_encrypt_start/2) >> 8*(i-32)) & 8'hff;
         end
         for(i = 40; i < DATA_LENGTH_TIME; i=i+1)
         begin
-            tx_Data_Buffer[i] <= (time_encrypt >> 8*(i-40)) & 8'hff;
+             tx_Data_Buffer[i] = (time_encrypt >> 8*(i-40)) & 8'hff;
         end
         for(i = DATA_LENGTH_TIME; i < DATA_LENGTH_TIME + DATA_LENGTH_CIPHER0; i = i + 1) //Write to cipher_o file
         begin
@@ -648,7 +658,7 @@ always @(posedge clk) begin
                 j = j + 1;
             end
 
-            tx_Data_Buffer[i] <= (C0_data_buffer[j+1] >> 8*(i-(48 + 4*j)));
+             tx_Data_Buffer[i] = (C0_data_buffer[j+1] >> 8*(i-(48 + 4*j)));
             //test [(i-(144 + 4*j))] <= (DUT.encryption_unit.encrypt_mem.mem[j] >> 8);
         end
         for(i = (DATA_LENGTH_TIME + DATA_LENGTH_CIPHER0); i < (DATA_LENGTH_TIME + DATA_LENGTH_CIPHER0 + DATA_LENGTH_CIPHER1); i = i +1)
@@ -661,7 +671,7 @@ always @(posedge clk) begin
             begin
                 j = j + 1;
             end
-            tx_Data_Buffer[i] <= (DUT.C1_mem.mem[j] >> 8*(i-(144 + 4*j)));
+             tx_Data_Buffer[i] = (DUT.C1_mem.mem[j] >> 8*(i-(144 + 4*j)));
             //test [(i-(144 + 4*j))] = (DUT.C1_mem.mem[j] >> 8);
         end
         for(i = (DATA_LENGTH_TIME + DATA_LENGTH_CIPHER0 + DATA_LENGTH_CIPHER1); i < RAW_DATA_LENGTH; i = i +1)
@@ -674,7 +684,7 @@ always @(posedge clk) begin
             begin
                 j = j + 1;
             end
-            tx_Data_Buffer[i] <= (K_data_buffer[j] >> 8*(i-(176 + 4*j)));
+             tx_Data_Buffer[i] = (K_data_buffer[j] >> 8*(i-(176 + 4*j)));
         end 
     end
 end
@@ -688,42 +698,42 @@ always @(posedge clk ) begin
     begin
         case (state_tx) 
         STATE_TX_START : begin
-            if(((done) ||(data_set_seed == 1) || (data_set_pk == 1))) begin
-                state_tx <= STATE_TX_SEND;
-                tx_Send <= 1'b1;
-                if((data_set_seed == 1) || (data_set_pk == 1))
-                begin
-                    DATA_LENGTH_SEND = STOP_SEED;
-                end
-                else
-                begin
-                    DATA_LENGTH_SEND = DATA_LENGTH;
-                end
-            end
+                        if(((done) ||(data_set_seed == 1) || (data_set_pk == 1))) begin
+                            state_tx <= STATE_TX_SEND;
+                            tx_Send <= 1'b1;
+                            if((data_set_seed == 1) || (data_set_pk == 1))
+                            begin
+                                DATA_LENGTH_SEND = STOP_SEED;
+                            end
+                            else
+                            begin
+                                DATA_LENGTH_SEND = DATA_LENGTH;
+                            end
+                        end
         end
         STATE_TX_SEND : begin
-            if((tx_done)&&((tx_index == DATA_LENGTH_SEND)))
-            begin
-                tx_index <= 6'd0;
-                state_tx <= STATE_TX_STOP;
-            end
-            else
-            begin
-                if(tx_done)
-                begin
-                    tx_index <= tx_index + 1; 
-                end
-            //tx_data_in <= tx_Data_Buffer[tx_index];
-            end
+                        if((tx_done)&&((tx_index == DATA_LENGTH_SEND)))
+                        begin
+                            tx_index <= 6'd0;
+                            state_tx <= STATE_TX_STOP;
+                        end
+                        else
+                        begin
+                            if(tx_done)
+                            begin
+                                tx_index <= tx_index + 1; 
+                            end
+                        //tx_data_in <= tx_Data_Buffer[tx_index];
+                        end
         end
         STATE_TX_STOP : begin
-            if((rx_data_out != 8'b0) && (rx_done))
-            begin
-                state_tx <= STATE_TX_START;
-            end
-            tx_Send <= 1'b0;
+                        if((rx_data_out != 8'b0) && (rx_done))
+                        begin
+                            state_tx <= STATE_TX_START;
+                        end
+                        tx_Send <= 1'b0;
         end
-            default: state_tx <= STATE_TX_START;
+                        default: state_tx <= STATE_TX_START;
         endcase   
     end
 end
@@ -733,14 +743,14 @@ begin
     f_cycles_profile = $fopen(`FILE_CYCLES_PROFILE,"w");
     $sformat(prefix, "[mceliece%0d%0d]", n, t);
 end
-// always @(posedge DUT.done)
-// begin
-//     $writememb(`FILE_K_OUT, DUT.hash_mem.mem,0,7);
-//     $writememb(`FILE_CIPHER0_OUT, DUT.encryption_unit.encrypt_mem.mem);
-//     $writememb(`FILE_CIPHER1_OUT, DUT.C1_mem.mem);
-//     $writememb(`FILE_ERROR_OUT, DUT.error_vector_gen.onegen_instance.mem_dual_B.mem);
-//     $fflush();
-// end
+always @(posedge DUT.done)
+begin
+    $writememb(`FILE_K_OUT, DUT.hash_mem.mem,0,7);
+    $writememb(`FILE_CIPHER0_OUT, DUT.encryption_unit.encrypt_mem.mem);
+    $writememb(`FILE_CIPHER1_OUT, DUT.C1_mem.mem);
+    $writememb(`FILE_ERROR_OUT, DUT.error_vector_gen.onegen_instance.mem_dual_B.mem);
+    $fflush();
+end
 always @(posedge clk ) begin
     time_counter_start = time_counter_start + 1;
 end

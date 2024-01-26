@@ -398,69 +398,72 @@ begin
   
 end 
 
-always@(state or addr_0 or count_reg or start)
+always@(negedge clk)
 begin
-    case (state)
-      s_initialize: begin
-                     wren_0 <= 1'b1;
-                     wren_1 <= 1'b0;
-                     init <= 1'b1;
-                     rd_en <= 1'b0;
-                     reading_out <= 1'b1;
-                    end
-      
-                   
-      s_init_done: begin 
-                    wren_0 <= 1'b1;
-                    wren_1 <= 1'b0; 
-                    init <= 1'b0;
+    if(state || addr_0 || count_reg || start)
+    begin
+        case (state)
+        s_initialize: begin
+                        wren_0 <= 1'b1;
+                        wren_1 <= 1'b0;
+                        init <= 1'b1;
+                        rd_en <= 1'b0;
+                        reading_out <= 1'b1;
+                        end
+        
                     
-                   end  
-      
-      s_wait_start: begin
-                        wren_0 <= 1'b0;
-                        reading_out <= 1'b0;
-                        if (start) begin
-                            rd_en <= 1'b1;
+        s_init_done: begin 
+                        wren_0 <= 1'b1;
+                        wren_1 <= 1'b0; 
+                        init <= 1'b0;
+                        
+                    end  
+        
+        s_wait_start: begin
+                            wren_0 <= 1'b0;
+                            reading_out <= 1'b0;
+                            if (start) begin
+                                rd_en <= 1'b1;
+                            end
+                            else begin
+                                rd_en <= 1'b0;
+                            end
+                        end  
+                        
+        s_load_loc: begin
+                        rd_en <= 1'b1;
+                        wren_1 <= 1'b0;
+                    end 
+                    
+        s_stall_for_ram: begin
+                                wren_1 <= 1'b1;
+                        end
+
+                        
+        s_wait_last_2: begin
+                        rd_en <= 1'b0;
+                        if (count_reg < TAU+1) begin
+                            wren_1 <= 1'b1;
                         end
                         else begin
-                            rd_en <= 1'b0;
+                            wren_1 <= 1'b0;
                         end
-                    end  
-                    
-      s_load_loc: begin
-                    rd_en <= 1'b1;
-                    wren_1 <= 1'b0;
-                  end 
-                  
-      s_stall_for_ram: begin
-                            wren_1 <= 1'b1;
-                       end
+                    end 
 
-                      
-      s_wait_last_2: begin
-                    rd_en <= 1'b0;
-                    if (count_reg < TAU+1) begin
-                        wren_1 <= 1'b1;
-                    end
-                    else begin
+        s_read_out: begin
                         wren_1 <= 1'b0;
-                    end
-                  end 
-
-      s_read_out: begin
-                    wren_1 <= 1'b0;
-                    reading_out <= 1'b1;
-                  end     
-                  
-      s_done:      begin 
-                    wren_0 <= 1'b0; 
-                    wren_1 <= 1'b0;
-                    reading_out <= 1'b0;
-                   end     
-   
-      default: wren_0 <= 1'b0;
-    endcase
-
-end     
+                        reading_out <= 1'b1;
+                    end     
+                    
+        s_done:      begin 
+                        wren_0 <= 1'b0; 
+                        wren_1 <= 1'b0;
+                        reading_out <= 1'b0;
+                    end     
+    
+        default: wren_0 <= 1'b0;
+        endcase
+        
+    end
+end
 endmodule

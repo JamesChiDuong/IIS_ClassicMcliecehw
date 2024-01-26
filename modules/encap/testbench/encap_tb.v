@@ -20,7 +20,7 @@
  *
 */
 
-//`timescale 1ns/1ps
+`timescale 1ns/1ps
 
 module encap_tb
        #(
@@ -45,22 +45,58 @@ module encap_tb
            parameter k = n-m*t,
            parameter l = m*t,
 
-           parameter col_width = 32,
-           parameter e_width = 32, // error_width
+           parameter col_width = 64,
+           parameter e_width = 64, // error_width
 
            parameter n_elim = col_width*((n+col_width-1)/col_width),
            parameter l_n_elim = l*n_elim,
            parameter KEY_START_ADDR = l*(l/col_width),
            parameter BAUD_RATE = 115200,
-           parameter CLOCK_FPGA = 1
+           parameter CLOCK_FPGA = 100000000
        )(
            input wire 	clk,
            input wire 	rst,
+           output wire done,
+
            output lcd1,
            output lcd2,
-           output wire done
+           output lcd3,
+           output lcd4,
+           output lcd5,
+           output lcd6,
+           output lcd7,
+           output lcd8
        );
 
+
+//DEBUG
+reg led1;
+reg led2;
+reg led3;
+reg led4;
+reg led5;
+reg led6;
+reg led7;
+reg led8;
+
+assign lcd1 = led1;
+assign lcd2 = led2;
+assign lcd3 = led3;
+assign lcd4 = led4;
+assign lcd5 = led5;
+assign lcd6 = led6;
+assign lcd7 = led7;
+assign lcd8 = led8;
+initial begin
+    led1 = 0;
+    led2 = 0;
+    led3 = 0;
+    led4 = 0;
+    led5 = 0;
+    led6 = 0;
+    led7 = 0;
+    led8 = 0;
+end
 // input
 reg seed_valid = 1'b0;
 reg K_col_valid = 1'b0;
@@ -102,11 +138,6 @@ wire dout_valid_shake;
 wire [31:0]dout_shake;
 wire force_done_shake;
 
-reg led1;
-reg led2;
-
-assign lcd1 = led1;
-assign lcd2 = led2;
 keccak_top shake_instance
            (
                .rst(rst),
@@ -156,26 +187,9 @@ encap_seq_gen # (.parameter_set(parameter_set), .m(m), .t(t), .n(n), .e_width(e_
 
          );
 
-mem_single #(.WIDTH(col_width), .DEPTH(((l_n_elim+(col_width-l_n_elim%col_width)%col_width)/col_width)), .FILE(`FILE_PK_SLICED) ) publickey
-           (
-               .clock(clk),
-               .data(0),
-               .address(addr_PK),
-               .wr_en(0),
-               .q(PK_col)
-           );
-
-mem_single #(.WIDTH(32), .DEPTH(16), .FILE(`FILE_MEM_SEED) ) mem_init_seed
-           (
-               .clock(clk),
-               .data(0),
-               .address(addr_seed),
-               .wr_en(0),
-               .q(seed_from_ram)
-           );
 initial
 begin
-    $dumpfile(`FILE_VCD);
+    $dumpfile("encap_tb_test.vcd");
     $dumpvars();
 end
 
@@ -183,23 +197,7 @@ end
 reg [31:0] ctr = 0;
 //reg loading_done = 0;
 
-// parameter SIZE_SEED = 16;
-// parameter SIZE_PK = k*l/col_width;
-// parameter SIZE_C0 = (l + (32-l%32)%32)/32;
-// parameter SIZE_C1 = 8;
-// parameter SIZE_K = 8;
-
-// parameter START_SEED = 0;
-// parameter STOP_SEED = START_SEED + SIZE_SEED;
-// parameter START_PK = STOP_SEED + 1;
-// parameter STOP_PK = START_PK + SIZE_PK;
-// // integer START_C0 = STOP_PK;
-// // integer STOP_C0 = START_C0 + SIZE_C0;
-// // integer START_C1 = STOP_C0;
-// // integer STOP_C1 = START_C1 + SIZE_C1;
-
-// integer SIZE_TOTAL = STOP_SEED;
-
+//reg loading_done = 0;
 parameter SIZE_SEED = 16;
 parameter SIZE_PK = k*l/col_width;
 parameter SIZE_C0 = (l + (32-l%32)%32)/32;
@@ -217,10 +215,6 @@ parameter STOP_C1 = START_C1 + SIZE_C1 + 1;
 // integer START_K = 
 parameter SIZE_TOTAL = 17 + k*l/col_width + 1855 - 16 + STOP_C0 + STOP_C1 + 5;
 
-initial begin
-    led1 <= 0;
-    led2 <= 0;
-end
 always @(posedge clk)
 begin
     if (rst)
@@ -253,13 +247,10 @@ begin
             begin
                 ctr <= ctr + 1;
             end
-            seed <= seed_from_ram;
-
-            // loading seed
+                // loading seed
             if (ctr >= START_SEED && ctr < STOP_SEED)
             begin
                 seed_valid <= 1'b1;
-                led2 <= 1;
                 if (ctr > START_SEED)
                     addr_seed <= addr_seed + 1;
             end
@@ -273,68 +264,63 @@ end
 
 integer i;
 
-// always @(posedge clk)
-// begin
-//     seed <= seed_from_ram;
+always @(posedge clk)
+begin
+    seed <= seed_from_ram;
 
-//     // loading seed
-//     if (ctr >= START_SEED && ctr < STOP_SEED)
-//     begin
-//         seed_valid <= 1'b1;
-//         led2 <= 1;
-//         if (ctr > START_SEED)
-//             addr_seed <= addr_seed + 1;
-//     end
-//     else
-//     begin
-//         addr_seed <= addr_seed;
-//         seed_valid <= 1'b0;
-//     end
-//     // // loading PK
-//     // if (ctr >= START_PK && ctr < STOP_PK)
-//     // begin
-//     //     K_col_valid <= 1'b1;
-//     //    if (ctr > START_PK)
-//     //      addr_PK <= addr_PK + 1;
-//     // end
-//     // else
-//     // begin
-//     //     addr_PK <= addr_PK;
-//     // end
-//     // // reading C0
-//     // if (ctr > START_C0 && ctr <= STOP_C0)
-//     //   begin
-//     //      addr_C0 <= addr_C0 + 1;
-//     //      rd_C0 <= 1'b1;
-//     //   end
-//     // else
-//     //   begin
-//     //      addr_C0 <= addr_C0;
-//     //      rd_C0 <= 1'b0;
-//     //   end
-//     // // reading C1
-//     //  if (ctr > START_C1 && ctr <= STOP_C1)
-//     //  begin
-//     //      addr_C1 <= addr_C1 + 1;
-//     //      rd_C1 <= 1'b1;
-//     //  end
-//     //  else
-//     //  begin
-//     //      addr_C1 <= addr_C1;
-//     //      rd_C1 <= 1'b0;
-//     //  end
-//     //  // reading K
-//     //  if (ctr > START_K && ctr < STOP_POLY)
-//     //  begin
-//     //      addr_K <= addr_K + 1;
-//     //      rd_K <= 1'b1;
-//     //  end
-//     //  else
-//     //  begin
-//     //      addr_K <= addr_K;
-//     //      rd_K <= 1'b0;
-//     //  end
-// end
+    if(seed_valid)
+    begin
+        led6 <= 1;
+    end
+    if(done)
+    begin
+        led2 <= 1;
+    end
+    // // loading PK
+    // if (ctr >= START_PK && ctr < STOP_PK)
+    // begin
+    //     K_col_valid <= 1'b1;
+    //    if (ctr > START_PK)
+    //      addr_PK <= addr_PK + 1;
+    // end
+    // else
+    // begin
+    //     addr_PK <= addr_PK;
+    // end
+    // // reading C0
+    // if (ctr > START_C0 && ctr <= STOP_C0)
+    //   begin
+    //      addr_C0 <= addr_C0 + 1;
+    //      rd_C0 <= 1'b1;
+    //   end
+    // else
+    //   begin
+    //      addr_C0 <= addr_C0;
+    //      rd_C0 <= 1'b0;
+    //   end
+    // // reading C1
+    //  if (ctr > START_C1 && ctr <= STOP_C1)
+    //  begin
+    //      addr_C1 <= addr_C1 + 1;
+    //      rd_C1 <= 1'b1;
+    //  end
+    //  else
+    //  begin
+    //      addr_C1 <= addr_C1;
+    //      rd_C1 <= 1'b0;
+    //  end
+    //  // reading K
+    //  if (ctr > START_K && ctr < STOP_POLY)
+    //  begin
+    //      addr_K <= addr_K + 1;
+    //      rd_K <= 1'b1;
+    //  end
+    //  else
+    //  begin
+    //      addr_K <= addr_K;
+    //      rd_K <= 1'b0;
+    //  end
+end
 
 // always @(posedge DUT.done)
 // begin
@@ -360,7 +346,6 @@ end
 
 // always @(posedge DUT.done)
 // begin
-
 //     $writememb(`FILE_K_OUT, DUT.hash_mem.mem,0,7);
 //     $writememb(`FILE_CIPHER0_OUT, DUT.encryption_unit.encrypt_mem.mem);
 //     $writememb(`FILE_CIPHER1_OUT, DUT.C1_mem.mem);
@@ -370,6 +355,7 @@ end
 
 always @(posedge seed_valid)
 begin
+    led1 <= 1;
     time_encap_start = $time;
     $display("%s Start Encapsulation. (%0d cycles)", prefix, time_encap_start/2);
     $fflush();
@@ -377,15 +363,17 @@ end
 
 always @(posedge DUT.done)
 begin
-    led1 <= 1;
+
     time_encapsulation = ($time-time_encap_start)/2;
     $display("%s Encapsulation finished. (%0d cycles)", prefix, time_encapsulation);
     $fwrite(f_cycles_profile, "encapsulation %0d %0d\n", time_encap_start/2, time_encapsulation);
     $fflush();
 end
 
-always @(negedge rst)
+always @(posedge seed_valid)
 begin
+    led3 <= 1;
+
     time_fixedweight_start = $time;
     $display("%s Start FixedWeight. (%0d cycles)", prefix, time_fixedweight_start/2);
     $fflush();
@@ -393,6 +381,7 @@ end
 
 always @(posedge DUT.done_error)
 begin
+    led4 <= 1;
     time_fixedweight = ($time-time_fixedweight_start)/2;
     $display("%s FixedWeight finished. (%0d cycles)", prefix, time_fixedweight);
     $fwrite(f_cycles_profile, "fixedweight %0d %0d\n", time_fixedweight_start/2, time_fixedweight);
@@ -408,11 +397,37 @@ end
 
 always @(posedge DUT.done_encrypt)
 begin
+    led5 <= 1;
     time_encrypt = ($time-time_encrypt_start)/2;
     $display("%s Encode finished. (%0d cycles)", prefix, time_encrypt);
     $fwrite(f_cycles_profile, "encode %0d %0d\n", time_encrypt_start/2, time_encrypt);
     $fflush();
 end
 
+// mem_single #(.WIDTH(col_width), .DEPTH(((l_n_elim+(col_width-l_n_elim%col_width)%col_width)/col_width)), .FILE(`FILE_PK_SLICED) ) publickey
+//            (
+//                .clock(clk),
+//                .data(0),
+//                .address(addr_PK),
+//                .wr_en(0),
+//                .q(PK_col)
+//            );
+mem_single #(.WIDTH(col_width), .DEPTH(16), .FILE(`FILE_PK_SLICED) ) publickey
+           (
+               .clock(clk),
+               .data(0),
+               .address(addr_PK),
+               .wr_en(0),
+               .q(PK_col)
+           );
+
+mem_single #(.WIDTH(32), .DEPTH(16), .FILE(`FILE_MEM_SEED) ) mem_init_seed
+           (
+               .clock(clk),
+               .data(0),
+               .address(addr_seed),
+               .wr_en(0),
+               .q(seed_from_ram)
+           );
 
 endmodule
