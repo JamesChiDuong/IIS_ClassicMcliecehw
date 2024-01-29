@@ -16,15 +16,15 @@ include $(TOOLS_FILE)
 undefine NO_CHECK
 
 NO_SUB_INCLUDES = True
-
+export TOPMODULES
 XILINX_MODELS_FILE := $(ROOT_PATH)/modules/FPGA/Xilinx/models.mk
 include $(XILINX_MODELS_FILE)
 
 # Source code directory for the parametrizable modules
-MODULES_DIR 	:= $(ROOT_PATH)/modules
+MODULES_DIR 	:= $(ROOT_PATH)/modules/$(TOPMODULES)
 
 
-export TOPMODULES
+
 # Define individual targets for the single steps.
 SIM := $(addsuffix -sim,$(TOPMODULES))
 
@@ -56,9 +56,8 @@ sim: $(SIM)
 
 .PHONY: $(TARGETS)
 $(TARGETS):
-	$(MAKE) -C $(ROOT_PATH)/host/kat gen-kat -j$(NPROC) KAT_DIR=$(KAT_DIR) PAR_SETS=$(PAR_MODULE)
 	$(MAKE) -C $(MODULES_DIR)\
-		-f modules.mk $(lastword $(subst -, ,$@)) \
+		-f module.mk $(lastword $(subst -, ,$@)) \
 		-j$(NPROC) \
 		BUILD_DIR=$(SIMU_DIR) \
 		PAR_SETS="$(PAR_SETS)" \
@@ -70,7 +69,7 @@ $(TARGETS):
 	$(MAKE) -C $(SIMU_DIR)
 
 clean_simu:
-	rm -rf $(BUILD_PATH)
+	rm -rf $(BUILD_PATH)/
 clean:
 	rm -rf $(BUILD_PATH)
 	rm -rf $(ROOT_PATH)/host/kat/kat_generate

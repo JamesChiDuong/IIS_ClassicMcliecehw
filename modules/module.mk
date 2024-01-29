@@ -64,6 +64,7 @@ SLICED_PUBKEY_COLUMN_WIDTHS ?= 32
 # Export ROOT_PATH from FPGA.mk
 include platform/rtl/rtl.mk
 include modules/encap/modules.mk
+include modules/decap/decryption/module.mk
 include $(COMMON_SRC_PATH)/modules.mk
 
 
@@ -73,7 +74,14 @@ ADDITIONAL_MODULE ?= rearrange_vector
 #-----Define SUBMODULES------------#
 #*****Define UART SUB_MODULES******#
 UART_SUBMODULES := BAUD_RATE_GENERATOR RECEIVER TRANSMITTER
+
+ifeq ($(TOPMODULES),encap)
 SUBMODULES = ENCRYPTION FIXED_WEIGHT SHAKE256 MEMORY_SINGLE MEMORY_DUAL LOG2
+endif
+ifeq ($(TOPMODULES),decap)
+SUBMODULES = DECRYPTION SHAKE256 MEMORY_SINGLE MEMORY_DUAL FIELD_ORDERING
+endif
+
 
 MODULESTOP_SUBMODULES = $(UART_SUBMODULES) + $(SUBMODULES)
 # List of the required submodules

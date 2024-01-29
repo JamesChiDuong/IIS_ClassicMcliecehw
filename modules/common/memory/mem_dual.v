@@ -24,7 +24,7 @@ module mem_dual
   output reg  [WIDTH-1:0]     q_1
 );
 
-  (* ram_style = "block" *) reg [WIDTH-1:0] mem [0:DEPTH-1] /* synthesis ramstyle = "M20K" */;
+  reg [WIDTH-1:0] mem [0:DEPTH-1] /* synthesis ramstyle = "M20K" */;
 
   integer file;
   integer scan;

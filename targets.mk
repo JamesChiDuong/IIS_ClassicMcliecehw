@@ -3,8 +3,8 @@ _TARGETS :=
 
 TARGET ?=
 
-export TOPMODULES := encap
-export TOPMODULES_SIMU := encap_tb
+export TOPMODULES := decap
+export TOPMODULES_SIMU := decap_tb.v
 
 export CLOCK_FPGA := 100000000
 
