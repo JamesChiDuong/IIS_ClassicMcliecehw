@@ -56,7 +56,10 @@ module decap_with_support_tb
            parameter L = M*T,
            parameter K_H_elim = N_H*((K+N_H-1)/N_H),
            parameter K_R_elim = N_R*((T+1+N_R-1)/N_R),
-           parameter PG_WIDTH = M*(T+1)
+           parameter PG_WIDTH = M*(T+1),
+
+           parameter BAUD_RATE = 115200,
+           parameter CLOCK_FPGA = 100000000
 
 
        )

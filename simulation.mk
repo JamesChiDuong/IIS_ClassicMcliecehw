@@ -8,7 +8,7 @@ KAT_DIR = $(ROOT_PATH)/host/kat/kat_generate
 # Include the parameter set definitions
 PAR_FILE := $(ROOT_PATH)/modules/FPGA/parameters.mk
 include $(PAR_FILE)
-
+include targets.mk
 # Include toolset
 TOOLS_FILE := $(ROOT_PATH)/modules/FPGA/tools.mk
 NO_CHECK := TRUE
@@ -56,6 +56,12 @@ sim: $(SIM)
 
 .PHONY: $(TARGETS)
 $(TARGETS):
+	mkdir -p $(SIMU_DIR)/cpp
+	mkdir -p $(SIMU_DIR)/verilog
+	cp -r $(PLAT_DIR_SRC)/cpp/$(TOPMODULES) $(SIMU_DIR)/cpp
+	cp -r $(PLAT_DIR_SRC)/cpp/uartsim/*.cpp $(SIMU_DIR)/cpp/$(TOPMODULES)
+	cp -r $(PLAT_DIR_SRC)/cpp/uartsim/*.h $(SIMU_DIR)/cpp/$(TOPMODULES)
+	cp -r $(PLAT_DIR_SRC)/Makefile $(SIMU_DIR)
 	$(MAKE) -C $(MODULES_DIR)\
 		-f module.mk $(lastword $(subst -, ,$@)) \
 		-j$(NPROC) \
@@ -63,16 +69,13 @@ $(TARGETS):
 		PAR_SETS="$(PAR_SETS)" \
 		XILINX_MODELS="$(XILINX_MODELS)" \
 		SYSTEMIZER="$(SYSTEMIZER)"
-	cp -r $(PLAT_DIR_SRC)/cpp $(SIMU_DIR)
-	cp -r $(PLAT_DIR_SRC)/Makefile $(SIMU_DIR)
-	cp -r $(MODULE_DIR_SRC)/verilog.mk $(BUILD_MODULES_DIR_SRC)
-	$(MAKE) -C $(SIMU_DIR)
 
 clean_simu:
 	rm -rf $(BUILD_PATH)/
 clean:
 	rm -rf $(BUILD_PATH)
 	rm -rf $(ROOT_PATH)/host/kat/kat_generate
+	rm -rf $(ROOT_PATH)/modules/$(TOPMODULES)/*.vcd
 .PHONY: help
 
 help:

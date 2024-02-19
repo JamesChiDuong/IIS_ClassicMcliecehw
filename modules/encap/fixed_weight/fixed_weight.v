@@ -322,7 +322,7 @@ begin
                     wr_addr_ms <= wr_addr_ms+1;
                 end
                 
-            end
+            end 
         end
 
  
@@ -354,7 +354,7 @@ begin
     end 
 end 
 
-always@(*) 
+always@(state or dout_valid_sh_internal or count_reg  or done_onegen or ready_onegen or wr_addr_ms or bml_not or collision_ms or seed_valid or seed_addr or weight_count or l_seed_addr) 
 begin
     case (state)
      s_initialize: begin
@@ -365,7 +365,8 @@ begin
                     weight_counter_init <= 1'b1;
                     
                   end 
-               
+            
+      
       s_wait_start: begin
                         init <= 1'b0;
                         weight_counter_init <= 1'b0;
@@ -437,89 +438,7 @@ begin
     endcase
 
 end 
-// always@(posedge clk)
-// begin
-//      if(state ==  s_initialize)
-//      begin
-//         init <= 1'b1;
-    
-//         wr_en_ms <= 1'b0;
-//         start_onegen <= 1'b0;
-//         weight_counter_init <= 1'b1;
-//      end
-//     else if((state ==  s_wait_start))
-//      begin
-//         init <= 1'b0;
-//         weight_counter_init <= 1'b0;
-//         shake_out_capture_ready <= 1'b1;
-//         shift_shake_op <= 1'b0;
-//         if (dout_valid_sh_internal) begin
-//             if ((bml_not) && (wr_addr_ms < t)) begin
-//                 wr_en_ms <= 1'b1;
-//             end
-//             else begin
-//                 wr_en_ms <= 1'b0;
-//             end
-//         end
-//         else begin
-//             wr_en_ms <= 1'b0; 
-//         end
-//      end
-//     else if(state ==  s_load_shake ||  (bml_not) && (wr_addr_ms < t))
-//      begin
-//             if (count_reg == rb_chunks - 1) begin
-//                 shift_shake_op <= 1'b1;
-//             end
-//             else begin
-//                 shake_out_capture_ready <= 1'b0;
-//                 shift_shake_op <= 1'b1;
-//                 if ((bml_not) && (wr_addr_ms < t)) begin
-//                     wr_en_ms <= 1'b1;
-//                 end
-//                 else begin
-//                     wr_en_ms <= 1'b0;
-//                 end
-//             end
-//      end
-//     else if((state ==  s_stall_1) && (dout_valid_sh_internal))
-//      begin
-//         shake_out_capture_ready <= 1'b1;
-//         shift_shake_op <= 1'b0;
-        
-//         if (dout_valid_sh_internal) begin
-//             if ((bml_not) && (wr_addr_ms < t)) begin 
-//                     wr_en_ms <= 1'b1;
-//             end
-//             else begin
-//                     wr_en_ms <= 1'b0;
-//                 end
-//         end
-//         else begin
-//             wr_en_ms <= 1'b0; 
-//         end
-//      end
-//     else if((state ==  s_wait_sort))
-//      begin
-//         wr_en_ms <= 1'b0;
-//         if (weight_count == t && ready_onegen) begin 
-//             start_onegen <= 1'b1;
-            
-//         end 
-//      end
-//     else if((state ==  s_wait_onegen) && (l_seed_addr == SEED_SIZE/32))
-//      begin
-        
-//         start_onegen <= 1'b0;
-//         if (l_seed_addr == SEED_SIZE/32) begin
-//             shake_out_capture_ready <= 1'b0;
-//         end
-//      end
-//     //  else
-//     //  begin
-//     //     start_onegen <= 1'b0;
-//     //  end
-//      //end
-// end 
+
 //seed loading
 
 reg [2:0] state_loading = 0;
@@ -612,51 +531,48 @@ begin
     
 end
 
-always@(negedge clk) 
+always@(state_loading or dout_valid_sh_internal or seed_valid or seed_addr) 
 begin
-    //if(dout_valid_sh_internal == 0 || dout_valid_sh_internal == 1 || seed_valid == 0 || seed_valid == 1 )
-    //begin
     case (state_loading)
-        s_wait_new_load: begin 
-                            
-                            initial_loading <= 1'b1;
-                            if  (seed_valid == 1'b1) begin
-                                seed_wr_en <= 1'b1;
-                                init_mem_onegen <= 1'b1;
-                            end
-                            else begin
-                                seed_wr_en <= 1'b0;
-                                init_mem_onegen <= 1'b0;
-                            end
-                        end
-        
-        s_loading_seed: begin
-                            init_mem_onegen <= 1'b0;
-                            if  (seed_valid == 1'b1) begin
-                                seed_wr_en <= 1'b1;
-                            end
-                            else begin
-                                seed_wr_en <= 1'b0;
-                            end
-                        end
-        
-        s_wait_for_internal_seed: begin
-                                        initial_loading <= 1'b0;
-                                end
-        
-        s_stall_load: begin
-                            if  (dout_valid_sh_internal == 1'b1) begin
-                                seed_wr_en <= 1'b1;
-                            end
-                            else begin
-                                seed_wr_en <= 1'b0;
-                            end
-                        end
+     s_wait_new_load: begin 
                         
-        
-        default: seed_wr_en <= 1'b0;
-        endcase        
-   //end
+                        initial_loading <= 1'b1;
+                        if  (seed_valid == 1'b1) begin
+                            seed_wr_en <= 1'b1;
+                            init_mem_onegen <= 1'b1;
+                        end
+                        else begin
+                            seed_wr_en <= 1'b0;
+                            init_mem_onegen <= 1'b0;
+                        end
+                      end
+     
+     s_loading_seed: begin
+                        init_mem_onegen <= 1'b0;
+                        if  (seed_valid == 1'b1) begin
+                            seed_wr_en <= 1'b1;
+                        end
+                        else begin
+                            seed_wr_en <= 1'b0;
+                        end
+                      end
+     
+     s_wait_for_internal_seed: begin
+                                    initial_loading <= 1'b0;
+                               end
+     
+     s_stall_load: begin
+                        if  (dout_valid_sh_internal == 1'b1) begin
+                            seed_wr_en <= 1'b1;
+                        end
+                        else begin
+                            seed_wr_en <= 1'b0;
+                        end
+                      end
+                       
+     
+      default: seed_wr_en <= 1'b0;
+    endcase
 
 end 
 
@@ -779,56 +695,53 @@ begin
 end 
  
  
-always@(posedge clk) 
+always@(state_shake or count_steps or seed_addr or dout_valid_sh_internal) 
 begin
-    //if(state_shake || count_steps || seed_addr || dout_valid_sh_internal)
-    //begin
-        case (state_shake)
-        s_init_shake: begin
-                        seed_valid_internal <= 1'b0; 
-                        shake_input_type <= 2'b00;
-                        
-                    end 
-                
-        s_shake_out_w: begin
-                        if (count_steps == 0) begin
-                            shake_input_type <= 2'b01;
-                            seed_valid_internal <= 1'b1;
-                        end 
-                        else begin
-                            seed_valid_internal <= 1'b0; 
-                        end 
-                        end
-        
-        
-        s_shake_in_w: begin
-                        if (count_steps == 0) begin
-                            shake_input_type <= 2'b10;
-                            seed_valid_internal <= 1'b1;
-                        end 
-                        else begin
-                            seed_valid_internal <= 1'b0; 
-                        end 
-                        end
+    case (state_shake)
+     s_init_shake: begin
+                    seed_valid_internal <= 1'b0; 
+                    shake_input_type <= 2'b00;
+                    
+                  end 
+            
+     s_shake_out_w: begin
+                       if (count_steps == 0) begin
+                           shake_input_type <= 2'b01;
+                           seed_valid_internal <= 1'b1;
+                       end 
+                       else begin
+                           seed_valid_internal <= 1'b0; 
+                       end 
+                    end
+     
+     
+     s_shake_in_w: begin
+                       if (count_steps == 0) begin
+                           shake_input_type <= 2'b10;
+                           seed_valid_internal <= 1'b1;
+                       end 
+                       else begin
+                           seed_valid_internal <= 1'b0; 
+                       end 
+                    end
 
-        s_load_new_seed: begin
-                                shake_input_type <= 2'b00;
-                                if (seed_addr < SEED_SIZE/32) begin
-                                    seed_valid_internal <= 1'b1;
-                                end
-                                else begin
-                                    seed_valid_internal <= 1'b0;
-                                end
-                        end
-                        
-        s_stall_0: begin
+      s_load_new_seed: begin
+                            shake_input_type <= 2'b00;
+                            if (seed_addr < SEED_SIZE/32) begin
+                                seed_valid_internal <= 1'b1;
+                            end
+                            else begin
                                 seed_valid_internal <= 1'b0;
-                        end 
-        default: seed_valid_internal <= 1'b0;
-        
-        endcase
-   
-    //end
+                            end
+                       end
+                       
+      s_stall_0: begin
+                            seed_valid_internal <= 1'b0;
+                       end 
+      default: seed_valid_internal <= 1'b0;
+      
+    endcase
+
 end  
     
 endmodule

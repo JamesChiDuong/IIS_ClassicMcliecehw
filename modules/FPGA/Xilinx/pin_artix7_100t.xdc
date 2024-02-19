@@ -14,17 +14,17 @@ create_clock -period 10.000 -name sys_clk_pin -waveform {0.000 5.000} -add [get_
 #set_property -dict {PACKAGE_PIN A10 IOSTANDARD LVCMOS33} [get_ports {slideSwitch[3]}]
 
 # ## LEDs
-set_property -dict {PACKAGE_PIN H5 IOSTANDARD LVCMOS33} [get_ports {lcd1}]
+set_property -dict {PACKAGE_PIN H5 IOSTANDARD LVCMOS33} [get_ports {support_gen_done}]
 set_property -dict {PACKAGE_PIN J5 IOSTANDARD LVCMOS33} [get_ports {lcd2}]
 set_property -dict {PACKAGE_PIN T9 IOSTANDARD LVCMOS33} [get_ports {lcd3}]
 set_property -dict {PACKAGE_PIN T10 IOSTANDARD LVCMOS33} [get_ports {lcd4}]
 ## RGB LEDs
-set_property -dict { PACKAGE_PIN E1    IOSTANDARD LVCMOS33 } [get_ports { done }]; #IO_L18N_T2_35 Sch=led0_b
+set_property -dict { PACKAGE_PIN E1    IOSTANDARD LVCMOS33 } [get_ports { done_decap }]; #IO_L18N_T2_35 Sch=led0_b
 set_property -dict { PACKAGE_PIN F6    IOSTANDARD LVCMOS33 } [get_ports { lcd5 }]; #IO_L19N_T3_VREF_35 Sch=led0_g
 set_property -dict { PACKAGE_PIN J4    IOSTANDARD LVCMOS33 } [get_ports { lcd6 }]; #IO_L21P_T3_DQS_35 Sch=led1_g
 set_property -dict { PACKAGE_PIN G3    IOSTANDARD LVCMOS33 } [get_ports { lcd7 }]; #IO_L20N_T3_35 Sch=led1_r
 set_property -dict { PACKAGE_PIN H4    IOSTANDARD LVCMOS33 } [get_ports { lcd8 }]; #IO_L21N_T3_DQS_35 Sch=led2_b
-set_property -dict { PACKAGE_PIN J2    IOSTANDARD LVCMOS33 } [get_ports { done }]; #IO_L22N_T3_35 Sch=led2_g
+# set_property -dict { PACKAGE_PIN J2    IOSTANDARD LVCMOS33 } [get_ports { support_gen_done }]; #IO_L22N_T3_35 Sch=led2_g
 ## Buttons
 set_property -dict {PACKAGE_PIN D9 IOSTANDARD LVCMOS33} [get_ports {rst}]
 # set_property -dict {PACKAGE_PIN C9 IOSTANDARD LVCMOS33} [get_ports done]

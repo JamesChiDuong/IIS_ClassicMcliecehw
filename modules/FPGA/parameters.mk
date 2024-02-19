@@ -9,10 +9,10 @@ PARAMETERS =
 
 PAR_SETS = \
 	mceliece348864 \
-	mceliece460896 \
-	mceliece6688128 \
-	mceliece6960119 \
-	mceliece8192128
+	# mceliece460896 \
+	# mceliece6688128 \
+	# mceliece6960119 \
+	# mceliece8192128
 
 PAR_MODULE = \
 	mceliece348864

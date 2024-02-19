@@ -22,7 +22,7 @@
 
 `timescale 1ns/1ps
 
-module decap_with_support_tb
+module decap_sim
        #(
            parameter parameter_set =4,
 
@@ -56,10 +56,10 @@ module decap_with_support_tb
            parameter L = M*T,
            parameter K_H_elim = N_H*((K+N_H-1)/N_H),
            parameter K_R_elim = N_R*((T+1+N_R-1)/N_R),
-           parameter PG_WIDTH = M*(T+1)
+           parameter PG_WIDTH = M*(T+1),
 
            parameter BAUD_RATE = 115200,
-           parameter CLOCK_FPGA = 100000000,           
+           parameter CLOCK_FPGA = 100000000           
        )
        (
            input wire  clk,
@@ -108,7 +108,7 @@ reg host_perm_rd_en = 1'b0;
 reg [M-1:0] host_perm_rd_addr = 0;
 wire [M-1:0] perm_dout;
 wire perm_done;
-
+reg [63:0] time_counter_start;
 reg host_pk_rd_en = 0;
 reg [`CLOG2(L*K_H_elim/N_H)-1:0] host_pk_rd_addr = 0;
 wire [N_H-1:0] pk_dout;
@@ -137,9 +137,20 @@ wire [31:0]K_out;
 reg start_decap = 0;
 //wire done_decap;
 //assign done = done_decap;
-
+/* Clock cycle count profiling */
+integer f_cycles_profile;
+reg [63:0]    time_decap_start;
+reg [63:0]    time_field_ordering_start;
+reg [63:0] time_field_ordering;
+reg [63:0] time_decap_finish;
+reg [63:0] time_total;
+reg [63:0] time_require;
+reg [17*8-1:0] prefix;
 
 /************UART Protocol******************/
+parameter DATA_LENGTH_TIME = 24;
+parameter DATA_LENGTH_K = 32;
+parameter RAW_DATA_LENGTH = DATA_LENGTH_TIME + DATA_LENGTH_K;
 //Configure Baudrate
 localparam  DBITS = 8,                                                  // 8 bit Data
             SB_TICK = 16,                                               // Sb tick
@@ -169,6 +180,7 @@ wire rx_done;
 wire tick;
 wire [DBITS-1:0] rx_data_out;                           // Rx Data which receive from Rx module
 reg  [DBITS-1:0] tx_Data_Buffer[0:DATA_LENGTH];      // Initial tx Data Buffer
+reg  [DBITS-1:0] tx_Data_Buffer_1[0:DATA_LENGTH];      // Initial tx Data Buffer
 reg  [DBITS-1:0] tx_data_in;                            // Tx Data input to transfer
 reg  [8:0] tx_index;                                   // Tx module index
 integer STDERR = 32'h8000_0002;
@@ -187,7 +199,7 @@ reg [DBITS-1:0] tlv_value_reg;
 reg [(DBITS*3-1):0] data_tlv_length;
 
 reg [3:0] tlv_size_of_length_data;
-
+reg[40-1:0] DATA_LENGTH_SEND = 0;
 /************Memory loading procedure******************/
 // Memory loading procedure
 reg [31:0] ctr = 0;
@@ -202,22 +214,23 @@ reg [1:0] data_set_c1;
 reg [1:0] data_set_c0;
 reg [1:0] data_set_poly;
 //reg loading_done = 0;
+integer i;
+integer j;
+parameter SIZE_S = 8;
+parameter SIZE_C1 = 8;
+parameter SIZE_C0 = ((L + (32-L%32)%32)/32);
+parameter SIZE_POLY = ((PG_WIDTH + (32-PG_WIDTH%32)%32)/32);
 
-integer SIZE_S = 8;
-integer SIZE_C1 = 8;
-integer SIZE_C0 = ((L + (32-L%32)%32)/32);
-integer SIZE_POLY = ((PG_WIDTH + (32-PG_WIDTH%32)%32)/32);
+parameter START_S = 0;
+parameter STOP_S = SIZE_S + 2;
+parameter START_C1 = STOP_S + 1;
+parameter STOP_C1 = START_C1 + SIZE_C1;
+parameter START_C0 = STOP_C1;
+parameter STOP_C0 = START_C0 + SIZE_C0;
+parameter START_POLY = STOP_C0;
+parameter STOP_POLY = START_POLY + SIZE_POLY + 1;
 
-integer START_S = 0;
-integer STOP_S = SIZE_S + 2;
-integer START_C1 = STOP_S + 1;
-integer STOP_C1 = START_C1 + SIZE_C1;
-integer START_C0 = STOP_C1;
-integer STOP_C0 = START_C0 + SIZE_C0;
-integer START_POLY = STOP_C0;
-integer STOP_POLY = START_POLY + SIZE_POLY + 1;
-
-integer SIZE_TOTAL = STOP_POLY;//SIZE_S + SIZE_C0 + SIZE_C1 + SIZE_POLY;
+parameter SIZE_TOTAL = STOP_POLY;//SIZE_S + SIZE_C0 + SIZE_C1 + SIZE_POLY;
 
 baud_rate_generator #(.N(BR_BITS),.M(BR_LIMIT)) 
             BAUD_RATE_GEN   
@@ -289,13 +302,19 @@ decap_with_support # (.parameter_set(parameter_set), .M(M), .T(T), .N(N), .N_H(N
                        //    .pk_gen_fail(pk_gen_fail)
                    );
 
+Transmitter #(.DBITS(DBITS),.SB_TICK(SB_TICK)) 
+            UART_TX_UNIT
+            (
+                .clk(clk),
+                .reset(rst),
+                .tx_start(tx_Send),
+                .sample_tick(tick),
+                .data_in(tx_data_in),
+                .tx_done(tx_done),
+                .tx(o_uart_tx)
+            );
 // ------------------------------------------------------
 
-// initial
-// begin
-//     $dumpfile(`FILE_VCD);
-//     $dumpvars();
-// end
 
 always @(posedge clk ) begin
     if(rst)
@@ -309,8 +328,9 @@ always @(posedge clk ) begin
                         if(rx_data_out != 8'd0 && (rx_done))
                         begin
                             rx_current_state <= STATE_TYPE;
-                            // tlv_data_byte <= rx_data_out;
+                            tlv_data_byte <= rx_data_out;
                         end
+            end
             STATE_TYPE: begin
                         if(rx_done)
                         begin
@@ -362,7 +382,6 @@ always @(posedge clk ) begin
                             end
                         end
             end
-            end
         default: tlv_data_byte <= rx_data_out;
         endcase 
     end
@@ -372,7 +391,7 @@ end
 always @(posedge clk ) begin
     if(rst)
     begin
-        decap_current_state <= STATE_STOP;
+        decap_current_state <= STATE_START_MODE;
     end
     else
     begin
@@ -382,13 +401,21 @@ always @(posedge clk ) begin
                             begin
                                 decap_current_state <= STATE_DELTA;               
                             end
-                            if((tlv_type_reg == 8'd2)&& (rx_current_state == STATE_VALUE))
+                            else if((tlv_type_reg == 8'd2)&& (rx_current_state == STATE_VALUE))
                             begin
-                                decap_current_state <= STATE_DELTA;               
+                                decap_current_state <= STATE_C1;               
                             end
-                            if((tlv_type_reg == 8'd3)&& (rx_current_state == STATE_VALUE))
+                            else if((tlv_type_reg == 8'd3)&& (rx_current_state == STATE_VALUE))
                             begin
                                 decap_current_state <= STATE_C0;               
+                            end
+                            else if((tlv_type_reg == 8'd4)&& (rx_current_state == STATE_VALUE))
+                            begin
+                                decap_current_state <= STATE_POLY;               
+                            end
+                            else if((tlv_type_reg == 8'd5)&& (rx_current_state == STATE_VALUE))
+                            begin
+                                decap_current_state <= STATE_DECAP;              
                             end 
           end
           STATE_DELTA       : begin
@@ -416,7 +443,7 @@ always @(posedge clk ) begin
                             end
                             if(tlv_length_reg == 0)
                             begin
-                                decap_current_state <= STATE_STOP
+                                decap_current_state <= STATE_STOP;
                             end
           end
           STATE_C1          : begin
@@ -444,7 +471,7 @@ always @(posedge clk ) begin
                             end
                             if(tlv_length_reg == 0)
                             begin
-                                decap_current_state <= STATE_STOP
+                                decap_current_state <= STATE_STOP;
                             end
           end
           STATE_C0          : begin
@@ -472,7 +499,7 @@ always @(posedge clk ) begin
                             end
                             if(tlv_length_reg == 0)
                             begin
-                                decap_current_state <= STATE_STOP
+                                decap_current_state <= STATE_STOP;
                             end
           end
           STATE_POLY        : begin
@@ -500,26 +527,96 @@ always @(posedge clk ) begin
                             end
                             if(tlv_length_reg == 0)
                             begin
-                                decap_current_state <= STATE_STOP
+                                decap_current_state <= STATE_STOP;
                             end
           end
+          STATE_DECAP:      begin
+                            delta <= seed_from_ram;
+                            start_decap <= 1'b0;
+                            if(ctr >= SIZE_TOTAL+1 || ctr == STOP_S && support_gen_done == 1'b0)
+                            begin
+                                ctr <= ctr;
+                                if(ctr >= SIZE_TOTAL+1 && tlv_length_reg == 0)
+                                     decap_current_state <= STATE_STOP;
+                            end
+                            else
+                            begin
+                                if (ctr < SIZE_TOTAL+1)
+                                begin
+                                    ctr <= ctr + 1;
+                                    if (ctr >= START_S && ctr < STOP_S)
+                                    begin
+                                        addr_s <= addr_s + 1;
+                                        if (ctr > START_S)
+                                            s_valid <= 1'b1;
+                                    end
+                                    else
+                                    begin
+                                        addr_s <= addr_s;
+                                        s_valid <= 1'b0;
+                                    end
+                                    if (ctr > START_C1 && ctr <= STOP_C1)
+                                    begin
+                                        addr_C1 <= addr_C1 + 1;
+                                        C1_valid <= 1'b1;
+                                    end
+                                    else
+                                    begin
+                                        addr_C1 <= addr_C1;
+                                        C1_valid <= 1'b0;
+                                    end
+                                    if(ctr > START_C0 && ctr <= STOP_C0)
+                                    begin
+                                        addr_C0 <= addr_C0 + 1;
+                                        C0_valid <= 1'b1;
+                                    end
+                                    else
+                                    begin
+                                        addr_C0 <= addr_C0;
+                                        C0_valid <= 1'b0; 
+                                    end
+                                    if (ctr > START_POLY && ctr < STOP_POLY)
+                                    begin
+                                        addr_pg <= addr_pg + 1;
+                                        poly_g_valid <= 1'b1;
+                                    end
+                                    else
+                                    begin
+                                        addr_pg <= addr_pg;
+                                        poly_g_valid <= 1'b0;
+                                    end
+                                        // start decapsulation
+                                    if (ctr == SIZE_TOTAL)
+                                    begin
+                                        start_decap <= 1'b1;
+                                    end
+                                    // if(ctr >= 68035 && ctr <= 68051)
+                                    // begin         
+                                    //     if(ctr > START_C1 && DUT.hash_mem.wren_1 == 0)
+                                    //     begin
+                                    //         K_addr <= K_addr + 1;
+                                    //         K_data_buffer[K_addr] <= K_out;   
+                                    //     end
+                                    // end             
+                                end                                              
+                            end             
+          end   
           STATE_STOP        : begin
                             if((rx_data_out != 8'b0) && (rx_done))
                             begin
                                 decap_current_state <= STATE_START_MODE;
                             end
                             ctr <= 31'd0;
-                            // seed_valid <= 1'b0;
-                            addr_seed <= 0;
-                            PK_addr <= 0;
+                            addr_s <= 3'd0;
+                            addr_C1 <= 3'd0;
+                            addr_C0 <= 5'd0;
+                            addr_pg <= 5'd0;
                             write_en_set_delta <= 1'b0;
                             write_en_set_poly <= 1'b0;
                             write_en_set_c1 <= 1'd0;
-                            write_en_set_c0 <= 1'd0;
-                            // C0_addr <= 0;
-                            // C1_addr <= 0;                
+                            write_en_set_c0 <= 1'd0;           
           end
-            default: 
+            default: tlv_value_reg <= 8'd0;
         endcase
     end
 end
@@ -558,85 +655,57 @@ always @(posedge clk) begin
     if(tx_current_state == STATE_TX_SEND)
     begin
         tx_data_in <= tx_Data_Buffer[tx_index];
-            if((data_set_seed == 1) || (data_set_pk == 1))
+            if((data_set_c0 == 1) || (data_set_c1 == 1) || (data_set_delta == 1) || (data_set_poly == 1))
             begin
                 tx_Data_Buffer[0] <= 8'd1;
-                if(data_set_seed == 1)
+                if(data_set_c0 == 1)
                 begin
-                    $display("%s Send Seed data completed", prefix);
-                    data_set_seed = 1'b0;
+                    $display("%s Send C0 data completed", prefix);
+                    data_set_c0 = 1'b0;
                 end
-                else
+                else if (data_set_c1 == 1)
                 begin
-                    $display("%s Send Public key data completed", prefix);
-                    data_set_pk = 1'b0;
+                    $display("%s Send C1 data completed", prefix);
+                    data_set_c1 = 1'b0;
                   //  led7 <= 1;
+                end
+                else if (data_set_delta == 1)
+                begin
+                    $display("%s Send Delta data completed", prefix);
+                    data_set_delta = 0;
+                end
+                else if (data_set_poly == 1)
+                begin
+                    $display("%s Send Poly data completed", prefix);
+                    data_set_poly = 0;
                 end
             end        
     end
-    // if(done)
-    // begin
-    //     //led7 <=1;
-    //     for(i = 0; i < (DATA_LENGTH_TIME/6); i= i +1)
-    //     begin
-    //         assign tx_Data_Buffer[i] <= (((time_encap_start)/2) >> 8*i) & 8'hff; // /2           
-    //     end
-    //     for(i = 8; i < (DATA_LENGTH_TIME/3); i = i +1)
-    //     begin
-    //         assign tx_Data_Buffer[i] <= ((time_encapsulation) >> 8*(i-8)) & 8'hff;
-    //     end
-    //     for(i = 16; i <(DATA_LENGTH_TIME/2); i = i +1)
-    //     begin
-    //         assign tx_Data_Buffer[i] <= ((time_fixedweight_start/2) >> 8*(i-16)) & 8'hff;
-    //     end
-    //     for(i = 24; i < (DATA_LENGTH_TIME-16); i = i+1)
-    //     begin
-    //         assign tx_Data_Buffer[i] <= (time_fixedweight >> 8*(i-24)) & 8'hff;
-    //     end
-    //     for(i = 32; i < (DATA_LENGTH_TIME - 8); i = i+1)
-    //     begin
-    //         assign tx_Data_Buffer[i] <= ((time_encrypt_start/2) >> 8*(i-32)) & 8'hff;
-    //     end
-    //     for(i = 40; i < DATA_LENGTH_TIME; i=i+1)
-    //     begin
-    //         assign tx_Data_Buffer[i] <= (time_encrypt >> 8*(i-40)) & 8'hff;
-    //     end
-    //     for(i = DATA_LENGTH_TIME; i < DATA_LENGTH_TIME + DATA_LENGTH_CIPHER0; i = i + 1) //Write to cipher_o file
-    //     begin
-    //         if(i - DATA_LENGTH_TIME == 4*(j+1))
-    //         begin
-    //             j = j + 1;
-    //         end
-
-    //         assign tx_Data_Buffer[i] <= (C0_data_buffer[j+1] >> 8*(i-(48 + 4*j)));
-    //         //test [(i-(144 + 4*j))] <= (DUT.encryption_unit.encrypt_mem.mem[j] >> 8);
-    //     end
-    //     for(i = (DATA_LENGTH_TIME + DATA_LENGTH_CIPHER0); i < (DATA_LENGTH_TIME + DATA_LENGTH_CIPHER0 + DATA_LENGTH_CIPHER1); i = i +1)
-    //     begin
-    //         if(i == (DATA_LENGTH_TIME + DATA_LENGTH_CIPHER0))
-    //         begin
-    //             j = 0;
-    //         end
-    //         if(i - (DATA_LENGTH_TIME + DATA_LENGTH_CIPHER0) == 4*(j+1))
-    //         begin
-    //             j = j + 1;
-    //         end
-    //         assign tx_Data_Buffer[i] <= (DUT.C1_mem.mem[j] >> 8*(i-(144 + 4*j)));
-    //         //test [(i-(144 + 4*j))] = (DUT.C1_mem.mem[j] >> 8);
-    //     end
-    //     for(i = (DATA_LENGTH_TIME + DATA_LENGTH_CIPHER0 + DATA_LENGTH_CIPHER1); i < RAW_DATA_LENGTH; i = i +1)
-    //     begin
-    //         if(i == (DATA_LENGTH_TIME + DATA_LENGTH_CIPHER0 + DATA_LENGTH_CIPHER1))
-    //         begin
-    //             j = 0;
-    //         end
-    //         if(i - (DATA_LENGTH_TIME + DATA_LENGTH_CIPHER0 + DATA_LENGTH_CIPHER1) == 4*(j+1))
-    //         begin
-    //             j = j + 1;
-    //         end
-    //         assign tx_Data_Buffer[i] <= (K_data_buffer[j] >> 8*(i-(176 + 4*j)));
-    //     end 
-    // end
+    if(done_decap)
+    begin
+        //led7 <=1;
+        for(i = 0; i < (DATA_LENGTH_TIME/3); i= i +1) // FieldOrdering finished.
+        begin
+            tx_Data_Buffer[i] = (((time_field_ordering)) >> 8*i) & 8'hff; // /2           
+        end
+        for(i = 8; i < (DATA_LENGTH_TIME-8); i = i +1) // Decapsulation finished
+        begin
+             tx_Data_Buffer[i] = (time_decap_finish >> 8*(i-8)) & 8'hff;
+        end
+        for(i = 16; i <(DATA_LENGTH_TIME); i = i +1) // Tolal time
+        begin
+             tx_Data_Buffer[i] = (time_require >> 8*(i-16)) & 8'hff;
+        end
+        // for(i = DATA_LENGTH_TIME; i < DATA_LENGTH_TIME + DATA_LENGTH_K; i = i + 1) //Write to cipher_o file
+        // begin
+        //     if(i - DATA_LENGTH_TIME == 4*(j+1))
+        //     begin
+        //         j = j + 1;
+        //     end
+        //      tx_Data_Buffer_1[i] = (DUT.DECAPSULATION.hash_mem.mem[j] >> 8*(i-(DATA_LENGTH_TIME + 4*j)));
+        //     //test [(i-(144 + 4*j))] <= (DUT.encryption_unit.encrypt_mem.mem[j] >> 8);
+        // end
+    end
 end
 always @(posedge clk ) begin
     if(rst)
@@ -646,159 +715,94 @@ always @(posedge clk ) begin
     else
     begin
         case (tx_current_state)
-           STATE_TX_START : begin
+           STATE_TX_START   : begin
                             if((DUT.done_decap) || (data_set_c0) || (data_set_c1) || (data_set_poly) || (data_set_delta))
                             begin
                                 tx_current_state <= STATE_TX_SEND;
                                 tx_Send <= 1'b1;
+                                if((data_set_c0) || (data_set_c1) || (data_set_poly) || (data_set_delta))
+                                begin
+                                    DATA_LENGTH_SEND = 16; 
+                                end
+                                else
+                                begin
+                                    DATA_LENGTH_SEND = DATA_LENGTH;
+                                end
                             end
-                            if((data_set_c0) || (data_set_c1) || (data_set_poly) || (data_set_delta))
+           end
+           STATE_TX_SEND    : begin
+                            if((tx_done) && (tx_index == DATA_LENGTH_SEND))
                             begin
-                                DATA
+                                tx_index <= 6'd0;
+                                tx_current_state <= STATE_TX_STOP;
                             end
-           end   
-            default: 
+                            else
+                            begin
+                                if(tx_done)
+                                begin
+                                    tx_index <= tx_index + 1; 
+                                end
+                            end
+           end
+           STATE_TX_STOP    : begin
+                            if((rx_data_out != 8'd0) && (rx_done))
+                            begin
+                                tx_current_state <= STATE_TX_START;
+                            end
+                            tx_Send <= 1'd0;
+           end          
+            default: tx_current_state <= STATE_TX_START;
         endcase
     end
 end
 
-always @(posedge clk)
-begin
-    if (rst)
-    begin
-        ctr <= 0;
-        addr_C1 <= 0;
-        addr_C0 <= 0;
-        addr_s <= 0;
-        addr_pg <= 0;
-        s_valid <= 1'b0;
-        C0_valid <= 1'b0;
-        C1_valid <= 1'b0;
-        poly_g_valid <= 1'b0;
-        //done_error <= 1'b0;
-        //loading_done <= 1'b0;
-    end
-    else
-    begin
-        // Wait until the field ordering module is done.
-        if(ctr >= SIZE_TOTAL+1 || ctr == STOP_S && support_gen_done == 1'b0)
-        begin
-            ctr <= ctr;
-        end
-        else
-            // Count until all memory is written.
-            if (ctr < SIZE_TOTAL+1)
-            begin
-                ctr <= ctr + 1;
-            end
-    end
-end
 
-integer i;
-
-always @(posedge clk)
-begin
-    // reset for one cycle
-    //rst <= (ctr == 5) ? 1'b1 : 1'b0;
-    delta <= seed_from_ram;
-    start_decap <= 1'b0;
-
-    // loading s
-    if (ctr >= START_S && ctr < STOP_S)
-    begin
-        addr_s <= addr_s + 1;
-			 if (ctr > START_S)
-         s_valid <= 1'b1;
-    end
-    else
-    begin
-        addr_s <= addr_s;
-        s_valid <= 1'b0;
-    end
-    // loading C1
-    if (ctr > START_C1 && ctr <= STOP_C1)
-    begin
-        addr_C1 <= addr_C1 + 1;
-        C1_valid <= 1'b1;
-    end
-    else
-    begin
-        addr_C1 <= addr_C1;
-        C1_valid <= 1'b0;
-    end
-    // loading C0
-    if (ctr > START_C0 && ctr <= STOP_C0)
-    begin
-        addr_C0 <= addr_C0 + 1;
-        C0_valid <= 1'b1;
-    end
-    else
-    begin
-        addr_C0 <= addr_C0;
-        C0_valid <= 1'b0;
-    end
-    // loading g
-    if (ctr > START_POLY && ctr < STOP_POLY)
-    begin
-        addr_pg <= addr_pg + 1;
-        poly_g_valid <= 1'b1;
-    end
-    else
-    begin
-        addr_pg <= addr_pg;
-        poly_g_valid <= 1'b0;
-    end
-    // start decapsulation
-    if (ctr == SIZE_TOTAL)
-    begin
-        start_decap <= 1'b1;
-    end
-end
-
-
-/* Clock cycle count profiling */
-integer f_cycles_profile;
-time    time_decap_start;
-time    time_field_ordering_start;
-time time_field_ordering;
-
-reg [17*8-1:0] prefix;
 
 initial
 begin
     f_cycles_profile = $fopen(`FILE_CYCLES_PROFILE,"w");
     $sformat(prefix, "[mceliece%0d%0d]", DUT.N, DUT.T);
 end
-
+always @(posedge clk ) begin
+    time_counter_start = time_counter_start + 1;
+end
 always @(posedge DUT.start_fo)
 begin
-    time_field_ordering_start <= $time;
-   $display("%s FieldOrdering module started.", (prefix));
+    //time_field_ordering_start <= $time;
+    time_field_ordering_start <= time_counter_start;
+    $display("%s FieldOrdering module started.", (prefix));
     $fflush();
 end
 
 always @(posedge DUT.done_fo)
 begin
-    time_field_ordering = ($time-time_field_ordering_start)/2;
-   $display("%s FieldOrdering finished. (%0d cycles)", prefix, time_field_ordering);
-//($time-time_field_ordering_start)/2);
-    $fwrite(f_cycles_profile, "field_ordering %0d %0d\n", time_field_ordering_start/2, ($time-time_field_ordering_start)/2);
+    //time_field_ordering = ($time-time_field_ordering_start)/2;
+    time_field_ordering = (time_counter_start-time_field_ordering_start)/2;
+    $display("%s FieldOrdering finished. (%0d cycles)", prefix, time_field_ordering);
+    $fwrite(f_cycles_profile, "field_ordering %0d %0d\n", time_field_ordering_start/2, (time_counter_start-time_field_ordering_start)/2);
+    //$fwrite(f_cycles_profile, "field_ordering %0d %0d\n", time_field_ordering_start/2, ($time-time_field_ordering_start)/2);
     $fflush();
 end
 
 always @(posedge start_decap)
 begin
-    time_decap_start = $time;
+    //time_decap_start = $time;
+     time_decap_start = time_counter_start;
     $display("%s Decapsulation module started.", (prefix));
     $fflush();
 end
 
 always @(posedge done_decap)
 begin
-    $display("%s Decapsulation module finished. (%0d cycles) [re-encrypt %s]", prefix, ($time-time_decap_start)/2, DUT.DECAPSULATION.decryption_module.decryption_fail ? "failed" : "succeeded");
-    $display("%s FieldOrdering and Decapsulation require %0d cycles.", prefix, time_field_ordering+($time-time_decap_start)/2);
-    $fwrite(f_cycles_profile, "decap %0d %0d\n", time_decap_start/2, ($time-time_decap_start)/2);
-    $fwrite(f_cycles_profile, "total %0d %0d\n", time_field_ordering_start/2, time_field_ordering+($time-time_decap_start)/2);
+    //time_decap_finish = ($time-time_decap_start)/2;
+    time_decap_finish = (time_counter_start-time_decap_start)/2;
+    time_total = time_field_ordering+time_decap_finish;
+   // time_require = time_field_ordering+($time-time_decap_start)/2;
+   time_require = time_field_ordering+(time_counter_start-time_decap_start)/2;
+    $display("%s Decapsulation module finished. (%0d cycles) [re-encrypt %s]", prefix,time_decap_finish, DUT.DECAPSULATION.decryption_module.decryption_fail ? "failed" : "succeeded");
+    $display("%s FieldOrdering and Decapsulation require %0d cycles.", prefix, time_require);
+    $fwrite(f_cycles_profile, "decap %0d %0d\n", time_decap_start/2, time_decap_finish);
+    $fwrite(f_cycles_profile, "total %0d %0d\n", time_field_ordering_start/2, time_total);
     $fflush();
 end
 
@@ -813,48 +817,47 @@ end
 // end
 
 // output file for K
-always @(posedge DUT.done_decap)
-begin
-    $writememb(`FILE_K_OUT, DUT.DECAPSULATION.hash_mem.mem,0,7);
-    $fflush();
-end
+// always @(posedge DUT.done_decap)
+// begin
+//     $writememb(`FILE_K_OUT, DUT.DECAPSULATION.hash_mem.mem,0,7);
+//     $fflush();
+// end
 
-mem_single #(.WIDTH(32), .DEPTH(8), .FILE(`FILE_DELTA) ) mem_init_seed
+mem_single #(.WIDTH(32), .DEPTH(8)) mem_init_seed
            (
                .clock(clk),
-               .data(0),
+               .data(mem_data),
                .address(addr_s),
-               .wr_en(0),
+               .wr_en(write_en_set_delta),
                .q(seed_from_ram)
            );
 
-mem_single #(.WIDTH(32), .DEPTH(8), .FILE(`FILE_C1)) C1_input_mem
+mem_single #(.WIDTH(32), .DEPTH(8)) C1_input_mem
            (
                .clock(clk),
-               .data(0),
+               .data(mem_data),
                .address(addr_C1),
-               .wr_en(0),
+               .wr_en(write_en_set_c1),
                .q(C1_in)
            );
 
-mem_single #(.WIDTH(32), .DEPTH(((L + (32-L%32)%32)/32)), .FILE(`FILE_C0) ) C0_input_mem
+mem_single #(.WIDTH(32), .DEPTH(((L + (32-L%32)%32)/32))) C0_input_mem
            (
                .clock(clk),
-               .data(0),
+               .data(mem_data),
                .address(addr_C0),
-               .wr_en(0),
+               .wr_en(write_en_set_c0),
                .q(C0_in)
            );
 
-mem_single #(.WIDTH(32), .DEPTH(((PG_WIDTH + (32-PG_WIDTH%32)%32)/32)), .FILE(`FILE_POLYG) ) pg_input_mem
+mem_single #(.WIDTH(32), .DEPTH(((PG_WIDTH + (32-PG_WIDTH%32)%32)/32))) pg_input_mem
            (
                .clock(clk),
-               .data(0),
+               .data(mem_data),
                .address(addr_pg),
-               .wr_en(0),
+               .wr_en(write_en_set_poly),
                .q(poly_g_in)
            );
-
 
 endmodule
 

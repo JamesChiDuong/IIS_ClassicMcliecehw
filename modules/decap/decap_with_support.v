@@ -391,14 +391,20 @@ begin
        
        else if (state == s_wait_done_fo) begin
             if (done_fo) begin
-                support_gen_done <= 1'b1;    
+                support_gen_done <= 1'b1;          
             end
+            // /*Adjust the FSM by James Ngo*/
+            // if(done_decap)
+            // begin
+            //     state <= s_wait_done_decap;
+            // end
        end
        
        else if (state == s_wait_done_decap) begin
             if (done_decap) begin
                 state <= s_initialize;
-            end  
+            end
+            // state <= s_initialize;
        end
                       
         
@@ -460,7 +466,7 @@ begin
                     end
        
        s_wait_done_fo: begin
-                            start_fo <= 1'b0;
+                        start_fo <= 1'b0;
                             if (done_fo) begin
                                 sel_decap <= 1'b1;
                             end

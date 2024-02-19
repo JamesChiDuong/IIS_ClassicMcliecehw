@@ -344,14 +344,14 @@ begin
     $sformat(prefix, "[mceliece%0d%0d]", DUT.n, DUT.t);
 end
 
-// always @(posedge DUT.done)
-// begin
-//     $writememb(`FILE_K_OUT, DUT.hash_mem.mem,0,7);
-//     $writememb(`FILE_CIPHER0_OUT, DUT.encryption_unit.encrypt_mem.mem);
-//     $writememb(`FILE_CIPHER1_OUT, DUT.C1_mem.mem);
-//     $writememb(`FILE_ERROR_OUT, DUT.error_vector_gen.onegen_instance.mem_dual_B.mem);
-//     $fflush();
-// end
+always @(posedge DUT.done)
+begin
+    $writememb(`FILE_K_OUT, DUT.hash_mem.mem,0,7);
+    $writememb(`FILE_CIPHER0_OUT, DUT.encryption_unit.encrypt_mem.mem);
+    $writememb(`FILE_CIPHER1_OUT, DUT.C1_mem.mem);
+    $writememb(`FILE_ERROR_OUT, DUT.error_vector_gen.onegen_instance.mem_dual_B.mem);
+    $fflush();
+end
 
 always @(posedge seed_valid)
 begin
@@ -404,15 +404,7 @@ begin
     $fflush();
 end
 
-// mem_single #(.WIDTH(col_width), .DEPTH(((l_n_elim+(col_width-l_n_elim%col_width)%col_width)/col_width)), .FILE(`FILE_PK_SLICED) ) publickey
-//            (
-//                .clock(clk),
-//                .data(0),
-//                .address(addr_PK),
-//                .wr_en(0),
-//                .q(PK_col)
-//            );
-mem_single #(.WIDTH(col_width), .DEPTH(16), .FILE(`FILE_PK_SLICED) ) publickey
+mem_single #(.WIDTH(col_width), .DEPTH(((l_n_elim+(col_width-l_n_elim%col_width)%col_width)/col_width)), .FILE(`FILE_PK_SLICED) ) publickey
            (
                .clock(clk),
                .data(0),
@@ -420,6 +412,14 @@ mem_single #(.WIDTH(col_width), .DEPTH(16), .FILE(`FILE_PK_SLICED) ) publickey
                .wr_en(0),
                .q(PK_col)
            );
+// mem_single #(.WIDTH(col_width), .DEPTH(16), .FILE(`FILE_PK_SLICED) ) publickey
+//            (
+//                .clock(clk),
+//                .data(0),
+//                .address(addr_PK),
+//                .wr_en(0),
+//                .q(PK_col)
+//            );
 
 mem_single #(.WIDTH(32), .DEPTH(16), .FILE(`FILE_MEM_SEED) ) mem_init_seed
            (

@@ -9,20 +9,19 @@ KAT_DIR = $(ROOT_PATH)/host/kat/kat_generate
 # Include the parameter set definitions
 PAR_FILE := $(ROOT_PATH)/modules/FPGA/parameters.mk
 include $(PAR_FILE)
-
+include targets.mk
 # Include toolset
 TOOLS_FILE := $(ROOT_PATH)/modules/FPGA/tools.mk
 NO_CHECK := TRUE
 include $(TOOLS_FILE)
 undefine NO_CHECK
-
 NO_SUB_INCLUDES = True
 
 XILINX_MODELS_FILE := $(ROOT_PATH)/modules/FPGA/Xilinx/models.mk
 include $(XILINX_MODELS_FILE)
 
 # Source code directory for the parametrizable modules
-MODULES_DIR 	:= $(ROOT_PATH)/modules
+MODULES_DIR 	:= $(ROOT_PATH)/modules/$(TOPMODULES)
 
 
 export TOPMODULES
@@ -31,14 +30,15 @@ export TOPMODULES
 SOURCES := $(addsuffix -sources,$(TOPMODULES))
 SYNTHESIS := $(addsuffix -synthesis,$(TOPMODULES))
 PROGRAM := $(addsuffix -program,$(TOPMODULES))
+RESULTS := $(addsuffix -results,$(TOPMODULES))
 # Comulate the targets.
-TARGETS :=$(SYNTHESIS) $(PROGRAM)
+TARGETS :=$(SYNTHESIS) $(PROGRAM) $(RESULTS)
 
 # Build directory
 BUILD_DIR = $(ROOT_PATH)/build
 NPROC ?= 1
 
-export SIMU_DIR := $(BUILD_DIR)
+export SIMU_DIR := $(BUILD_DIR)/FPGA
 
 # PLAT_SRC_PATH 	:= $(abspath $(dir $(lastword $(MAKEFILE_LIST))))
 PLAT_DIR_SRC	:= $(ROOT_PATH)/platform
@@ -48,7 +48,7 @@ export BUILD_MODULES_DIR_SRC := $(SIMU_DIR)/verilog
 
 
 .PHONY: all
-all: program
+all: results
 
 .SECONDEXPANSION:
 
@@ -58,11 +58,14 @@ program: $(PROGRAM)
 .PHONY: synthesis
 synthesis: $(SYNTHESIS)
 
+.PHONY: results
+results: $(RESULTS)
+
 .PHONY: $(TARGETS)
 $(TARGETS):
 	$(MAKE) -C $(ROOT_PATH)/host/kat gen-kat -j$(NPROC) KAT_DIR=$(KAT_DIR) PAR_SETS=$(PAR_MODULE)
 	$(MAKE) -C $(MODULES_DIR)\
-		-f modules.mk $(lastword $(subst -, ,$@)) \
+		-f module.mk $(lastword $(subst -, ,$@)) \
 		-j$(NPROC) \
 		BUILD_DIR=$(SIMU_DIR) \
 		PAR_SETS="$(PAR_SETS)" \
@@ -71,11 +74,12 @@ $(TARGETS):
 
 clean:
 	rm -rf $(BUILD_PATH)
-	rm -rf $(ROOT_PATH)/modules/*.bit
-	rm -rf $(ROOT_PATH)/modules/*.html
-	rm -rf $(ROOT_PATH)/modules/*.xml
-	rm -rf $(ROOT_PATH)/modules/*.txt
-	rm -rf $(ROOT_PATH)/modules/.Xil
+	rm -rf $(ROOT_PATH)/modules/$(TOPMODULES)/*.bit
+	rm -rf $(ROOT_PATH)/modules/$(TOPMODULES)/*.html
+	rm -rf $(ROOT_PATH)/modules/$(TOPMODULES)/*.xml
+	rm -rf $(ROOT_PATH)/modules/$(TOPMODULES)/*.txt
+	rm -rf $(ROOT_PATH)/modules/$(TOPMODULES)/.Xil
+	rm -rf $(ROOT_PATH)/modules/$(TOPMODULES)/*.log
 .PHONY: help
 
 help:

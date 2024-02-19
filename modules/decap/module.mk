@@ -38,6 +38,7 @@ DECAPSULATION_SUBMODULES := DECRYPTION SHAKE256 MEMORY_SINGLE MEMORY_DUAL FIELD_
 #
 # Build directory
 BUILD_DIR ?= $(DECAPSULATION_SRC_PATH)/build
+# include $(BUILD_DIR)/.config.mk
 # Directory pointing to the known answer tests
 KAT_DIR ?= $(ROOT_PATH)/host/kat/kat_generate
 # Directory for the performance results
@@ -59,27 +60,28 @@ ifndef BUILD_DIR_TEMPLATE
 define BUILD_DIR_TEMPLATE =
 
 # Parameter-specific build directory root
-BUILD_DIR_$(1) = $$(BUILD_DIR)/$(1)/$$(TOPMODULE)
-# Parameter-specific source, testbench, and KAT directory
-BUILD_DIR_SRC_$(1) = $$(BUILD_DIR_$(1))/src
-BUILD_DIR_TB_$(1) = $$(BUILD_DIR_$(1))/testbench
-BUILD_DIR_SYNTH_$(1) = $$(BUILD_DIR_$(1))/synthesis
-BUILD_DIR_KAT_$(1) = $$(KAT_DIR/$(1))
-
-# ifeq ($(TARGET),sim)
 # BUILD_DIR_$(1) = $$(BUILD_DIR)
-# BUILD_DIR_SRC_$(1) = $$(BUILD_DIR_$(1))/verilog
-# # BUILD_DIR_TB_$(1) = $$(BUILD_DIR_$(1))/verilog
-# BUILD_DIR_KAT_$(1) = $$(KAT_DIR/$(1))
-# else
-# #Parameter-specific build directory root
-
-# BUILD_DIR_$(1) = $$(BUILD_DIR)/$(1)/$$(TOPMODULE)
-
 # # Parameter-specific source, testbench, and KAT directory
+# BUILD_DIR_SRC_$(1) = $$(BUILD_DIR_$(1))/verilog
+# BUILD_DIR_TB_$(1) = $$(BUILD_DIR_$(1))/testbench
+# BUILD_DIR_SYNTH_$(1) = $$(BUILD_DIR_$(1))/synthesis
+# BUILD_DIR_KAT_$(1) = $$(KAT_DIR/$(1))
 
-# BUILD_DIR_SRC_$(1) = $$(BUILD_DIR_$(1))/src
-# endif
+ifeq ($(TARGET),sim)
+BUILD_DIR_$(1) = $$(BUILD_DIR)
+BUILD_DIR_SRC_$(1) = $$(BUILD_DIR_$(1))/verilog
+BUILD_DIR_TB_$(1) = $$(BUILD_DIR_$(1))/verilog
+BUILD_DIR_KAT_$(1) = $$(KAT_DIR/$(1))
+else
+#Parameter-specific build directory root
+
+BUILD_DIR_$(1) = $$(BUILD_DIR)/$(1)/$$(TOPMODULE)
+
+# Parameter-specific source, testbench, and KAT directory
+
+BUILD_DIR_SRC_$(1) = $$(BUILD_DIR_$(1))/src
+BUILD_DIR_TB_$(1) = $$(BUILD_DIR_$(1))/src
+endif
 endef
 
 $(foreach par, $(PAR_SETS), $(eval $(call BUILD_DIR_TEMPLATE,$(par))))
@@ -97,6 +99,12 @@ include $(KATGEN_SRC_PATH)/Makefile
 include $(RTL_SRC_PATH)/rtl.mk
 #
 # Sources definitions
+export SIMU_DIR
+export TOPMODULES
+export TOPMODULES_SIMU
+
+
+export CLOCK_FPGA
 #
 
 # Set the source files of this module
@@ -155,7 +163,7 @@ ifeq (decapsulation,${TOPMODULE})
 #
 
 # Set the testbench sources
-DECAPSULATION_TB_SRC = decap_with_support_tb.v
+DECAPSULATION_TB_SRC = $(TOPMODULES_SIMU).v
 # DECAPSULATION_TB_SRC = decap_tb.v
 
 # Define the comulated target for testbench sources generation
@@ -185,7 +193,7 @@ testbench-$(1): sources-$(1) $$(DECAPSULATION_TB_$(1))
 #
 # Sources generation
 #
-$$(BUILD_DIR_TB_$(1))/decap_with_support_tb.v: $$(DECAPSULATION_SRC_PATH)/testbench/decap_with_support_tb.v
+$$(BUILD_DIR_TB_$(1))/%.v: $$(DECAPSULATION_SRC_PATH)/testbench/%.v
 	cp $$< $$@
 
 endef
@@ -197,8 +205,8 @@ $(foreach par, $(PAR_SETS), $(eval $(call DECAPSULATION_TB_TEMPLATE,$(par))))
 #
 
 # Define Verilator-specific testbench source
-DECAPSULATION_VERILATOR_TB_SRC = $(DECAPSULATION_SRC_PATH)/testbench/tb.cpp
-
+DECAPSULATION_VERILATOR_TB_SRC = $(SIMU_DIR)/cpp/$(TOPMODULES)/$(TOPMODULES_SIMU).cpp
+DECAPSULATION_VERILATOR_UARTSIM_SRC = $(SIMU_DIR)/cpp/$(TOPMODULES)/uartsim.cpp
 # Define comulated target for the simulation runs und results generation
 .PHONY: sim
 sim: $(addprefix sim-, $(PAR_SETS))
@@ -224,7 +232,7 @@ DECAPSULATION_SIM_$(1) = \
 	$$(DECAPSULATION_KAT_$(1))
 
 # Simulation binaries
-DECAPSULATION_VERILATOR_BIN_$(1) = $$(BUILD_DIR_TB_$(1))/decap_tb.bin
+DECAPSULATION_VERILATOR_BIN_$(1) = $$(RESULTS_DIR)/$(TOPMODULES_SIMU).bin
 
 # Simulation performance files
 DECAPSULATION_RESULT_TB_$(1) = $$(RESULTS_DIR)/cycles_profile_$(1)_$(TOPMODULE).data
@@ -237,11 +245,11 @@ SIM_$(1) += $$(DECAPSULATION_RESULT_TB_$(1))
 $$(DECAPSULATION_VERILATOR_BIN_$(1)): $$(DECAPSULATION_SIM_$(1)) | $$(RESULTS_DIR)
 	$(VERILATOR) \
 	--unroll-count 1024 \
-	-Wno-context -Wno-style -Wno-lint -Wno-fatal -Wno-BLKANDNBLK \
+	-Wno-context -Wno-style -Wno-lint -Wno-fatal \
 	--timescale-override 1ps/1ps \
 	--trace \
 	--Mdir $$(BUILD_DIR_TB_$(1))/obj_dir \
-	--top-module decap_with_support_tb \
+	--top-module $$(TOPMODULES_SIMU) \
 	-Gparameter_set=$$(id_$(1)) \
 	-DFILE_MEM_CONSTS=\"$$(BUILD_DIR_SRC_$(1))/mem_consts\" \
 	-DFILE_C0=\"$$(KAT_DIR_$(1))/$(KAT_FILE_CIPHER_0)\" \
@@ -252,16 +260,20 @@ $$(DECAPSULATION_VERILATOR_BIN_$(1)): $$(DECAPSULATION_SIM_$(1)) | $$(RESULTS_DI
 	-DFILE_ERROR_OUT=\"$$(BUILD_DIR_TB_$(1))/error.out\" \
 	-DFILE_RE_ENC_OUT=\"$$(BUILD_DIR_TB_$(1))/re_encryption_res.out\" \
 	-DFILE_DOUBLED_SYNDROME_OUT=\"$$(BUILD_DIR_TB_$(1))/doubled_syndrome.out\" \
-	-DFILE_K_OUT=\"$$(BUILD_DIR_TB_$(1))/K.out\" \
-	-DFILE_VCD=\"$$(BUILD_DIR_TB_$(1))/wave.vcd\" \
+	-DFILE_K_OUT=\"$$(RESULTS_DIR)/K.out\" \
+	-DFILE_VCD=\"$$(RESULTS_DIR)/wave.vcd\" \
 	-DFILE_CYCLES_PROFILE=\"$$(DECAPSULATION_RESULT_TB_$(1))\" \
+	-GBAUD_RATE=$(BAUD_RATE) \
+	-GCLOCK_FPGA=$(CLOCK_FPGA)\
+	-DCLOCK_FPGA=$(CLOCK_FPGA)\
+	-DBAUD_RATE=$(BAUD_RATE)\
 	-I$$(BUILD_DIR_SRC_$(1)) \
 	-I$$(BUILD_DIR_TB_$(1)) \
 	--cc \
 	$$(BUILD_DIR_SRC_$(1))/clog2.v \
 	$$(DECAPSULATION_TB_$(1)) \
 	$$(filter-out $$(BUILD_DIR_SRC_$(1))/mem_consts $$(BUILD_DIR_SRC_$(1))/clog2.v,$$(DECAPSULATION_$(1))) \
-	--exe $$< \
+	--exe  $$< $$(DECAPSULATION_VERILATOR_UARTSIM_SRC)\
 	--build \
 	-j 8 \
 	--threads 1 \
@@ -271,8 +283,8 @@ $$(DECAPSULATION_VERILATOR_BIN_$(1)): $$(DECAPSULATION_SIM_$(1)) | $$(RESULTS_DI
 # Perform the simulation, record the performance data, and check the outcome.
 $$(DECAPSULATION_RESULT_TB_$(1)): $$(DECAPSULATION_VERILATOR_BIN_$(1)) $$(DECAPSULATION_KAT_$(1))
 	$$<
-	sed -i -e ':a' -e 'N;s/\n//;ba' $$(BUILD_DIR_TB_$(1))/K.out
-	diff $$(BUILD_DIR_TB_$(1))/K.out $$(KAT_DIR_$(1))/$(KAT_FILE_K) \
+	sed -i -e ':a' -e 'N;s/\n//;ba' $$(RESULTS_DIR)/K.out
+	diff $$(RESULTS_DIR)/K.out $$(KAT_DIR_$(1))/$(KAT_FILE_K) \
 	&& echo "[$(1)-decapsulation] Test Passed!"
 
 
@@ -305,25 +317,31 @@ DECAPSULATION_RESULT_SYNTH_TIMING_$(1)_$(2) = $$(RESULTS_DIR)/$(TOPMODULE)_timin
 DECAPSULATION_RESULT_SYNTH_TIMING_SUMMARY_$(1)_$(2) = $$(RESULTS_DIR)/$(TOPMODULE)_timing_summary_$(1)_$(2).txt
 DECAPSULATION_RESULT_SYNTH_CLOCKS_$(1)_$(2) = $$(RESULTS_DIR)/$(TOPMODULE)_clocks_$(1)_$(2).txt
 
+# # Set of all files to perform the synthesis
+DECAPSULATION_SYNTH_$(2) = \
+	$$(DECAPSULATION_TB_$(1)) \
+	$$(DECAPSULATION_$(1))
+
 # Perform the synthesis
 # #TODO (MAKE versions < 3.8 do not support mutli-target rules)
-$$(DECAPSULATION_RESULT_SYNTH_CLOCKS_$(1)_$(2)): $$(DECAPSULATION_$(2)) $$(XILINX_RESOURCE_ANALYSIS_TCL) $$(XILINX_CONSTRAINTS_TIMING_$(1)) | $(RESULTS_DIR)
+$$(DECAPSULATION_RESULT_SYNTH_CLOCKS_$(1)_$(2)): $$(DECAPSULATION_$(2)) $$(DECAPSULATION_TB_$(2)) $$(XILINX_RESOURCE_ANALYSIS_TCL) $$(XILINX_CONSTRAINTS_TIMING_$(1)) | $(RESULTS_DIR)
 	$$(VIVADO) \
 	-nojournal \
 	-log $$(RESULTS_DIR)/synthesis_$(1)_$(2).log \
 	-mode batch \
 	-source $$(XILINX_RESOURCE_ANALYSIS_TCL) \
 	-tclargs \
-		"$$(BUILD_DIR_SRC_$(2))/clog2.v $(filter-out $$(BUILD_DIR_SRC_$(2))/clog2.v,$$(DECAPSULATION_$(2)))" \
+		"$$(DECAPSULATION_$(2)) + $$(DECAPSULATION_TB_$(2))" \
 		$$(XILINX_CONSTRAINTS_TIMING_$(1)) \
-		decap_with_support \
+		$$(XILINX_CONSTRAINTS_PIN_$(1))	\
+		$(TOPMODULES_SIMU) \
 		$$(XILINX_FPGA_MODEL_ID_$(1)) \
 		$$(DECAPSULATION_RESULT_SYNTH_UTILIZATION_$(1)_$(2)) \
 		$$(DECAPSULATION_RESULT_SYNTH_UTILIZATION_HIERARCHICAL_$(1)_$(2)) \
 		$$(DECAPSULATION_RESULT_SYNTH_TIMING_$(1)_$(2)) \
 		$$(DECAPSULATION_RESULT_SYNTH_TIMING_SUMMARY_$(1)_$(2)) \
 		$$(DECAPSULATION_RESULT_SYNTH_CLOCKS_$(1)_$(2)) \
-		"parameter_set=$$(id_$(2))" \
+		"parameter_set=$$(id_$(2)) KEY_START_ADDR=0 BAUD_RATE=$(BAUD_RATE) CLOCK_FPGA=$(CLOCK_FPGA)" \
 		FILE_MEM_CONSTS=$$(BUILD_DIR_SRC_$(2))/mem_consts
 
 
@@ -350,7 +368,7 @@ define DECAPSULATION_RESULTS_TEMPLATE =
 synthesis-$(1): $$(SYNTH_$(1))
 
 .PHONY: results-$(1)
-results-$(1): $$(SIM_$(1)) $$(SYNTH_$(1))
+results-$(1): $$(SYNTH_$(1))
 
 endef
 

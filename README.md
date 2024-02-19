@@ -40,9 +40,11 @@ Therewith, we are able to generate targets for all combinations, e.g., over all 
 
 The purpose test is interfaces between serial IO and the encaps top module to receive commands and to receive and send data as requested. A sequence of commands sends from the host to the FPGA could be:
 
-1. set_seed: This is a the loading seed data from `host/kat/kat_generate/mem_512.kat` to memory in encap_sim module via UART protocol.
+**ENCAPSULATION MODULE**
 
-2. set_pk: This is a the loading public key data from `host/kat/kat_generate/pubkey_32.kat` to memory in encap_sim module via UART protocol.
+1. set_seed: This is a loading seed data from `host/kat/kat_generate/mem_512.kat` to memory in encap_sim module via UART protocol.
+
+2. set_pk: This is a loading public key data from `host/kat/kat_generate/pubkey_32.kat` to memory in encap_sim module via UART protocol.
 
 3. start_encap: This is a command for starting encapsulation.
 
@@ -71,7 +73,7 @@ The purpose test is interfaces between serial IO and the encaps top module to re
 
   | TOP MODULE FILE          |      TEST PYTHON FILE                                      |
   | ---------------          |     -------------------------------------------------------|
-  |`./encap_sim`             | `python3 Test_encap_sim.py /dev/pts/4 9600 set_seed`       |
+  |`./encap_sim`             | `python3 Test_encap_sim.py /dev/pts/4 3000000 set_seed`       |
   | Slave device: /dev/pts/4 |    Send Data:  0x240000........00001000000                 |
   |                          |-------------------Read Data-------------------             |
   | [mceliece348864] Send Seed data completed| Send Seed data completed.                  |
@@ -80,7 +82,7 @@ The purpose test is interfaces between serial IO and the encaps top module to re
 
   | TOP MODULE FILE          |      TEST PYTHON FILE                                      |
   | ---------------          |     -------------------------------------------------------|
-  |`./encap_sim`             | `python3 Test_encap_sim.py /dev/pts/4 9600 set_pk`         |
+  |`./encap_sim`             | `python3 Test_encap_sim.py /dev/pts/4 3000000 set_pk`         |
   | Slave device: /dev/pts/4 |  Send Data:  0x18303fc00a74c0bdf......29ce66c80ae3d69e25799|
   |                          |-------------------Read Data-------------------             |
   | [mceliece348864] Send Public key data completed.| Send Public key data completed.     |
@@ -89,7 +91,7 @@ The purpose test is interfaces between serial IO and the encaps top module to re
 
   | TOP MODULE FILE          |      TEST PYTHON FILE                                      |
   | ---------------          |     -------------------------------------------------------|
-  |`./encap_sim`             | `python3 Test_encap_sim.py /dev/pts/4 9600 set_pk`         |
+  |`./encap_sim`             | `python3 Test_encap_sim.py /dev/pts/4 3000000 start_encap`         |
   | Slave device: /dev/pts/4 |  Send Data:  0x30101                                       |
   |                          |-------------------Read Data-------------------             |
   |[mceliece348864] Start Encapsulation. (5155211 cycles) |Start Encapsulation:  5155211 cycles  |
@@ -111,8 +113,6 @@ The purpose test is interfaces between serial IO and the encaps top module to re
   |------------------Checking encapsulation data-------------------|
   |[mceliece348864-KAT] Checking encapsulation data.               |
   |[mceliece348864-32-encapsulation] Test Passed!                  |
-
-
 ### Target 'ArtixA7':
 
   ```bash
@@ -127,6 +127,88 @@ The purpose test is interfaces between serial IO and the encaps top module to re
    - We need to use `make clean` before running the new target
    - To list the USB port of your device, open the terminal: `sudo ls /dev/ttyUSB*`
 
+
+**DECAPSULATION MODULE**
+1. set_s: This is a Delta data from `host/kat/kat_generate/s.kat` to memory in encap_sim module via UART protocol.
+
+2. set_C1: This is a C1 data from `host/kat/kat_generate/cipher_1.kat` to memory in encap_sim module via UART protocol.
+
+3. set_C0: This is a C0 data from `host/kat/kat_generate/cipher_0.kat` to memory in encap_sim module via UART protocol.
+
+4. set_POLY: This is a POLY data from `host/kat/kat_generate/poly_g.kat` to memory in encap_sim module via UART protocol.
+
+5. start_decap: This is a command for starting decapsulation.
+
+6. check_data: After finish the encapsulation, the python scrpit will be created 1 file `build/result/K.out` by receiving these data from decap_sim module. The check_data command will be check the output data by running `host/kat/kat.sage.py`.
+
+### The following step for testing could be:
+- `Step 1`: set_s command.
+- `Step 2`: set_C1 command.
+- `Step 3`: set_C0 command.
+- `Step 4`: set_POLY command.
+- `Step 5`: start_decap command.
+- `Step 6`: check_data command.
+
+### Target 'sim':
+
+- `First` is a loading Delta data from Delta file to memory by `set_s` command.
+
+  | TOP MODULE FILE          |      TEST PYTHON FILE                                      |
+  | ---------------          |     -------------------------------------------------------|
+  |`./decap_sim`             | `python3 Test_decap_sim.py /dev/pts/4 3000000 set_s`       |
+  | Slave device: /dev/pts/4 |    Send Data:  0x12073........748167                       |
+  |                          |-------------------Read Data-------------------             |
+  | [mceliece348864] Send Delta data completed| Send Delta data completed.                |
+
+  - `Second` is a loading C1 data from C1 file to memory by `set_C1` command.
+
+  | TOP MODULE FILE          |      TEST PYTHON FILE                                      |
+  | ---------------          |     -------------------------------------------------------|
+  |`./decap_sim`             | `python3 Test_decap_sim.py /dev/pts/4 3000000 set_C1`      |
+  | Slave device: /dev/pts/4 |  Send Data:  0x220bff7......df4f3111b7723f71502a           |
+  |                          |-------------------Read Data-------------------             |
+  | [mceliece348864] Send C1 data completed.| Send C1 data completed.                     |
+
+  - `Third` is a loading C0 data from C0 file to memory by `set_C0` command.
+
+  | TOP MODULE FILE          |      TEST PYTHON FILE                                      |
+  | ---------------          |     -------------------------------------------------------|
+  |`./decap_sim`             | `python3 Test_decap_sim.py /dev/pts/4 3000000 set_C0`      |
+  | Slave device: /dev/pts/4 |  Send Data:  0x3604f306de1ef2b7b39......6ad84c877          |
+  |                          |-------------------Read Data-------------------             |
+  | [mceliece348864] Send C0 data completed.| Send C0 data completed.                     |
+
+  - `Fouth` is a loading POLY data from C0 file to memory by `set_POLY` command.
+
+  | TOP MODULE FILE          |      TEST PYTHON FILE                                      |
+  | ---------------          |     -------------------------------------------------------|
+  |`./decap_sim`             | `python3 Test_decap_sim.py /dev/pts/4 3000000 set_POLY`    |
+  | Slave device: /dev/pts/4 |  Send Data:  0x46400106afd78d9d0......b3500000             |
+  |                          |-------------------Read Data-------------------             |
+  | [mceliece348864] Send POLY data completed.| Send POLY data completed.                 |
+  
+  - `Fifth` is a a starting to decapsulation by `start_decap` command.
+
+  | TOP MODULE FILE          |      TEST PYTHON FILE                                      |
+  | ---------------          |     -------------------------------------------------------|
+  |`./decap_sim`             | `python3 Test_decap_sim.py /dev/pts/4 3000000 start_decap` |
+  | Slave device: /dev/pts/4 |  Send Data: 0x50101                                        |
+  |                          |-------------------Read Data-------------------             |
+  | [mceliece348864] FieldOrdering module started | FieldOrdering module started          |
+  | [mceliece348864] FieldOrdering finished. (32790 cycles) | FieldOrdering finished. 32790  cycles             |
+  | [mceliece348864] Decapsulation module started | Decapsulation module started          |
+  | [mceliece348864] Decapsulation module finished. (6940 cycles) [re-encrypt succeeded] | Decapsulation module finished. 6940 cycles [re-encrypt succeeded]         |
+  | [mceliece348864] FieldOrdering and Decapsulation require 39730 cycles | FieldOrdering and Decapsulation require 39730 cycles          |
+  |  | -------------------Writting to file-------------------          |
+  |  | K.out:Done          |
+
+  - `Finally` is a checking data from 1 file which is created a python script at a `build/result/` folder by `check_data` command.
+
+  |   TEST PYTHON FILE                                             |
+  | ---------------                                                |
+  | `python3 Test_decap_sim.py check_data`                         |
+  |------------------Checking decapsulation data-------------------|
+  |[mceliece348864-32-decapsulation] Test Passed!                  |
 
 ### Target 'clean':
 To delete all of the generated file and folder during building the code processing.

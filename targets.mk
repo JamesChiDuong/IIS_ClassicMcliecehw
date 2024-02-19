@@ -3,8 +3,12 @@ _TARGETS :=
 
 TARGET ?=
 
+# export TOPMODULES := decap
+# export TOPMODULES_SIMU := $(TOPMODULES)_with_support_tb
+
+
 export TOPMODULES := decap
-export TOPMODULES_SIMU := decap_tb.v
+export TOPMODULES_SIMU := $(TOPMODULES)_sim
 
 export CLOCK_FPGA := 100000000
 

@@ -349,10 +349,8 @@ begin
 end 
  
  
-always@(negedge clk) 
+always@(state, start, count_e, count_k, addr_0, addr_1, e_addr) 
 begin
-    if(state || start||count_e||count_k||addr_0||addr_1||e_addr)
-    begin
     case (state)
                     
      s_wait_e_ready: begin
@@ -457,10 +455,10 @@ begin
             
    default: en_er_reg <= 1'b0;
       
-    endcase  
-    end
+    endcase
 
 end  
 
 endmodule
+
 

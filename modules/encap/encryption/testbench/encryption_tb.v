@@ -22,7 +22,7 @@
 
 `timescale 1ns/1ps
 
-module encap_encryption_tb
+module encrypt_col_block_128_tb
   #(
     parameter parameter_set =2,
     
@@ -87,10 +87,10 @@ parameter wait_time = (((n+(n%e_width))/e_width) + 2)*10;
     .rst(rst),
     .start(start),
     .e_addr(addr_e),
-    // .K_col_valid(K_col_valid),
+    .K_col_valid(K_col_valid),
     .error(error),
     .K_col(K_col),
-    // .K_ready(K_ready),
+    .K_ready(K_ready),
     .done(done),
     .addr_rd_c(addr_rd_c),
     .rd_en_c(rd_en_c),
