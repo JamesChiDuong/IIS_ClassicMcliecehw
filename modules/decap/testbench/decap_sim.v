@@ -696,15 +696,15 @@ always @(posedge clk) begin
         begin
              tx_Data_Buffer[i] = (time_require >> 8*(i-16)) & 8'hff;
         end
-        // for(i = DATA_LENGTH_TIME; i < DATA_LENGTH_TIME + DATA_LENGTH_K; i = i + 1) //Write to cipher_o file
-        // begin
-        //     if(i - DATA_LENGTH_TIME == 4*(j+1))
-        //     begin
-        //         j = j + 1;
-        //     end
-        //      tx_Data_Buffer_1[i] = (DUT.DECAPSULATION.hash_mem.mem[j] >> 8*(i-(DATA_LENGTH_TIME + 4*j)));
-        //     //test [(i-(144 + 4*j))] <= (DUT.encryption_unit.encrypt_mem.mem[j] >> 8);
-        // end
+        for(i = DATA_LENGTH_TIME; i < DATA_LENGTH_TIME + DATA_LENGTH_K; i = i + 1) //Write to cipher_o file
+        begin
+            if(i - DATA_LENGTH_TIME == 4*(j+1))
+            begin
+                j = j + 1;
+            end
+             tx_Data_Buffer[i] = (DUT.DECAPSULATION.hash_mem.mem[j] >> 8*(i-(DATA_LENGTH_TIME + 4*j)));
+            //test [(i-(144 + 4*j))] <= (DUT.encryption_unit.encrypt_mem.mem[j] >> 8);
+        end
     end
 end
 always @(posedge clk ) begin
